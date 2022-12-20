@@ -1,0 +1,30 @@
+{
+  "exclude": [
+    "__tests__/**/*-test.ts",
+    "@tsconfig/react-native/tsconfig.json",
+  ],
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "jsx": "react",
+    "skipLibCheck": true,
+    "strict": true,
+    "baseUrl": "./",
+    "paths": {
+      "@assets/*": [
+        "./src/assets/*"
+      ],
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@hooks/*": [
+        "./src/hooks/*"
+      ],
+      "@screens/*": [
+        "./src/screens/*"
+      ],
+    }
+  },
+}

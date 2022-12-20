@@ -1,0 +1,15 @@
+export { default as background } from './background.png';
+export { default as backgroundSecondary } from './backgroundSecondary.png';
+export { default as FigureCompleted } from './completed.png';
+export { default as Puppet } from './confirmedPeople.png';
+export { default as KubaFone } from './kubaFone.png';
+export { default as FoneExample } from './frontalFone.png';
+export { default as logo } from './logo.png';
+export { default as logoWhite } from './logoWhite.png';
+export { default as perfil } from './perfil.png';
+export { default as profile } from './Profile.png';
+export { default as singer } from './singer.png';
+export { default as singerPreset } from './SingerProfile.png';
+export { default as ThumbnailImage } from './videoImage.png';
+export { default as Link } from './link.png';
+export { default as passwordResetSuccess } from './passwordResetSuccess.png';
