@@ -11,7 +11,7 @@ const Stack = createStackNavigator();
 const AppRoutes = () => {
   return (
     <Stack.Navigator
-      // initialRouteName="ChangePassword"
+      initialRouteName="Device"
       screenOptions={{
         headerShown: false,
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,

@@ -23,8 +23,8 @@ import {
 import { Image, NativeModules, ScrollView } from 'react-native'
 import { ButtonSquare } from '@components/ButtonSquare'
 
-
 export function Device() {
+
   const data = ['#173961', '#556d89', '#BFD5ee', '#Fcfeff']
   const navigation = useNavigation()
 
@@ -46,7 +46,7 @@ export function Device() {
         <Navbar />
 
         <ImageDevice source={KubaFone} />
-        <NameDevice>{'Kuba ali'}</NameDevice>
+        <NameDevice>{'Kuba mali'}</NameDevice>
 
         <ButtonConnected />
 

@@ -51,5 +51,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+  <key>NSBluetoothAlwaysUsageDescription</key>
+	<string>The application would like to use Bluetooth to connect with the headset</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>The application would like to use Bluetooth to connect with the headset</string>
 </dict>
 </plist>
