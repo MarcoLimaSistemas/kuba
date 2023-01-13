@@ -1,9 +1,8 @@
-import React from "react"
+import React, { ReactNode } from "react"
 
-import { Control, Controller, FieldErrorsImpl } from "react-hook-form";
-import { InputMasked, InputUnMasked, InputControlContainer, Label, TextSizes } from "./styles"
+import { Control, Controller, FieldError } from "react-hook-form";
+import { InputMasked, InputUnMasked, InputControlContainer, Label, TextSizes, Error } from "./styles"
 import { TextInputMaskProps } from "react-native-masked-text";
-import { Image, Text } from "react-native";
 
 interface InputControlProps extends TextInputMaskProps {
   isMasked?: boolean;
@@ -14,6 +13,8 @@ interface InputControlProps extends TextInputMaskProps {
   rule?: boolean;
   typePassword?: boolean;
   openPassword?: boolean;
+  icon?: ReactNode;
+  errors?: ReactNode;
 }
 
 export function InputControl({
@@ -25,6 +26,8 @@ export function InputControl({
   isMasked = false,
   typePassword = false,
   openPassword,
+  icon,
+  errors,
   ...props }: InputControlProps) {
 
   return (
@@ -36,7 +39,6 @@ export function InputControl({
           required: rule,
         }}
         render={({ field: { onChange, onBlur, value } }) => (
-
           isMasked ? <InputMasked
             onBlur={onBlur}
             onChangeText={onChange}
@@ -49,12 +51,12 @@ export function InputControl({
               value={value}
               {...props}
             />
-
-
         )}
         name={name}
       />
+      {icon}
       {multiline && <TextSizes>max {props.maxLength} caracteres</TextSizes>}
+      {errors}
     </InputControlContainer>
   )
 }

@@ -55,6 +55,7 @@ align-items: flex-start;
 export const TextInput = styled.Text`
 color:${({ theme }) => theme.COLORS.black} ;
 font-size: ${RFValue(16)}px;
+margin-bottom: ${RFValue(8)}px;
 `;
 
 export const Error = styled.Text`

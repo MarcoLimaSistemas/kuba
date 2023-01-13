@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Image } from "react-native";
 import { useForm } from "react-hook-form";
 import { useNavigation } from "@react-navigation/native";
 
@@ -6,10 +7,16 @@ import { Button } from "@components/Button";
 import { Header } from "@components/Header";
 import { InputControl } from "@components/InputControl";
 
-import { BoxButtons, ButtonEyeConfirmationPassword, ButtonEyeNewPassword, Container, InputsContainer, TextError } from "./styles";
-import { Image, TouchableOpacity } from "react-native";
+import {
+  BoxButtons,
+  Container,
+  InputsContainer,
+  TextError
+} from "./styles";
+
 
 import { Eye, EyeOff } from '@assets/icons'
+import { TouchableIcon } from "@screens/Guest/SignUp/styles";
 
 type FormData = {
   currentPassword: string;
@@ -39,17 +46,10 @@ export function ChangePassword() {
           name="currentPassword"
           control={control}
           secureTextEntry={true}
+          type={"custom"}
         />
         {errors?.currentPassword && <TextError>Esse é um campo obrigatório.</TextError>}
 
-        {eyeNewPassword ?
-          <ButtonEyeNewPassword onPress={() => setEyeNewPassword(false)}>
-            <Image source={Eye} />
-          </ButtonEyeNewPassword>
-          : <ButtonEyeNewPassword onPress={() => setEyeNewPassword(true)}>
-            <Image source={EyeOff} />
-          </ButtonEyeNewPassword>
-        }
         <InputControl
           label="Nova senha"
           placeholder="Digite sua nova senha"
@@ -57,18 +57,19 @@ export function ChangePassword() {
           name="newPassword"
           control={control}
           secureTextEntry={eyeNewPassword}
+          type={"custom"}
+          icon={
+            <TouchableIcon
+              onPress={() => setEyeNewPassword((prevState) => !prevState)}
+            >
+              {eyeNewPassword ?
+                <Image source={Eye} /> :
+                <Image source={EyeOff} />}
+            </TouchableIcon>
+          }
         />
         {errors.newPassword && <TextError>Esse é um campo obrigatório.</TextError>}
 
-
-        {eyeConfirmationPassword ?
-          <ButtonEyeConfirmationPassword onPress={() => setEyeConfirmationPassword(false)}>
-            <Image source={Eye} />
-          </ButtonEyeConfirmationPassword>
-          : <ButtonEyeConfirmationPassword onPress={() => setEyeConfirmationPassword(true)}>
-            <Image source={EyeOff} />
-          </ButtonEyeConfirmationPassword>
-        }
         <InputControl
           label="Repetir nova senha"
           placeholder="Digite sua nova senha"
@@ -76,6 +77,16 @@ export function ChangePassword() {
           name="confirmationPassword"
           control={control}
           secureTextEntry={eyeConfirmationPassword}
+          type={"custom"}
+          icon={
+            <TouchableIcon
+              onPress={() => setEyeConfirmationPassword((prevState) => !prevState)}
+            >
+              {eyeConfirmationPassword ?
+                <Image source={Eye} /> :
+                <Image source={EyeOff} />}
+            </TouchableIcon>
+          }
         />
         {errors.confirmationPassword && <TextError>Esse é um campo obrigatório.</TextError>}
 

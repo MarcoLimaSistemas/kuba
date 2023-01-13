@@ -11,7 +11,7 @@ const Stack = createStackNavigator();
 const AppRoutes = () => {
   return (
     <Stack.Navigator
-      initialRouteName="Device"
+      // initialRouteName="Device"
       screenOptions={{
         headerShown: false,
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,

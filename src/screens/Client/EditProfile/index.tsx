@@ -42,6 +42,7 @@ export function EditProfile() {
           keyboardType="default"
           name="name"
           control={control}
+          type={"custom"}
         />
         {errors?.name && <TextError>Esse é um campo obrigatório.</TextError>}
 
@@ -56,6 +57,7 @@ export function EditProfile() {
           name="description"
           rule={false}
           control={control}
+          type={"custom"}
         />
         {errors?.description && <TextError>Esse é um campo obrigatório.</TextError>}
 
@@ -65,6 +67,7 @@ export function EditProfile() {
           keyboardType="email-address"
           name="email"
           control={control}
+          type={"custom"}
         />
         {errors?.email && <TextError>Esse é um campo obrigatório.</TextError>}
 
@@ -89,6 +92,7 @@ export function EditProfile() {
           name="facebook"
           rule={false}
           control={control}
+          type={"custom"}
         />
         {errors?.facebook && <TextError>Esse é um campo obrigatório.</TextError>}
 
@@ -99,6 +103,7 @@ export function EditProfile() {
           name="instagram"
           rule={false}
           control={control}
+          type={"custom"}
         />
         {errors?.instagram && <TextError>Esse é um campo obrigatório.</TextError>}
 
@@ -109,6 +114,7 @@ export function EditProfile() {
           name="spotify"
           rule={false}
           control={control}
+          type={"custom"}
         />
         {errors?.spotify && <TextError>Esse é um campo obrigatório.</TextError>}
 
@@ -119,6 +125,7 @@ export function EditProfile() {
           name="qobuzz"
           rule={false}
           control={control}
+          type={"custom"}
         />
         {errors?.qobuzz && <TextError>Esse é um campo obrigatório.</TextError>}
 

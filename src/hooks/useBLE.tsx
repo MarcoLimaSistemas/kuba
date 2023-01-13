@@ -1,6 +1,11 @@
 import { useState } from "react"
 import { PermissionsAndroid, Platform } from "react-native"
 import { BleManager, Device } from "react-native-ble-plx"
+import { PERMISSIONS, requestMultiple } from "react-native-permissions"
+
+import DeviceInfo from 'react-native-device-info'
+
+import Toast from "react-native-toast-message"
 
 type PermissionCallback = (result: boolean) => void
 
@@ -17,17 +22,33 @@ export default function useBLE(): BluetoothLowEnergyApi {
 
   const requestPermissions = async (callback: PermissionCallback) => {
     if (Platform.OS === 'android') {
-      const grantedStatus = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: "Location permission",
-          message: "Bluetooh Low Energy Needs Location Permission",
-          buttonPositive: "Ok",
-          buttonNegative: "Cancel",
-          buttonNeutral: "Maybe Later",
-        }
-      )
-      callback(grantedStatus === PermissionsAndroid.RESULTS.GRANTED)
+      const apiLevel = await DeviceInfo.getApiLevel()
+      if (apiLevel < 31) {
+        const grantedStatus = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: "Permissão de localização",
+            message: "Bluetooth de baixa energia precisa de permissão de localização",
+            buttonPositive: "Ok",
+            buttonNegative: "Cancelar",
+            buttonNeutral: "Talvez mais tarde",
+          }
+        )
+        callback(grantedStatus === PermissionsAndroid.RESULTS.GRANTED)
+      } else {
+        const result = await requestMultiple([
+          PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
+          PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
+          PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+        ])
+
+        const isAllPermissions =
+          result['android.permission.BLUETOOTH_SCAN'] === PermissionsAndroid.RESULTS.GRANTED &&
+          result['android.permission.BLUETOOTH_CONNECT'] === PermissionsAndroid.RESULTS.GRANTED &&
+          result['android.permission.ACCESS_FINE_LOCATION'] === PermissionsAndroid.RESULTS.GRANTED
+
+        callback(isAllPermissions)
+      }
     } else {
       callback(true)
     }
@@ -39,9 +60,17 @@ export default function useBLE(): BluetoothLowEnergyApi {
   const scanForDevices = () => {
     bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) {
-        console.log(error)
+        console.log(error.message)
+        if (error.message === 'BluetoothLE is powered off') {
+          Toast.show({
+            type: 'error',
+            text1: 'Falha',
+            text2: 'O BluetoothLE está desligado',
+          });
+        }
       }
-      if (device && device.name?.includes('CorSense')) {
+
+      if (device && device.name?.includes('Redmi')) {
         // ADD DEVICE
         setAllDevices((prevState) => {
           if (!isDuplicateDevice(prevState, device)) {

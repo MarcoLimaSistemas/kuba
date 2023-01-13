@@ -8,15 +8,15 @@ import {
   TextStatus,
 } from './styles';
 
-import { Lighting } from '@assets/icons'
 import useBLE from '@hooks/useBLE';
+import { Lighting } from '@assets/icons'
 import { Device } from 'react-native-ble-plx';
+
 export function ButtonConnected() {
   const { requestPermissions, scanForDevices, allDevices } = useBLE()
 
   const handlePermissions = async () => {
     requestPermissions((isGranted: boolean) => {
-      // alert('Then android permission Granted? ' + isGranted)
       if (isGranted) {
         scanForDevices()
       }
@@ -33,12 +33,6 @@ export function ButtonConnected() {
       <TouchableOpacity onPress={handlePermissions}>
         <Disconnected>{'Conectar'}</Disconnected>
       </TouchableOpacity>
-
-      {allDevices.map((device: Device) => (
-        <TextStatus>
-          {device.name}
-        </TextStatus>
-      ))}
     </Container>
   );
 }

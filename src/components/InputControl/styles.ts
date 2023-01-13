@@ -35,3 +35,9 @@ export const TextSizes = styled.Text`
   text-align: right;
   margin-top: ${RFValue(4)}px;
 `
+
+export const Error = styled.Text`
+color: ${(props) => props.theme.COLORS.red_900};
+font-size: 12px;
+padding: 5px;
+`;

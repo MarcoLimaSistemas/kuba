@@ -1,98 +1,123 @@
-import { Button } from '@components/Button';
-import { Input } from '@components/Input';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useAuth } from '@hooks/auth';
-import { useNavigation } from '@react-navigation/native';
-import { ReactNode, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { ScrollView } from 'react-native';
-import { ISignInCredentials } from 'src/models/auth';
-import { logo } from '../../../assets/images';
+import React from 'react'
+import { useState } from 'react'
+import { useNavigation } from '@react-navigation/native'
+import { Controller, useForm } from 'react-hook-form'
+import { Image } from 'react-native'
 
-import { SigninSchema } from '../../../schemas/auth';
+import { Button } from '@components/Button'
+
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useAuth } from '@hooks/auth'
+
+import { ISignInCredentials } from 'src/models/auth'
+
+import { logo } from '../../../assets/images'
+import { Eye, EyeOff } from '../../../assets/icons'
+
 import {
   Container,
   ContainerButton,
   ContainerLogo,
   ForgotPassword,
   ForgotPasswordButton,
+  InputArea,
+  InputGroup,
   InputsContainer,
-  Logo,
+  Input,
   TouchableIcon,
-} from './styles';
+  InputLabel,
+  Content,
+  Error,
+} from './styles'
 
-interface SignInProps {
-  children: ReactNode;
-}
+import { SignInSchema } from '../../../schemas/auth'
 
 export function SignIn() {
-  const [loading, setLoading] = useState(false);
-  const navigation = useNavigation();
+  const [loading, setLoading] = useState(false)
+  const navigation = useNavigation()
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<ISignInCredentials>({ resolver: yupResolver(SigninSchema) });
+  const [showPassword, setShowPassword] = useState(true)
 
-  const { signIn } = useAuth();
-  const [showPassword, setShowPassword] = useState(false);
+  const { signIn } = useAuth()
+
+  const { control, handleSubmit, formState: { errors } } = useForm<ISignInCredentials>({
+    resolver: yupResolver(SignInSchema)
+  })
 
   async function handleLogin(data: ISignInCredentials) {
     try {
-      setLoading(true);
-      console.warn(data);
-      await signIn(data);
-    } catch (error: any) {
-      setLoading(false);
-      // toast.error('Não foi possível realizar o login');
-      throw new Error(error);
+      setLoading(true)
+      await signIn(data)
+    } catch (err: any) {
+      setLoading(false)
+      alert(err.message)
     }
   }
   return (
     <Container>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <Content>
         <ContainerLogo>
-          <Logo source={logo} alt={'logo kuba'} />
+          <Image source={logo} />
         </ContainerLogo>
 
         <InputsContainer>
-          <Input
-            title="E-mail"
-            placeholder="E-mail"
-            control={control}
-            keyboardType="email-address"
-            isActivePassword={false}
-            {...register('email')}
-            errors={errors?.email}
-          />
-          <Input
-            title="Senha"
-            placeholder="Senha"
-            control={control}
-            secureTextEntry={!showPassword}
-            {...register('password')}
-            isActivePassword={true}
-            showPasswordIconVisibility={true}
-            icon={
-              <TouchableIcon
-                onPress={() => setShowPassword((prevState) => !prevState)}
-              >
-                <Ionicons
-                  name={showPassword ? 'md-eye' : 'md-eye-off'}
-                  size={24}
-                  color="#00000099"
-                />
-              </TouchableIcon>
-            }
-            errors={errors.password}
-          />
+          <InputGroup>
+            <InputLabel>E-mail</InputLabel>
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <InputArea>
+                  <Input
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    keyboardType='email-address'
+                  />
+                </InputArea>
+              )}
+              name="email"
+            />
+            {errors.email && <Error>{errors.email.message}</Error>}
+          </InputGroup>
+
+          <InputGroup>
+            <InputLabel>Senha</InputLabel>
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <InputArea>
+                  <Input
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    secureTextEntry={showPassword}
+                  />
+
+                  <TouchableIcon
+                    onPress={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ?
+                      <Image source={EyeOff} /> :
+                      <Image source={Eye} />}
+                  </TouchableIcon>
+                </InputArea>
+              )}
+              name="password"
+            />
+            {errors.password && <Error>{errors.password.message}</Error>}
+          </InputGroup>
+
           <ForgotPasswordButton>
             <ForgotPassword>Esqueci minha senha?</ForgotPassword>
           </ForgotPasswordButton>
         </InputsContainer>
+
         <ContainerButton>
           <Button
             title="Entrar"
@@ -107,7 +132,7 @@ export function SignIn() {
             onPress={() => navigation.navigate('SignUp')}
           />
         </ContainerButton>
-      </ScrollView>
-    </Container>
-  );
+      </Content>
+    </Container >
+  )
 }
