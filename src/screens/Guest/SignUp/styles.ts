@@ -11,12 +11,17 @@ export const Content = styled(KeyboardAwareScrollView)`
   flex: 1;
 `
 
-export const InputsContainer = styled.View` 
-flex-direction: column;
-justify-content: center;
-padding: 0 16px 16px; 
-width: 100%;
+export const ContainerButton = styled.View` 
+  padding: 0 16px 16px; 
 `;
+
+export const InputsContainer = styled.View` 
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 16px 16px; 
+  width: 100%;
+`;
+
 export const SignUpButton = styled.TouchableOpacity.attrs({
   activeOpacity: 0.6,
 })``;

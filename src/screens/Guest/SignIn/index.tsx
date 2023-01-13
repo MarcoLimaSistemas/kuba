@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
-import { Controller, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { Image } from 'react-native'
 
 import { Button } from '@components/Button'
@@ -12,25 +12,21 @@ import { useAuth } from '@hooks/auth'
 import { ISignInCredentials } from 'src/models/auth'
 
 import { logo } from '../../../assets/images'
-import { Eye, EyeOff } from '../../../assets/icons'
 
 import {
   Container,
   ContainerButton,
   ContainerLogo,
-  ForgotPassword,
   ForgotPasswordButton,
-  InputArea,
-  InputGroup,
   InputsContainer,
-  Input,
-  TouchableIcon,
-  InputLabel,
   Content,
   Error,
+  ForgotPasswordText,
+  ForgotPasswordContainer,
 } from './styles'
 
 import { SignInSchema } from '../../../schemas/auth'
+import { InputUnMasked } from '@components/InputUnMasked'
 
 export function SignIn() {
   const [loading, setLoading] = useState(false)
@@ -53,6 +49,7 @@ export function SignIn() {
       alert(err.message)
     }
   }
+
   return (
     <Container>
       <Content>
@@ -61,61 +58,38 @@ export function SignIn() {
         </ContainerLogo>
 
         <InputsContainer>
-          <InputGroup>
-            <InputLabel>E-mail</InputLabel>
-            <Controller
-              control={control}
-              rules={{
-                required: true,
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <InputArea>
-                  <Input
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    keyboardType='email-address'
-                  />
-                </InputArea>
-              )}
-              name="email"
-            />
-            {errors.email && <Error>{errors.email.message}</Error>}
-          </InputGroup>
+          <InputUnMasked
+            control={control}
+            label='E-mail'
+            name='email'
+            placeholder='Digite seu e-mail'
+            keyboardType='email-address'
+            error={
+              errors.email && <Error>{errors.email.message}</Error>
+            }
+          />
 
-          <InputGroup>
-            <InputLabel>Senha</InputLabel>
-            <Controller
-              control={control}
-              rules={{
-                required: true,
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <InputArea>
-                  <Input
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    secureTextEntry={showPassword}
-                  />
+          <InputUnMasked
+            control={control}
+            label='Senha'
+            name='password'
+            eye={true}
+            showPassword={showPassword}
+            setShowPassword={setShowPassword}
+            secureTextEntry={showPassword}
+            placeholder='Digite sua senha'
+            error={
+              errors.password && <Error>{errors.password.message}</Error>
+            }
+          />
 
-                  <TouchableIcon
-                    onPress={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ?
-                      <Image source={EyeOff} /> :
-                      <Image source={Eye} />}
-                  </TouchableIcon>
-                </InputArea>
-              )}
-              name="password"
-            />
-            {errors.password && <Error>{errors.password.message}</Error>}
-          </InputGroup>
-
-          <ForgotPasswordButton>
-            <ForgotPassword>Esqueci minha senha?</ForgotPassword>
-          </ForgotPasswordButton>
+          <ForgotPasswordContainer>
+            <ForgotPasswordButton>
+              <ForgotPasswordText>
+                Esqueci minha senha?
+              </ForgotPasswordText>
+            </ForgotPasswordButton>
+          </ForgotPasswordContainer>
         </InputsContainer>
 
         <ContainerButton>
