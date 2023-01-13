@@ -7,3 +7,4 @@ export { default as Lighting } from './lighting.png';
 export { default as Eye } from './Eye.png';
 export { default as EyeOff } from './EyeOff.png';
 export { default as Close } from './close.png';
+export { default as SearchIcon } from './search.png';

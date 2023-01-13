@@ -2,13 +2,13 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import styled from 'styled-components/native';
 
 export const Container = styled.View`
+width: 100%;
 display: flex;
 flex-direction: row;
-width: 100%;
 justify-content: space-between;
+align-items: center;
 margin-top: ${RFValue(16)}px;
-padding-left: ${RFValue(16)}px;
-padding-right: ${RFValue(16)}px;
+padding: 0 ${RFValue(16)}px;
 `;
 
 export const Image = styled.Image` 
