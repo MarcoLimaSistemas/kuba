@@ -48,7 +48,6 @@ background-color:${background[props.variant]};
 export const Title = styled.Text <ColorTextProps>` 
 font-size: ${RFValue(16)}px;
 text-transform: uppercase;
-letter-spacing:${RFValue(8)}px;
 
 ${props => {
     return css`color:${text[props.variant]};`

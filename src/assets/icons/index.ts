@@ -6,3 +6,4 @@ export { default as ArrowDown } from './ArrowDown.png';
 export { default as Lighting } from './lighting.png';
 export { default as Eye } from './Eye.png';
 export { default as EyeOff } from './EyeOff.png';
+export { default as Close } from './close.png';

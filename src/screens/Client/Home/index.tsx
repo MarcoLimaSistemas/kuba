@@ -1,28 +1,33 @@
 import React from 'react';
 import { Button } from '@components/Button';
-import { CardNewDevice } from '@components/CardNewDevice';
 import { Carousel } from '@components/Carousel';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
-import { Modal, Pressable, ScrollView, Text } from 'react-native';
+import { Modal, Pressable, Image } from 'react-native';
+
 import {
   background,
   backgroundSecondary,
   FigureCompleted,
   logoWhite,
   perfil,
-} from '../../../assets/images';
+} from '@assets/images';
+
+import { Close } from '@assets/icons'
+
 import {
-  Box,
-  BoxLogo,
-  BoxPerfil,
+  ButtonPerfil,
+  ButtonModal,
   Container,
   ContainerCard,
   ContainerCarousel,
-  ContainerImage,
+  ContainerHeader,
   ContainerModal,
+  ContainerSchoolKuba,
   IconClose,
-  Image,
+  ImageHeaderHome,
+  ImageModalContainer,
+  ImageSchoolKuba,
   SubTitle,
   SubTitleModal,
   SubTitleSecondary,
@@ -32,80 +37,103 @@ import {
   TitleSecondary,
 } from './styles';
 
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { CardNewDevice } from '@components/CardNewDevice';
+
 export function Home() {
-  const data = ['#173961', '#556d89', '#BFD5ee', '#Fcfeff'];
+
+  const dataDevicesExamples = [
+    {
+      id: 1,
+      name: 'Disco'
+    },
+    {
+      id: 2,
+      name: 'Disco Pro'
+    },
+    {
+      id: 3,
+      name: 'Mali'
+    }
+  ]
+
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
 
   return (
     <Container>
-      <ScrollView>
-        <ContainerImage>
-          <Image source={background} />
+      <KeyboardAwareScrollView>
 
-          <BoxLogo>
-            <Image source={logoWhite} />
-          </BoxLogo>
+        <ImageHeaderHome source={background} />
 
-          <BoxPerfil onPress={() => navigation.navigate('Profile')}>
+        <ContainerHeader>
+          <Image source={logoWhite} />
+          <ButtonPerfil onPress={() => navigation.navigate('Profile')}>
             <Image source={perfil} />
-          </BoxPerfil>
+          </ButtonPerfil>
+        </ContainerHeader>
 
-          <Title>Escola Kuba</Title>
-          <SubTitle>Como tirar o melhor som de um fone?</SubTitle>
-        </ContainerImage>
+        <Title>Escola Kuba</Title>
+        <SubTitle>Como tirar o melhor som de um fone?</SubTitle>
 
         <ContainerCarousel>
           <TitleCarousel>Meus Dispositivos</TitleCarousel>
 
-          <Carousel data={data} />
+          <Carousel data={dataDevicesExamples} />
 
           <ContainerCard>
             <CardNewDevice />
           </ContainerCard>
         </ContainerCarousel>
 
-        <Box>
-          <Image source={backgroundSecondary} />
+        <ButtonModal onLongPress={() => setModalVisible(true)} />
+
+        <ContainerSchoolKuba onPress={() => navigation.navigate('School')}>
+          <ImageSchoolKuba source={backgroundSecondary} />
           <TitleSecondary>Escola Kuba</TitleSecondary>
           <SubTitleSecondary>
             Aprenda mais sobre o mundo do áudio
           </SubTitleSecondary>
-        </Box>
+        </ContainerSchoolKuba>
 
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}
-        >
-          <ContainerModal>
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <Pressable onPress={() => setModalVisible(false)}>
-                <IconClose>
-                  {/* <Ionicons name="close" size={34} color="black" /> */}
-                </IconClose>
-              </Pressable>
+      </KeyboardAwareScrollView>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <ContainerModal>
+          <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+            <Pressable onPress={() => setModalVisible(false)}>
+              <IconClose>
+                <Image source={Close} />
+              </IconClose>
+            </Pressable>
+
+            <ImageModalContainer>
               <Image source={FigureCompleted} />
-              <TitleModal>Complete seu Perfil!</TitleModal>
-              <SubTitleModal>
-                Complete seu perfil para ter uma experiência Kuba completa!
-              </SubTitleModal>
-              <Button
-                title="Completar Perfil"
-                onPress={() => navigation.navigate('Profile')}
-              />
-              <Button title="Mais Tarde" />
-            </ScrollView>
-          </ContainerModal>
-        </Modal>
+            </ImageModalContainer>
 
-        <Pressable onPress={() => setModalVisible(true)}>
-          <Text>Modal</Text>
-        </Pressable>
-      </ScrollView>
-    </Container>
+            <TitleModal>Complete seu Perfil!</TitleModal>
+            <SubTitleModal>
+              Complete seu perfil para ter uma experiência Kuba completa!
+            </SubTitleModal>
+            <Button
+              title="Completar Perfil"
+              onPress={() => navigation.navigate('Profile')}
+            />
+            <Button
+              title="Mais Tarde"
+              variant='secondary'
+              onPress={() => setModalVisible(false)}
+            />
+          </KeyboardAwareScrollView>
+        </ContainerModal>
+      </Modal>
+    </Container >
   );
 }
