@@ -5,36 +5,32 @@ interface Props {
   activeButtonGoBack?: boolean;
 }
 
-//Header shadow
-export const ContainerIHeaderShadow = styled.View`
-width: 100%;
-overflow: hidden;
-padding-bottom: 5px;
-margin-bottom: 10px;
-`;
-
 export const ContainerLogo = styled.View<Props> `
-width: ${({ activeButtonGoBack }) => activeButtonGoBack ? '80%' : '100%'};
-justify-content: center;
-margin-top: 18px;
+  width: ${({ activeButtonGoBack }) => activeButtonGoBack ? '80%' : '100%'};
+  justify-content: center;
 `;
 
 export const Title = styled.Text`
-text-align: justify;
-color: ${({ theme }) => theme.COLORS.black};
-font-size:${RFValue(25)}px;
-margin-left: 21px;
+  text-align: left;
+  color: ${({ theme }) => theme.COLORS.black};
+  font-size: ${RFValue(24)}px;
 `
-export const ContainerShadow = styled.View`
-width: 100%;
-height: 93px;
-flex-direction: row;   
+export const ContainerIHeaderShadow = styled.View`
+  width: 100%;
+  overflow: hidden;
+  align-items: center;
+  margin-bottom: ${RFValue(8)}px;
+  margin-top: ${RFValue(32)}px;
 `;
 
+export const ContainerShadow = styled.View`
+  width: 100%;
+  align-items: center;
+  flex-direction: row;   
+`;
 
 export const ButtonBack = styled.TouchableOpacity`
-align-items: center;
-justify-content: center;
-margin-left: 26px;
-margin-top: ${RFValue(17)}px;
+  align-items: center;
+  justify-content: center;
+  padding: ${RFValue(16)}px;
 `;

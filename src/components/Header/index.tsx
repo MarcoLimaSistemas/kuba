@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, Image } from 'react-native';
+import { Image } from 'react-native';
 
 import {
   ButtonBack,
@@ -36,17 +36,3 @@ export function Header({ activeButtonGoBack, title }: Props) {
     </ContainerIHeaderShadow>
   );
 }
-
-export const styles = StyleSheet.create({
-  shadowBorder: {
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-
-    elevation: 5,
-  },
-});

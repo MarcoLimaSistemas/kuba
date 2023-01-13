@@ -1,8 +1,15 @@
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import styled from 'styled-components/native';
 
-export const Container = styled.View`
-
+export const Container = styled(SafeAreaView)`
+  flex: 1;
+  background-color: #f2f2f2;
 `;
+
+export const Content = styled(KeyboardAwareScrollView)`
+  flex: 1;
+`
 
 export const InputsContainer = styled.View` 
 flex-direction: column;
