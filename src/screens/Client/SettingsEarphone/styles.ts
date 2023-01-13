@@ -1,7 +1,8 @@
 import styled from 'styled-components/native';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-export const Container = styled.View`
+export const Container = styled(SafeAreaView)`
 display: flex;
 flex: 1;
 `;

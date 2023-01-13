@@ -79,10 +79,6 @@ export function Profile() {
             <TextBold>Data de nascimento</TextBold>
             <Text>{'05/08/1999'}</Text>
           </Separator>
-          <Separator>
-            <TextBold>Telefone</TextBold>
-            <Text>{'1299999999'}</Text>
-          </Separator>
 
           <TextBold>Email</TextBold>
           <Text>{'teste@gmail.com'}</Text>

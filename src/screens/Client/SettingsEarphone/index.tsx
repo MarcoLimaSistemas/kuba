@@ -6,10 +6,6 @@ import { ArrowBack } from '@assets/icons'
 import { Button } from '@components/Button';
 import { useNavigation } from '@react-navigation/native';
 
-interface SettingsEarphoneProps {
-
-}
-
 export function SettingsEarphone() {
   const navigation = useNavigation()
 

@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import { Image } from "react-native";
 import { useForm } from "react-hook-form";
 import { useNavigation } from "@react-navigation/native";
 
 import { Button } from "@components/Button";
 import { Header } from "@components/Header";
-import { InputControl } from "@components/InputControl";
 
 import {
   BoxButtons,
@@ -14,9 +12,10 @@ import {
   TextError
 } from "./styles";
 
-
-import { Eye, EyeOff } from '@assets/icons'
-import { TouchableIcon } from "@screens/Guest/SignUp/styles";
+import { InputUnMasked } from "@components/InputUnMasked";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { ChangePasswordSchema } from "../../../schemas/changePassword";
 
 type FormData = {
   currentPassword: string;
@@ -26,10 +25,13 @@ type FormData = {
 
 export function ChangePassword() {
   const navigation = useNavigation()
-  const { control, handleSubmit, formState: { errors } } = useForm<FormData>();
+  const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
+    resolver: yupResolver(ChangePasswordSchema)
+  });
 
-  const [eyeNewPassword, setEyeNewPassword] = useState(true)
-  const [eyeConfirmationPassword, setEyeConfirmationPassword] = useState(true)
+  const [showPassword, setShowPassword] = useState(true)
+  const [showCurrentPassword, setCurrentShowPassword] = useState(true)
+  const [showConfirmedPassword, setShowConfirmedPassword] = useState(true)
 
   const onSubmit = (data: FormData) => {
     console.log(data)
@@ -37,65 +39,58 @@ export function ChangePassword() {
   }
   return (
     <Container>
-      <Header title="Alterar senha" activeButtonGoBack={true} />
-      <InputsContainer>
-        <InputControl
-          label="Senha atual"
-          placeholder="Digite sua senha"
-          keyboardType="default"
-          name="currentPassword"
-          control={control}
-          secureTextEntry={true}
-          type={"custom"}
-        />
-        {errors?.currentPassword && <TextError>Esse é um campo obrigatório.</TextError>}
+      <KeyboardAwareScrollView>
+        <Header title="Alterar senha" activeButtonGoBack={true} />
 
-        <InputControl
-          label="Nova senha"
-          placeholder="Digite sua nova senha"
-          keyboardType="default"
-          name="newPassword"
-          control={control}
-          secureTextEntry={eyeNewPassword}
-          type={"custom"}
-          icon={
-            <TouchableIcon
-              onPress={() => setEyeNewPassword((prevState) => !prevState)}
-            >
-              {eyeNewPassword ?
-                <Image source={Eye} /> :
-                <Image source={EyeOff} />}
-            </TouchableIcon>
-          }
-        />
-        {errors.newPassword && <TextError>Esse é um campo obrigatório.</TextError>}
+        <InputsContainer>
+          <InputUnMasked
+            control={control}
+            label='Senha atual'
+            name='currentPassword'
+            eye={true}
+            showPassword={showPassword}
+            setShowPassword={setShowPassword}
+            secureTextEntry={showPassword}
+            placeholder='Digite sua senha'
+            error={
+              errors.newPassword && <TextError>{errors.newPassword.message}</TextError>
+            }
+          />
 
-        <InputControl
-          label="Repetir nova senha"
-          placeholder="Digite sua nova senha"
-          keyboardType="default"
-          name="confirmationPassword"
-          control={control}
-          secureTextEntry={eyeConfirmationPassword}
-          type={"custom"}
-          icon={
-            <TouchableIcon
-              onPress={() => setEyeConfirmationPassword((prevState) => !prevState)}
-            >
-              {eyeConfirmationPassword ?
-                <Image source={Eye} /> :
-                <Image source={EyeOff} />}
-            </TouchableIcon>
-          }
-        />
-        {errors.confirmationPassword && <TextError>Esse é um campo obrigatório.</TextError>}
+          <InputUnMasked
+            control={control}
+            label='Nova senha'
+            name='newPassword'
+            eye={true}
+            showPassword={showCurrentPassword}
+            setShowPassword={setCurrentShowPassword}
+            secureTextEntry={showCurrentPassword}
+            placeholder='Digite sua senha'
+            error={
+              errors.newPassword && <TextError>{errors.newPassword.message}</TextError>
+            }
+          />
 
-      </InputsContainer>
+          <InputUnMasked
+            control={control}
+            label='Repetir nova senha'
+            name='confirmationPassword'
+            eye={true}
+            secureTextEntry={showConfirmedPassword}
+            showPassword={showConfirmedPassword}
+            setShowPassword={setShowConfirmedPassword}
+            placeholder='Confirme sua senha'
+            error={
+              errors.confirmationPassword && <TextError>{errors.confirmationPassword.message}</TextError>
+            }
+          />
+        </InputsContainer>
 
-      <BoxButtons>
-        <Button title="Salvar" onPress={handleSubmit(onSubmit)} />
-        <Button title="Cancelar" variant="secondary" onPress={() => navigation.goBack()} />
-      </BoxButtons>
+        <BoxButtons>
+          <Button title="Salvar" onPress={handleSubmit(onSubmit)} />
+          <Button title="Cancelar" variant="secondary" onPress={() => navigation.goBack()} />
+        </BoxButtons>
+      </KeyboardAwareScrollView>
     </Container>
   )
 }

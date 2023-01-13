@@ -1,9 +1,8 @@
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-
 import { RFValue } from 'react-native-responsive-fontsize';
+import { SafeAreaView } from "react-native-safe-area-context";
 import styled from 'styled-components/native';
 
-export const Container = styled(KeyboardAwareScrollView)`
+export const Container = styled(SafeAreaView)`
 background-color: ${({ theme }) => theme.COLORS.white_100};
 `
 
