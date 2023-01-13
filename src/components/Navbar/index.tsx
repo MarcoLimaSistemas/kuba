@@ -1,16 +1,21 @@
 import React from 'react';
 
-import { logoWhite, perfil } from '@assets/images';
+import { logoGray, logoWhite, perfil } from '@assets/images';
 import { Container, Image } from './styles';
 import { TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-export function Navbar() {
+interface NavbarProps {
+  darkTheme?: boolean;
+}
+
+export function Navbar({ darkTheme }: NavbarProps) {
   const navigation = useNavigation();
 
   return (
     <Container>
-      <Image source={logoWhite} />
+      {darkTheme ? <Image source={logoWhite} /> : <Image source={logoGray} />}
+
       <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
         <Image source={perfil} />
       </TouchableOpacity>

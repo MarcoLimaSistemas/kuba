@@ -27,7 +27,7 @@ export function School() {
 
   return (
     <Container>
-      <Navbar />
+      <Navbar darkTheme={true} />
       <Search
         searchCallback={getSearch}
         search={setSearch}

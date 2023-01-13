@@ -31,7 +31,7 @@ export function CarouselProfile({ data, titleProfile }: CarouselProfileProps) {
                 borderRadius: 12,
               }}
             >
-              <CardProfile name={'Criolo'} />
+              <CardProfile name={item.name} />
             </View>
           </>
         )}

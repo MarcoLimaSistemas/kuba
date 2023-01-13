@@ -5,6 +5,7 @@ export { default as Puppet } from './confirmedPeople.png';
 export { default as KubaFone } from './kubaFone.png';
 export { default as FoneExample } from './frontalFone.png';
 export { default as logo } from './logo.png';
+export { default as logoGray } from './logo_gray.png';
 export { default as logoWhite } from './logoWhite.png';
 export { default as perfil } from './perfil.png';
 export { default as profile } from './Profile.png';
