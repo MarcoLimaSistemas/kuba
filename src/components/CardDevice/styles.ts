@@ -9,15 +9,14 @@ interface PropsPage {
 }
 
 export const Container = styled.TouchableOpacity`
-
-  width: 156px;
-  height: 189px;
-  padding-bottom: 40px;
-  border-radius: 8px;
+  width: ${RFValue(156)}px;
+  max-height: ${RFValue(186)}px;
+  padding: ${RFValue(8)}px;
+  border-radius: ${RFValue(8)}px;
   background: rgba(255, 255, 255, 0.8);
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.25);
-  margin-left: 16px;
-  margin-right: 46px;
+  margin-left: ${RFValue(16)}px;
+  margin-right: ${RFValue(8)}px;
 `
 export const Image = styled.Image<PropsPage> `
 ${({ active }) =>

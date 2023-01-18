@@ -11,6 +11,7 @@ import {
 } from './styles';
 
 import { ArrowBack } from '@assets/icons'
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface Props {
   activeButtonGoBack?: boolean;
@@ -19,9 +20,10 @@ interface Props {
 
 export function Header({ activeButtonGoBack, title }: Props) {
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
 
   return (
-    <ContainerIHeaderShadow>
+    <ContainerIHeaderShadow marginTop={`${insets.top}px`}>
       <ContainerShadow>
         {activeButtonGoBack && (
           <ButtonBack onPress={() => navigation.goBack()}>

@@ -4,6 +4,7 @@ import { TextInputProps, Image } from "react-native";
 import { Input, InputArea, InputGroup, InputLabel, TouchableIcon } from "./styles";
 
 import { Eye, EyeOff } from '@assets/icons'
+import theme from "../../styles/theme";
 
 interface InputUnMaskedProps extends TextInputProps {
   control: any;
@@ -42,6 +43,7 @@ export function InputUnMasked({
               onChangeText={onChange}
               value={value}
               placeholder='Digite seu nome'
+              placeholderTextColor={theme.COLORS.black}
               {...props}
             />
             {eye &&

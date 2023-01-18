@@ -27,7 +27,6 @@ interface AuthContextData {
   sendEmailResetPassword: (data: ISendEmail) => Promise<void>
   validateToken: (data: ISendToken) => Promise<void>
   updatePassword: (data: IResetPassword) => Promise<void>
-  // signed: boolean
   logout(): void
 }
 interface AuthProps {
@@ -80,7 +79,6 @@ export function AuthProvider({ children }: AuthProps): ReactElement {
   async function signIn(data: ISignInCredentials) {
     try {
       const response = await Auth.signin(data)
-
       await AsyncStorage.setItem('@KubaApp:data', JSON.stringify(response.data))
       api.defaults.headers.common[
         'Authorization'

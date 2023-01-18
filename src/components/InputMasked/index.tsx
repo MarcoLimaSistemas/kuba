@@ -1,19 +1,20 @@
-import React, { ReactNode } from "react";
-import { Image } from "react-native";
-import { Controller } from "react-hook-form";
-import { TextInputMaskProps } from "react-native-masked-text";
-import { InputMask, InputArea, InputGroup, InputLabel, TouchableIcon } from "./styles";
+import React, { ReactNode } from "react"
+import { Image } from "react-native"
+import { Controller } from "react-hook-form"
+import { TextInputMaskProps } from "react-native-masked-text"
+import { InputMask, InputArea, InputGroup, InputLabel, TouchableIcon } from "./styles"
 
 import { Eye, EyeOff } from '@assets/icons'
+import theme from "../../styles/theme"
 
 interface InputMaskedProps extends TextInputMaskProps {
-  control: any;
-  label: string;
-  name: string;
-  eye?: boolean;
-  showPassword?: boolean;
-  setShowPassword?: React.Dispatch<React.SetStateAction<boolean>> | any;
-  error?: ReactNode;
+  control: any
+  label: string
+  name: string
+  eye?: boolean
+  showPassword?: boolean
+  setShowPassword?: React.Dispatch<React.SetStateAction<boolean>> | any
+  error?: ReactNode
 }
 
 export function InputMasked({
@@ -43,6 +44,7 @@ export function InputMasked({
               onChangeText={onChange}
               value={value}
               placeholder='Digite seu nome'
+              placeholderTextColor={theme.COLORS.black}
               {...props}
             />
             {eye &&
