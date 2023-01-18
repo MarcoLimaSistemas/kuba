@@ -45,8 +45,9 @@ export function SignIn() {
       setLoading(true)
       await signIn(data)
     } catch (err: any) {
-      setLoading(false)
       alert(err.message)
+    } finally {
+      setLoading(false)
     }
   }
 

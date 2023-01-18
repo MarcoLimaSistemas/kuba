@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import React, {
   createContext,
   ReactElement,
@@ -6,139 +6,138 @@ import React, {
   useContext,
   useEffect,
   useState,
-} from 'react';
-import Toast from 'react-native-toast-message';
+} from 'react'
+import Toast from 'react-native-toast-message'
 import {
   IResetPassword,
   ISendEmail,
   ISendToken,
   ISignInCredentials,
-} from '../models/auth';
-import { IUserClient } from '../models/user';
-import api from '../services/api';
-import Auth from '../services/auth';
+} from '../models/auth'
+import { IUserClient } from '../models/user'
+import api from '../services/api'
+import Auth from '../services/auth'
 
 interface AuthContextData {
-  user: IUserClient;
-  token: string | null;
-  emailForgetPassaword: string;
+  user: IUserClient
+  token: string | null
+  emailForgetPassword: string
 
-  signIn: (data: ISignInCredentials) => Promise<void>;
-  sendEmailResetPassword: (data: ISendEmail) => Promise<void>;
-  validateToken: (data: ISendToken) => Promise<void>;
-  updatePassword: (data: IResetPassword) => Promise<void>;
-  // signed: boolean;
-  logout(): void;
+  signIn: (data: ISignInCredentials) => Promise<void>
+  sendEmailResetPassword: (data: ISendEmail) => Promise<void>
+  validateToken: (data: ISendToken) => Promise<void>
+  updatePassword: (data: IResetPassword) => Promise<void>
+  // signed: boolean
+  logout(): void
 }
 interface AuthProps {
-  children: ReactNode;
+  children: ReactNode
 }
 
-const AuthContext = createContext<AuthContextData>({} as AuthContextData);
+const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 
 export function AuthProvider({ children }: AuthProps): ReactElement {
-  const [user, setUser] = useState<IUserClient>({} as IUserClient);
-  const [token, setToken] = useState('');
+  const [user, setUser] = useState<IUserClient>({} as IUserClient)
+  const [token, setToken] = useState('')
 
-  const [emailForgetPassaword, setEmailForgetPassaword] = useState('');
+  const [emailForgetPassword, setEmailForgetPassword] = useState('')
 
   const showToast = () => {
     Toast.show({
       type: 'success',
       text1: 'Sucesso',
       text2: 'Login realizado',
-    });
-  };
+    })
+  }
 
   useEffect(() => {
-    async function loadStoragedData(): Promise<void> {
+    async function loadStorageData(): Promise<void> {
       try {
-        const [storagedUser, storagedToken] = await AsyncStorage.multiGet([
-          '@KubaApp:user',
-          '@KubaApp:token',
-        ]);
+        const storage = await AsyncStorage.getItem('@KubaApp:data')
 
-        if (storagedUser[1] && storagedToken[1]) {
-          // console.log('storage', storagedUser[1]);
+        if (storage !== null) {
+          const storageData = JSON.parse(storage)
 
-          api.defaults.headers.common.Authorization = `Bearer ${storagedToken[1]}`;
-          setUser(JSON.parse(storagedUser[1]));
-          setToken(storagedToken[1]);
+          api.defaults.headers.common.Authorization = `Bearer ${storageData.data.token}`
+
+          setUser(storageData.user[0])
+          setToken(storageData.data.token)
         }
       } catch (error: any) {
-        console.log('Erro:', error);
-        throw new Error(error);
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Logout realizado!',
+        })
+
+        logout()
       }
     }
 
-    loadStoragedData();
-  }, []);
+    loadStorageData()
+  }, [])
 
   async function signIn(data: ISignInCredentials) {
     try {
-      const response = await Auth.signin(data);
-      // console.log('Response', response.data);
-      console.log('Token', response.data.data.token);
+      const response = await Auth.signin(data)
 
+      await AsyncStorage.setItem('@KubaApp:data', JSON.stringify(response.data))
       api.defaults.headers.common[
         'Authorization'
-      ] = `Bearer ${response.data.data.token}`;
+      ] = `Bearer ${response.data.data.token}`
 
-      setUser(response.data.user[0]);
-      setToken(response.data.data.token);
-      showToast();
-      await AsyncStorage.multiSet([
-        ['@KubaApp:token', response.data.token.token],
-        ['@KubaApp:user', JSON.stringify(response.data.user[0])],
-      ]);
-    } catch (error: any) {
-      console.log(error?.response?.data?.error?.message);
-      throw new Error(error);
+      setToken(response.data.data.token)
+      setUser(response.data.user[0])
+
+      showToast()
+    } catch (err: any) {
+      throw new Error(err?.response.data.error.message)
     }
   }
 
   async function sendEmailResetPassword(data: ISendEmail) {
     try {
-      const response = await Auth.sendEmailResetPassword(data);
+      const response = await Auth.sendEmailResetPassword(data)
 
-      setEmailForgetPassaword(response?.data?.user?.email);
+      setEmailForgetPassword(response?.data?.user?.email)
     } catch (error: any) {
-      console.log(error?.response?.data?.error?.message);
-      throw new Error(error);
+      console.log(error?.response?.data?.error?.message)
+      throw new Error(error)
     }
   }
 
   async function validateToken(data: ISendToken) {
     try {
-      const response = await Auth.validateToken(data);
+      const response = await Auth.validateToken(data)
     } catch (error: any) {
-      console.log(error?.response?.data?.error?.message);
-      throw new Error(error);
+      console.log(error?.response?.data?.error?.message)
+      throw new Error(error)
     }
   }
 
   async function updatePassword(data: IResetPassword) {
     try {
-      const response = await Auth.resetPassword(data);
-      // console.log(response.data);
+      const response = await Auth.resetPassword(data)
+      // console.log(response.data)
     } catch (error: any) {
-      console.log(error?.response?.data?.error?.message);
-      throw new Error(error);
+      console.log(error?.response?.data?.error?.message)
+      throw new Error(error)
     }
   }
 
   async function logout() {
-    localStorage.clear();
-    setUser({} as IUserClient);
-    setToken('');
-    !!user;
+    localStorage.clear()
+    setUser({} as IUserClient)
+    setToken('')
+    !!user
   }
+
   return (
     <AuthContext.Provider
       value={{
         user,
         signIn,
-        emailForgetPassaword,
+        emailForgetPassword,
         sendEmailResetPassword,
         validateToken,
         updatePassword,
@@ -148,10 +147,10 @@ export function AuthProvider({ children }: AuthProps): ReactElement {
     >
       {children}
     </AuthContext.Provider>
-  );
+  )
 }
 export function useAuth(): AuthContextData {
-  const context = useContext(AuthContext);
+  const context = useContext(AuthContext)
 
-  return context;
+  return context
 }

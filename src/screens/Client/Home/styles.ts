@@ -112,7 +112,7 @@ export const ContainerModal = styled.View`
   border-top-left-radius:  ${RFValue(16)}px;
   border-top-right-radius:  ${RFValue(16)}px;
 
-  background:  ${({ theme }) => theme.COLORS.white_200};
+  background:  ${({ theme }) => theme.COLORS.white_100};
 `;
 
 export const ImageModalContainer = styled.View`
