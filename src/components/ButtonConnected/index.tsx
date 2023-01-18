@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { Image, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react'
+import { Image, TouchableOpacity } from 'react-native'
 import {
-  Container,
+  ContainerConnections,
   Disconnected,
   HFlex,
   Percentage,
   TextStatus,
-} from './styles';
+} from './styles'
 
-import useBLE from '@hooks/useBLE';
+import useBLE from '@hooks/useBLE'
 import { Lighting } from '@assets/icons'
-import { Device } from 'react-native-ble-plx';
+import { Device } from 'react-native-ble-plx'
 
 export function ButtonConnected() {
   const { requestPermissions, scanForDevices, allDevices } = useBLE()
@@ -25,7 +25,7 @@ export function ButtonConnected() {
   }
 
   return (
-    <Container>
+    <ContainerConnections>
       {status ?
         <>
           <TextStatus>Conectado</TextStatus>
@@ -46,7 +46,6 @@ export function ButtonConnected() {
           </TouchableOpacity>
         </>
       }
-
-    </Container>
-  );
+    </ContainerConnections>
+  )
 }

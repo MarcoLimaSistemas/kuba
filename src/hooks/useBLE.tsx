@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { PermissionsAndroid, Platform } from "react-native"
-import { BleManager, Device } from "react-native-ble-plx"
+import { BleError, BleManager, Device } from "react-native-ble-plx"
 import { PERMISSIONS, requestMultiple } from "react-native-permissions"
 
 import DeviceInfo from 'react-native-device-info'
@@ -12,12 +12,17 @@ type PermissionCallback = (result: boolean) => void
 const bleManager = new BleManager()
 
 interface BluetoothLowEnergyApi {
-  requestPermissions(callback: PermissionCallback): Promise<void>
-  scanForDevices(): void
+  modalVisible: boolean
+  setModalVisible: React.Dispatch<React.SetStateAction<boolean>>
   allDevices: Device[]
-}
 
+  requestPermissions(callback: PermissionCallback): Promise<void>
+  onScanDevices(): void
+  onStopScan(): void
+}
 export default function useBLE(): BluetoothLowEnergyApi {
+  const [modalVisible, setModalVisible] = useState(false)
+
   const [allDevices, setAllDevices] = useState<Device[]>([])
 
   const requestPermissions = async (callback: PermissionCallback) => {
@@ -57,35 +62,46 @@ export default function useBLE(): BluetoothLowEnergyApi {
   const isDuplicateDevice = (devices: Device[], nextDevice: Device) =>
     devices.findIndex(device => nextDevice.id === device.id) > -1
 
-  const scanForDevices = () => {
-    bleManager.startDeviceScan(null, null, (error, device) => {
+  async function onScanDevices() {
+    setModalVisible(true)
+
+    bleManager.startDeviceScan(null, null, (error: BleError | null, scannedDevice: Device | null) => {
       if (error) {
+        setModalVisible(false)
+
         console.log(error.message)
         if (error.message === 'BluetoothLE is powered off') {
           Toast.show({
             type: 'error',
             text1: 'Falha',
-            text2: 'O BluetoothLE está desligado',
-          });
+            text2: 'O Bluetooth está desligado',
+          })
         }
-      }
-
-      if (device && device.name?.includes('Redmi')) {
-        // ADD DEVICE
-        setAllDevices((prevState) => {
-          if (!isDuplicateDevice(prevState, device)) {
-            return [...prevState, device]
-          }
-
-          return prevState
-        })
+      } else {
+        if (scannedDevice) {
+          // ADD DEVICE SCANNED DEVICE
+          setAllDevices((prevState) => {
+            if (!isDuplicateDevice(prevState, scannedDevice)) {
+              return [...prevState, scannedDevice]
+            }
+            return prevState
+          })
+        }
+        console.log(allDevices)
       }
     })
   }
 
+  async function onStopScan() {
+    bleManager.stopDeviceScan()
+  }
+
   return {
+    modalVisible,
+    setModalVisible,
+    allDevices,
     requestPermissions,
-    scanForDevices,
-    allDevices
+    onScanDevices,
+    onStopScan,
   }
 }

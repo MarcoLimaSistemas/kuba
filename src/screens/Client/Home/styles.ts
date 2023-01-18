@@ -40,8 +40,6 @@ export const ImageSchoolKuba = styled.Image`
   border-radius: ${RFValue(8)}px;
 `;
 
-
-
 export const Title = styled.Text`
   position: absolute;
   left: ${RFValue(16)}px;
