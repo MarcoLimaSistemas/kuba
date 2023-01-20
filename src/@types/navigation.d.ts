@@ -4,6 +4,7 @@ export declare global {
       SignIn: undefined;
       SignUp: undefined;
       ScreenSuccessful: undefined;
+      ScreenSuccessfulResetPassword: undefined;
       Home: undefined;
       Profile: undefined;
       EditProfile: undefined;
@@ -17,6 +18,7 @@ export declare global {
       ChangePassword: undefined;
       PasswordResetSuccess: undefined;
       ForgotPassword: undefined;
+      ChangePassword: undefined;
     }
   }
 }

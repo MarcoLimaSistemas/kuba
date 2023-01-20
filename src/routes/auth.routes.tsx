@@ -20,7 +20,9 @@ const AuthRoutes = () => {
       <Stack.Screen name="SignIn" component={Guest.SignIn} />
       <Stack.Screen name="SignUp" component={Guest.SignUp} />
       <Stack.Screen name="ForgotPassword" component={Guest.ForgotPassword} />
+      <Stack.Screen name="ChangePassword" component={Guest.ChangePassword} />
       <Stack.Screen name="ScreenSuccessful" component={Guest.ScreenSuccessful} />
+      <Stack.Screen name="ScreenSuccessfulResetPassword" component={Guest.ScreenSuccessfulResetPassword} />
     </Stack.Navigator>
   );
 };

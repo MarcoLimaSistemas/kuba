@@ -74,8 +74,8 @@ export function ForgotPassword() {
           title='Enviar'
           variant='primary'
           activeLoad={loading}
-          onPress={handleSubmit(onSubmitForgotPassword)}
-        />
+          // onPress={handleSubmit(onSubmitForgotPassword)}
+          onPress={() => navigation.navigate('ChangePassword')} />
 
         <Button
           title='Voltar'
