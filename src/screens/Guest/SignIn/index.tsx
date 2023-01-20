@@ -85,7 +85,7 @@ export function SignIn() {
           />
 
           <ForgotPasswordContainer>
-            <ForgotPasswordButton>
+            <ForgotPasswordButton onPress={() => navigation.navigate('ForgotPassword')}>
               <ForgotPasswordText>
                 Esqueci minha senha?
               </ForgotPasswordText>

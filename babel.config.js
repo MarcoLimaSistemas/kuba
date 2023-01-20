@@ -22,6 +22,8 @@ module.exports = function (api) {
             '@components': './src/components',
             '@hooks': './src/hooks',
             '@screens': './src/screens',
+            '@schemas': './src/schemas',
+            '@models': './src/models',
           },
         },
       ],

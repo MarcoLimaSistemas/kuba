@@ -16,6 +16,7 @@ export declare global {
       FrequentlyQuestions: undefined;
       ChangePassword: undefined;
       PasswordResetSuccess: undefined;
+      ForgotPassword: undefined;
     }
   }
 }

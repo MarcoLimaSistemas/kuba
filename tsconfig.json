@@ -25,6 +25,12 @@
       "@screens/*": [
         "./src/screens/*"
       ],
+      "@schemas/*": [
+        "./src/schemas/*"
+      ],
+      "@models/*": [
+        "./src/models/*"
+      ],
     }
   },
 }
