@@ -96,30 +96,52 @@ export function AuthProvider({ children }: AuthProps): ReactElement {
   async function sendEmailResetPassword(data: ISendEmail) {
     try {
       const response = await Auth.sendEmailResetPassword(data)
-
       setEmailForgetPassword(response?.data?.user?.email)
+      Toast.show({
+        type: 'success',
+        text1: response.data.message,
+      })
     } catch (error: any) {
-      console.log(error?.response?.data?.error?.message)
-      throw new Error(error)
+      console.log(error?.response.data)
+      Toast.show({
+        type: 'error',
+        text1: error.response.data.message,
+      })
+      throw new Error(error?.response.data)
     }
   }
 
   async function validateToken(data: ISendToken) {
     try {
       const response = await Auth.validateToken(data)
+      Toast.show({
+        type: 'success',
+        text1: response.data.message,
+      })
     } catch (error: any) {
-      console.log(error?.response?.data?.error?.message)
-      throw new Error(error)
+      console.log(error?.response.data)
+      Toast.show({
+        type: 'error',
+        text1: error.response.data.message,
+      })
+      throw new Error(error?.response.data)
     }
   }
 
   async function updatePassword(data: IResetPassword) {
     try {
       const response = await Auth.resetPassword(data)
-      // console.log(response.data)
+      Toast.show({
+        type: 'success',
+        text1: response.data.message,
+      })
     } catch (error: any) {
-      console.log(error?.response?.data?.error?.message)
-      throw new Error(error)
+      console.log(error?.response.data)
+      Toast.show({
+        type: 'error',
+        text1: error.response.data.message,
+      })
+      throw new Error(error?.response.data)
     }
   }
 

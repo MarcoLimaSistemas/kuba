@@ -18,10 +18,13 @@ import {
 
 import { ForgotPasswordProps } from '@models/ForgotPassword';
 import { ForgotPasswordSchema } from '@schemas/forgotPassword';
+import { useAuth } from '@hooks/auth';
 
 export function ForgotPassword() {
   const navigation = useNavigation()
   const [loading, setLoading] = useState(false)
+
+  const { sendEmailResetPassword } = useAuth()
 
   const {
     control,
@@ -38,10 +41,9 @@ export function ForgotPassword() {
     }
 
     try {
-      console.log(payload)
       setLoading(true)
-    } catch (err: any) {
-      alert(err.message)
+      await sendEmailResetPassword(payload)
+      navigation.navigate('ChangePassword')
     } finally {
       setLoading(false)
     }
@@ -74,8 +76,9 @@ export function ForgotPassword() {
           title='Enviar'
           variant='primary'
           activeLoad={loading}
-          // onPress={handleSubmit(onSubmitForgotPassword)}
-          onPress={() => navigation.navigate('ChangePassword')} />
+          onPress={handleSubmit(onSubmitForgotPassword)}
+        // onPress={() => navigation.navigate('ChangePassword')}
+        />
 
         <Button
           title='Voltar'

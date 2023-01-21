@@ -12,6 +12,8 @@ import { InputMasked } from '@components/InputMasked';
 import { ChangePasswordProps } from '@models/ChangePassword';
 import { ChangePasswordAndToken } from '@schemas/changePassword';
 
+import { useAuth } from '@hooks/auth';
+
 import {
   Container,
   ContainerButtons,
@@ -20,8 +22,6 @@ import {
   Title
 } from './styles';
 
-
-
 export function ChangePassword() {
   const navigation = useNavigation()
   const [loading, setLoading] = useState(false)
@@ -29,26 +29,46 @@ export function ChangePassword() {
   const [showPassword, setShowPassword] = useState(true)
   const [showConfirmedPassword, setShowConfirmedPassword] = useState(true)
 
+  const { emailForgetPassword, validateToken, updatePassword } = useAuth()
 
   const {
     control,
     handleSubmit,
+    getValues,
     formState: { errors }
   } = useForm<ChangePasswordProps>({
     resolver: yupResolver(ChangePasswordAndToken)
   })
 
-  async function onSubmitChangePassword(data: ChangePasswordProps) {
+  async function onVerificationCode(data: string) {
     const payload = {
-      token: data.token,
-      password: data.passwordConfirmation,
+      email: emailForgetPassword,
+      token: data,
     }
 
     try {
-      console.log(payload)
       setLoading(true)
-    } catch (err: any) {
-      alert(err.message)
+      await validateToken(payload)
+    } catch (err) {
+      navigation.goBack()
+    }
+    finally {
+      setLoading(false)
+    }
+  }
+
+  async function onSubmitChangePassword(data: ChangePasswordProps) {
+    const payload = {
+      email: emailForgetPassword,
+      token: data.token,
+      password: data.password,
+      password_confirm: data.passwordConfirmation
+    }
+
+    try {
+      setLoading(true)
+      await updatePassword(payload)
+      navigation.navigate('ScreenSuccessfulResetPassword')
     } finally {
       setLoading(false)
     }
@@ -64,6 +84,7 @@ export function ChangePassword() {
         </Title>
 
         <InputMasked
+          onBlur={() => onVerificationCode(getValues('token'))}
           type='custom'
           options={{
             mask: '999999'
@@ -111,8 +132,7 @@ export function ChangePassword() {
             title='Finalizar'
             variant='primary'
             activeLoad={loading}
-            // onPress={handleSubmit(onSubmitChangePassword)}
-            onPress={() => navigation.navigate('ScreenSuccessfulResetPassword')}
+            onPress={handleSubmit(onSubmitChangePassword)}
           />
 
           <Button
