@@ -9,6 +9,7 @@ import { useNavigation } from '@react-navigation/native'
 import { Close, Headset, Info, Lighting, Settings } from '@assets/icons';
 
 import {
+  BgLinearGradient,
   BoxButtons,
   Container,
   ContainerCarousel,
@@ -23,16 +24,19 @@ import {
   ImageDevice,
   NameDevice,
   Percentage,
+  TesteButton,
   TextStatus,
   TitleModal,
 } from './styles'
 
-import { Image, Modal, Pressable, TouchableOpacity } from 'react-native'
+import { Image, Modal, Pressable, Text, TouchableOpacity } from 'react-native'
 import { ButtonSquare } from '@components/ButtonSquare'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import useBLE from '@hooks/useBLE'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
+import LinearGradient from 'react-native-linear-gradient';
+import { ButtonGradient } from '@components/ButtonGrandient'
 
 export function Device() {
   const navigation = useNavigation()

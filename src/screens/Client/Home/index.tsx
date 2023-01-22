@@ -81,9 +81,9 @@ export function Home() {
 
           <Carousel data={dataDevicesExamples} />
 
-          <ContainerCard>
+          {/* <ContainerCard>
             <CardNewDevice />
-          </ContainerCard>
+          </ContainerCard> */}
         </ContainerCarousel>
 
         <ButtonModal onLongPress={() => setModalVisible(true)} />

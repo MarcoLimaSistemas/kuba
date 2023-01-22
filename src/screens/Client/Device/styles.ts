@@ -1,3 +1,4 @@
+import LinearGradient from 'react-native-linear-gradient';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styled from 'styled-components/native';
@@ -118,4 +119,14 @@ export const DeviceModal = styled.TouchableOpacity`
 
 export const DeviceTitle = styled.Text`
   color: ${({ theme }) => theme.COLORS.black};
+`
+
+export const TesteButton = styled.TouchableOpacity`
+  border: 1px solid red;
+  padding: 16px;
+  background: red;
+`
+
+export const BgLinearGradient = styled(LinearGradient)`
+  flex: 1;
 `

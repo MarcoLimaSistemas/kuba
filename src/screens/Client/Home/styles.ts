@@ -101,10 +101,11 @@ export const ContainerModal = styled.View`
   flex-direction: column;
   justify-content: flex-end;
 
+  
   width: 100%;
   height: 75%;
   bottom: -25%;
-
+  
   padding: ${RFValue(16)}px ${RFValue(16)}px;
 
   border-top-left-radius:  ${RFValue(16)}px;
@@ -140,5 +141,5 @@ export const SubTitleModal = styled.Text`
 `;
 
 export const ButtonModal = styled.Pressable`
-  height: ${RFValue(56)}px;
+  height: ${RFValue(128)}px;
 `;

@@ -1,5 +1,8 @@
 import React from 'react'
+import api from '../../../services/api'
+
 import { useState } from 'react'
+import { Alert } from 'react-native'
 
 import { Button } from '@components/Button'
 import { Header } from '@components/Header'
@@ -14,6 +17,7 @@ import { Error } from '../SignIn/styles'
 
 import { SignUpSchema } from '../../../schemas/signup'
 import { InputMasked } from '@components/InputMasked'
+import Toast from 'react-native-toast-message'
 
 
 export function SignUp() {
@@ -35,17 +39,27 @@ export function SignUp() {
 
   async function onSubmitSignUp(data: ISignUpCredentials) {
     const payload = {
+      user_type: 'USER',
       name: data.name,
       email: data.email,
-      birthDate: data.birthDate,
-      password: data.passwordConfirmation
+      birth_date: data.birthDate,
+      password: data.passwordConfirmation,
+      password_confirm: data.passwordConfirmation,
     }
 
     try {
       console.log(payload)
+      const { data } = await api.post('/signup', payload)
       setLoading(true)
+      console.log(data.message)
+      Toast.show({
+        type: 'error',
+        text2: data.message,
+      })
+      navigation.navigate('SignIn')
     } catch (err: any) {
-      alert(err.message)
+      console.log(err.response.data.message)
+      Alert.alert('Error ao cadastrar', err.response.data.message)
     } finally {
       setLoading(false)
     }
@@ -81,7 +95,7 @@ export function SignUp() {
           <InputMasked
             type='custom'
             options={{
-              mask: '99/99/9999'
+              mask: '99-99-9999'
             }}
             keyboardType='numeric'
             control={control}

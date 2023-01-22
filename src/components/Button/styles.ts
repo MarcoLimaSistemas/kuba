@@ -36,13 +36,13 @@ export const StyledButton = styled.TouchableOpacity <ButtonContainerProps>`
     transition: 0.3s;
 
     margin-bottom: 16px;
-${props => {
+  ${props => {
     return css`
-background-color:${background[props.variant]}; 
-    border: 1px solid ${props.variant === 'primary' ?
-        background[props.variant] : props.variant === 'secondary' ?
-          '#D4BD85' : '#242424'};
-`
+      background-color:${background[props.variant]}; 
+      border: 1px solid $
+      {props.variant === 'primary' ? background[props.variant] : props.variant === 'secondary' ?
+            '#D4BD85' : '#242424'};
+  `
   }} 
 `;
 export const Title = styled.Text <ColorTextProps>` 

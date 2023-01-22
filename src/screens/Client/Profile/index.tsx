@@ -30,6 +30,7 @@ import {
   TextSwitch,
 } from './styles';
 import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '@hooks/auth';
 
 interface ProfileProps {
   children: ReactNode;
@@ -37,6 +38,7 @@ interface ProfileProps {
 
 export function Profile() {
   const navigation = useNavigation();
+  const { logout } = useAuth()
 
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
@@ -85,6 +87,7 @@ export function Profile() {
         </BoxText>
 
         <BoxButtons>
+          <Button title="Loggout" onPress={logout} />
           <Button title="Editar Perfil" onPress={() => navigation.navigate('EditProfile')} />
           <Button title="Alterar Senha" variant="secondary" onPress={() => navigation.navigate('ChangePassword')} />
         </BoxButtons>

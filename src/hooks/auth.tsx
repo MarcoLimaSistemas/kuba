@@ -146,7 +146,7 @@ export function AuthProvider({ children }: AuthProps): ReactElement {
   }
 
   async function logout() {
-    localStorage.clear()
+    AsyncStorage.clear()
     setUser({} as IUserClient)
     setToken('')
     !!user
