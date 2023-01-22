@@ -6,8 +6,10 @@ import { ArrowBack } from '@assets/icons'
 import { Button } from '@components/Button';
 import { useNavigation } from '@react-navigation/native';
 
-export function SettingsEarphone() {
+export function SettingsEarphone({ route }: any) {
   const navigation = useNavigation()
+
+  console.log(route.params.TutorialID)
 
   return (
     <Container>

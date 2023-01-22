@@ -1,46 +1,56 @@
-import React, { useEffect, useState } from 'react';
-import api from '../../../services/api';
+import React, { useCallback, useEffect, useState } from 'react'
+import api from '../../../services/api'
 
-import { Alert, FlatList } from 'react-native';
+import { Alert, FlatList, RefreshControl } from 'react-native'
 
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-import { Button } from '@components/Button';
-import { CardVideo } from '@components/CardVideo';
-import { Navbar } from '@components/Navbar';
-import { Search } from '@components/Search';
+import { Button } from '@components/Button'
+import { CardVideo } from '@components/CardVideo'
+import { Navbar } from '@components/Navbar'
+import { Search } from '@components/Search'
 
-import { Container, ContainerVideos, MessageText } from './styles';
-import { useNavigation } from '@react-navigation/native';
+import { Container, ContainerVideos, MessageText } from './styles'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 
 export function School() {
-  const navigation = useNavigation();
-  const [loading, setLoading] = useState(false);
-  const [search, setSearch] = useState<string>();
+  const navigation = useNavigation()
 
-  const [videos, setVideos] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false)
+  const [search, setSearch] = useState<string>()
+
+  const [videos, setVideos] = useState<any[]>([])
+  const [refreshing, setRefreshing] = useState(false)
 
   async function getVideosSchool() {
     try {
       const { data } = await api.get('user/school/kuba/index')
       console.log(data)
       setVideos(data)
+      setRefreshing(false)
     } catch (err: any) {
       Alert.alert(err.response.data.message)
     }
   }
 
-  useEffect(() => {
+  function onRefresh() {
+    setRefreshing(true)
+    setVideos([])
     getVideosSchool()
-  }, [])
+  }
 
+  useFocusEffect(
+    useCallback(() => {
+      getVideosSchool()
+    }, [])
+  )
 
   async function getSearch() {
     try {
-      setLoading(true);
+      setLoading(true)
     } catch (error: any) {
-      setLoading(false);
-      throw new Error(error);
+      setLoading(false)
+      throw new Error(error)
     }
   }
 
@@ -58,11 +68,18 @@ export function School() {
 
       <KeyboardAwareScrollView>
         <ContainerVideos>
+
           {videos.length === 0 ?
             <MessageText>No momento não temos nenhum video!</MessageText>
             :
             <FlatList
               data={videos}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                />
+              }
               keyExtractor={(item) => String(item.id)}
               showsHorizontalScrollIndicator={false}
               horizontal
@@ -81,5 +98,5 @@ export function School() {
         </ContainerVideos>
       </KeyboardAwareScrollView>
     </Container>
-  );
+  )
 }

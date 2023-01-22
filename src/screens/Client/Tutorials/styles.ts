@@ -1,6 +1,7 @@
 import styled from 'styled-components/native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { FlatList } from 'react-native';
 
 export const Container = styled(SafeAreaView)`
 flex: 1;
@@ -66,37 +67,50 @@ line-height: ${RFValue(24)}px;
 margin-bottom: ${RFValue(16)}px;
 `;
 
-export const Tutorial = styled.TouchableOpacity`
-align-items: center;
-justify-content: space-between;
-flex-direction: row;
 
-margin-top: ${RFValue(8)}px;
-`;
 
+export const MessageText = styled.Text`
+  color: ${({ theme }) => theme.COLORS.white_100};
+  font-size: 14px;
+  padding: 24px;
+  text-align: center;
+  margin-bottom: 100%;
+`
+
+export const ContainerTutorial = styled.View`
+  padding: ${RFValue(16)}px;
+`
+
+export const FlatListTutorials = styled(FlatList)`
+  width: 100%;
+`
+export const ContainerItemTutorial = styled.View`
+  flex-direction: row;
+`
 export const TitleTutorial = styled.Text`
-flex: 1;
-background-color: ${({ theme }) => theme.COLORS.white_100};
-color: ${({ theme }) => theme.COLORS.gray_100};
-font-weight: 500;
-font-size: ${RFValue(16)}px;
+  flex: 1;
+  width: 100%;
+  background-color: ${({ theme }) => theme.COLORS.white_100};
+  color: ${({ theme }) => theme.COLORS.gray_100};
+  font-weight: 500;
+  font-size: ${RFValue(16)}px;
 
-padding-left: ${RFValue(16)}px;
-padding-top: ${RFValue(18)}px;
-padding-bottom: ${RFValue(18)}px;
+  padding-left: ${RFValue(16)}px;
+  padding-top: ${RFValue(18)}px;
+  padding-bottom: ${RFValue(18)}px;
 
-border-radius: ${RFValue(8)}px;
+  border-radius: ${RFValue(8)}px;
 `;
 
-export const Icon = styled.View`
-background-color: ${({ theme }) => theme.COLORS.black};
+export const Icon = styled.TouchableOpacity`
+  background-color: ${({ theme }) => theme.COLORS.black};
 
-width: ${RFValue(56)}px;
-height: ${RFValue(56)}px;
-border-radius: ${RFValue(8)}px;
+  width: ${RFValue(56)}px;
+  height: ${RFValue(56)}px;
+  border-radius: ${RFValue(8)}px;
 
-margin-left: ${RFValue(12)}px;
+  margin-left: ${RFValue(12)}px;
 
-align-items: center;
-justify-content: center;
+  align-items: center;
+  justify-content: center;
 `;
