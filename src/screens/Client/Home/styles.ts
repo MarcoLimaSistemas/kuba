@@ -76,25 +76,7 @@ export const SubTitleSecondary = styled.Text`
   color: ${({ theme }) => theme.COLORS.white_100};
 `;
 
-export const ContainerCarousel = styled.View`
-  width: 100%;
-`;
-
-export const ContainerCard = styled.View`
-  margin-top: 40px;
-  margin-left: 4px;
-  width: 100%; 
-  height: 189px;
-`;
-
-export const TitleCarousel = styled.Text`
-  font-size: ${RFValue(18)}px;
-  color: ${({ theme }) => theme.COLORS.gray_100};
-  padding-left: 16px;
-  margin: ${RFValue(8)}px;
-  margin-bottom: ${RFValue(16)}px;
-`;
-
+// modal
 export const ContainerModal = styled.View`  
   display: flex;
   align-self: flex-end;

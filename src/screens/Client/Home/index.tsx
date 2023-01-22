@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import api from '../../../services/api';
+
 import { Button } from '@components/Button';
 import { Carousel } from '@components/Carousel';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
-import { Modal, Pressable, Image } from 'react-native';
+import { Modal, Pressable, Image, Alert } from 'react-native';
 
 import {
   background,
@@ -19,8 +21,6 @@ import {
   ButtonPerfil,
   ButtonModal,
   Container,
-  ContainerCard,
-  ContainerCarousel,
   ContainerHeader,
   ContainerModal,
   ContainerSchoolKuba,
@@ -32,30 +32,28 @@ import {
   SubTitleModal,
   SubTitleSecondary,
   Title,
-  TitleCarousel,
   TitleModal,
   TitleSecondary,
 } from './styles';
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { CardNewDevice } from '@components/CardNewDevice';
+import { DeviceProps } from '@models/device';
 
 export function Home() {
+  const [devices, setDevices] = useState<DeviceProps[]>([])
 
-  const dataDevicesExamples = [
-    {
-      id: 1,
-      name: 'Disco'
-    },
-    {
-      id: 2,
-      name: 'Disco Pro'
-    },
-    {
-      id: 3,
-      name: 'Mali'
+  async function getDevices() {
+    try {
+      const { data } = await api.get('/user/products/index')
+      setDevices(data)
+    } catch (error: any) {
+      Alert.alert(error.response.data.message)
     }
-  ]
+  }
+
+  useEffect(() => {
+    getDevices();
+  }, [])
 
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
@@ -76,15 +74,7 @@ export function Home() {
         <Title>Escola Kuba</Title>
         <SubTitle>Como tirar o melhor som de um fone?</SubTitle>
 
-        <ContainerCarousel>
-          <TitleCarousel>Meus Dispositivos</TitleCarousel>
-
-          <Carousel data={dataDevicesExamples} />
-
-          {/* <ContainerCard>
-            <CardNewDevice />
-          </ContainerCard> */}
-        </ContainerCarousel>
+        <Carousel data={devices} />
 
         <ButtonModal onLongPress={() => setModalVisible(true)} />
 
@@ -95,11 +85,10 @@ export function Home() {
             Aprenda mais sobre o mundo do áudio
           </SubTitleSecondary>
         </ContainerSchoolKuba>
-
       </KeyboardAwareScrollView>
 
       <Modal
-        animationType="slide"
+        animationType='slide'
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
@@ -123,11 +112,11 @@ export function Home() {
               Complete seu perfil para ter uma experiência Kuba completa!
             </SubTitleModal>
             <Button
-              title="Completar Perfil"
+              title='Completar Perfil'
               onPress={() => navigation.navigate('Profile')}
             />
             <Button
-              title="Mais Tarde"
+              title='Mais Tarde'
               variant='secondary'
               onPress={() => setModalVisible(false)}
             />
