@@ -80,9 +80,8 @@ export function AuthProvider({ children }: AuthProps): ReactElement {
     try {
       const response = await Auth.signin(data)
       await AsyncStorage.setItem('@KubaApp:data', JSON.stringify(response.data))
-      api.defaults.headers.common[
-        'Authorization'
-      ] = `Bearer ${response.data.data.token}`
+
+      api.defaults.headers.common['Authorization'] = `Bearer ${response.data.data.token}`
 
       setToken(response.data.data.token)
       setUser(response.data.user[0])

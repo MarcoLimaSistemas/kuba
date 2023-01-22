@@ -4,6 +4,8 @@ import { Container, Thumbnail, Title } from './styles';
 
 interface CardVideoProps {
   title: string;
+  thumbnail: string;
+  link: string;
 }
 
 export function CardVideo({ title }: CardVideoProps) {

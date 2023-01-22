@@ -11,3 +11,11 @@ display: flex;
 flex-direction: column;
 padding: 16px;
 `;
+
+export const MessageText = styled.Text`
+  color: ${({ theme }) => theme.COLORS.white_100};
+  font-size: 14px;
+  padding: 24px;
+  text-align: center;
+  margin-bottom: 100%;
+`
