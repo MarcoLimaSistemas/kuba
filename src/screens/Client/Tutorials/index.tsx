@@ -81,29 +81,21 @@ export function Tutorials() {
           {tutorials.length === 0 ?
             <MessageText>No momento não temos nenhum video!</MessageText>
             :
-            <FlatList
-              data={tutorials}
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={onRefresh}
-                />
-              }
-              keyExtractor={(item) => String(item.id)}
-              snapToAlignment={'start'}
-              scrollEventThrottle={14}
-              renderItem={({ item }) => (
-                <ContainerItemTutorial>
-                  <TitleTutorial>
-                    {item.nome}
-                  </TitleTutorial>
+            tutorials.map((tutorial) => (
+              <ContainerItemTutorial key={tutorial.id}>
+                <TitleTutorial>
+                  {tutorial.nome}
+                </TitleTutorial>
 
-                  <Icon onPress={() => navigation.navigate('SettingsEarphone', { TutorialID: item.id })}>
-                    <Image source={Link} />
-                  </Icon>
-                </ContainerItemTutorial>
-              )}
-            />}
+                <Icon
+                // onPress={() => navigation
+                //   .navigate('SettingsEarphone', { TutorialID: tutorial.id })}
+                >
+                  <Image source={Link} />
+                </Icon>
+              </ContainerItemTutorial>
+            ))
+          }
         </ContainerTutorial>
 
         <Box mt={16}>

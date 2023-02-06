@@ -53,61 +53,59 @@ export function SignIn() {
 
   return (
     <Container>
-      <Content>
-        <ContainerLogo>
-          <Image source={logo} />
-        </ContainerLogo>
+      <ContainerLogo>
+        <Image source={logo} />
+      </ContainerLogo>
 
-        <InputsContainer>
-          <InputUnMasked
-            control={control}
-            label='E-mail'
-            name='email'
-            placeholder='Digite seu e-mail'
-            keyboardType='email-address'
-            error={
-              errors.email && <Error>{errors.email.message}</Error>
-            }
-          />
+      <InputsContainer>
+        <InputUnMasked
+          control={control}
+          label='E-mail'
+          name='email'
+          placeholder='Digite seu e-mail'
+          keyboardType='email-address'
+          error={
+            errors.email && <Error>{errors.email.message}</Error>
+          }
+        />
 
-          <InputUnMasked
-            control={control}
-            label='Senha'
-            name='password'
-            eye={true}
-            showPassword={showPassword}
-            setShowPassword={setShowPassword}
-            secureTextEntry={showPassword}
-            placeholder='Digite sua senha'
-            error={
-              errors.password && <Error>{errors.password.message}</Error>
-            }
-          />
+        <InputUnMasked
+          control={control}
+          label='Senha'
+          name='password'
+          eye={true}
+          showPassword={showPassword}
+          setShowPassword={setShowPassword}
+          secureTextEntry={showPassword}
+          placeholder='Digite sua senha'
+          error={
+            errors.password && <Error>{errors.password.message}</Error>
+          }
+        />
 
-          <ForgotPasswordContainer>
-            <ForgotPasswordButton onPress={() => navigation.navigate('ForgotPassword')}>
-              <ForgotPasswordText>
-                Esqueci minha senha?
-              </ForgotPasswordText>
-            </ForgotPasswordButton>
-          </ForgotPasswordContainer>
-        </InputsContainer>
+        <ForgotPasswordContainer>
+          <ForgotPasswordButton onPress={() => navigation.navigate('ForgotPassword')}>
+            <ForgotPasswordText>
+              Esqueci minha senha?
+            </ForgotPasswordText>
+          </ForgotPasswordButton>
+        </ForgotPasswordContainer>
+      </InputsContainer>
 
-        <ContainerButton>
-          <Button
-            title="Entrar"
-            variant="primary"
-            activeLoad={loading}
-            onPress={handleSubmit(handleLogin)}
-          />
+      <ContainerButton>
+        <Button
+          title="Entrar"
+          variant="primary"
+          activeLoad={loading}
+          onPress={handleSubmit(handleLogin)}
+        />
 
-          <Button
-            title="Criar Conta"
-            variant="secondary"
-            onPress={() => navigation.navigate('SignUp')}
-          />
-        </ContainerButton>
-      </Content>
+        <Button
+          title="Criar Conta"
+          variant="secondary"
+          onPress={() => navigation.navigate('SignUp')}
+        />
+      </ContainerButton>
     </Container >
   )
 }

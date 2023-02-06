@@ -26,6 +26,7 @@ export const InputLabel = styled.Text`
 
 export const InputMask = styled(TextInputMask)`
   padding-left: ${RFValue(16)}px;
+  color: ${({ theme }) => theme.COLORS.black};
   flex: 1;
 `
 

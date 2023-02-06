@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { PermissionsAndroid, Platform } from "react-native"
-import { BleError, BleManager, Device } from "react-native-ble-plx"
+import { BleManager, Device } from "react-native-ble-plx"
 import { PERMISSIONS, requestMultiple } from "react-native-permissions"
 
 import DeviceInfo from 'react-native-device-info'
@@ -14,14 +14,20 @@ const bleManager = new BleManager()
 interface BluetoothLowEnergyApi {
   modalVisible: boolean
   setModalVisible: React.Dispatch<React.SetStateAction<boolean>>
+  onStopSearch: boolean
+  setStopSearch: React.Dispatch<React.SetStateAction<boolean>>
   allDevices: Device[]
 
   requestPermissions(callback: PermissionCallback): Promise<void>
   onScanDevices(): void
   onStopScan(): void
+  connectToDevice(device: Device): Promise<void>
 }
 export default function useBLE(): BluetoothLowEnergyApi {
   const [modalVisible, setModalVisible] = useState(false)
+  const [onStopSearch, setStopSearch] = useState(false)
+
+  const [connectedDevice, setConnectedDevice] = useState<Device | null>(null)
 
   const [allDevices, setAllDevices] = useState<Device[]>([])
 
@@ -62,14 +68,13 @@ export default function useBLE(): BluetoothLowEnergyApi {
   const isDuplicateDevice = (devices: Device[], nextDevice: Device) =>
     devices.findIndex(device => nextDevice.id === device.id) > -1
 
-  async function onScanDevices() {
+  const onScanDevices = () => {
     setModalVisible(true)
 
-    bleManager.startDeviceScan(null, null, (error: BleError | null, scannedDevice: Device | null) => {
+    bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) {
-        setModalVisible(false)
+        console.log("Erro ao procurar dispositivos", error)
 
-        console.log(error.message)
         if (error.message === 'BluetoothLE is powered off') {
           Toast.show({
             type: 'error',
@@ -77,31 +82,49 @@ export default function useBLE(): BluetoothLowEnergyApi {
             text2: 'O Bluetooth está desligado',
           })
         }
-      } else {
-        if (scannedDevice) {
-          // ADD DEVICE SCANNED DEVICE
-          setAllDevices((prevState) => {
-            if (!isDuplicateDevice(prevState, scannedDevice)) {
-              return [...prevState, scannedDevice]
-            }
-            return prevState
-          })
-        }
-        console.log(allDevices)
+      }
+      if (device) {
+        console.log("Dispositivo encontrado", device.id)
+
+        setAllDevices((prevState) => {
+          if (!isDuplicateDevice(prevState, device)) {
+            return [...prevState, device]
+          }
+          return prevState
+        })
       }
     })
   }
 
-  async function onStopScan() {
-    bleManager.stopDeviceScan()
+  const onStopScan = () => {
+    try {
+      const stopScan = bleManager.stopDeviceScan()
+      console.log(stopScan)
+    } catch (error: any) {
+      console.log("Erro ao parar a busca por dispositivos", error.message)
+    }
   }
+
+  const connectToDevice = async (device: Device) => {
+    try {
+      const deviceConnection = await bleManager.connectToDevice(device.id)
+      setConnectedDevice(deviceConnection)
+      bleManager.stopDeviceScan()
+    } catch (error: any) {
+      console.log("Erro ao conectar ao dispositivo", error.message)
+    }
+  }
+
 
   return {
     modalVisible,
     setModalVisible,
+    onStopSearch,
+    setStopSearch,
     allDevices,
     requestPermissions,
     onScanDevices,
     onStopScan,
+    connectToDevice
   }
 }

@@ -1,6 +1,4 @@
-import * as React from 'react';
-
-import { ReactNode, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { ScrollView, Switch } from 'react-native';
 
 import { Button } from '@components/Button';
@@ -31,10 +29,7 @@ import {
 } from './styles';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@hooks/auth';
-
-interface ProfileProps {
-  children: ReactNode;
-}
+import api from '../../../services/api';
 
 export function Profile() {
   const navigation = useNavigation();
@@ -42,6 +37,26 @@ export function Profile() {
 
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+
+  async function onProductKuba() {
+    try {
+      const res = await api.get('/user/perfil/update/product/kuba', {
+        params: {
+          kuba_product: isEnabled
+        }
+      })
+
+      console.log(res.data)
+    } catch (err) {
+      console.log(err)
+    } finally {
+
+    }
+  }
+
+  useEffect(() => {
+    onProductKuba()
+  }, [isEnabled])
 
   return (
     <Container>

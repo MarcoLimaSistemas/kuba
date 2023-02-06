@@ -18,6 +18,7 @@ import {
   DeviceTitle,
   Disconnected,
   Footer,
+  FooterModal,
   HeaderModal,
   HFlex,
   ImageDevice,
@@ -58,11 +59,14 @@ export function Device({ route, }: any) {
   ]
 
   const { requestPermissions,
+    onStopSearch,
+    setStopSearch,
     modalVisible,
     setModalVisible,
     allDevices,
     onScanDevices,
-    onStopScan
+    onStopScan,
+    connectToDevice
   } = useBLE()
 
   const [status, setStatus] = useState(false)
@@ -70,76 +74,78 @@ export function Device({ route, }: any) {
   async function handlePermissions() {
     requestPermissions(async (isGranted: boolean) => {
       if (isGranted) {
+        setStopSearch(false)
         onScanDevices()
       }
     })
   }
 
-  async function onCloseModal() {
+  async function handleCancelSearchDevices() {
+    onStopScan()
+    setStopSearch(true)
+  }
+
+  async function handleCloseModal() {
     onStopScan()
     setModalVisible(false)
   }
 
   return (
     <Container>
-      <KeyboardAwareScrollView>
-        <Navbar />
+      <Navbar />
 
-        <ImageDevice source={KubaFone} />
-        <NameDevice>{'Kuba mali'}</NameDevice>
+      <ImageDevice source={KubaFone} />
+      <NameDevice>{'Kuba mali'}</NameDevice>
 
-        {/* <ButtonConnected /> */}
+      <ContainerConnections>
+        {status ?
+          <>
+            <TextStatus>Conectado</TextStatus>
+            <HFlex>
+              <Image source={Lighting} />
+              <Percentage>{'100%'}</Percentage>
+            </HFlex>
+            <TouchableOpacity onPress={handlePermissions}>
+              <Disconnected>{'Desconectar'}</Disconnected>
+            </TouchableOpacity>
+          </>
+          :
+          <>
+            <TextStatus>Desconectado</TextStatus>
 
-        <ContainerConnections>
-          {status ?
-            <>
-              <TextStatus>Conectado</TextStatus>
-              <HFlex>
-                <Image source={Lighting} />
-                <Percentage>{'100%'}</Percentage>
-              </HFlex>
-              <TouchableOpacity onPress={handlePermissions}>
-                <Disconnected>{'Desconectar'}</Disconnected>
-              </TouchableOpacity>
-            </>
-            :
-            <>
-              <TextStatus>Desconectado</TextStatus>
+            <TouchableOpacity onPress={handlePermissions}>
+              <Disconnected>Conectar</Disconnected>
+            </TouchableOpacity>
+          </>
+        }
+      </ContainerConnections>
 
-              <TouchableOpacity onPress={handlePermissions}>
-                <Disconnected>Conectar</Disconnected>
-              </TouchableOpacity>
-            </>
-          }
-        </ContainerConnections>
-
-        {/* <BoxButtons>
+      {/* <BoxButtons>
           <Button title="Equalizador" onPress={() => NativeModules.EqualizerModule.navigateToEqualizer()} />
         </BoxButtons> */}
 
-        <ContainerCarousel>
-          <CarouselProfile titleProfile={'Perfis Personalizados'} data={dataExample} />
-          <CarouselProfile titleProfile={'Perfis Públicos '} data={dataExample} />
-        </ContainerCarousel>
+      <ContainerCarousel>
+        <CarouselProfile titleProfile={'Perfis Personalizados'} data={dataExample} />
+        <CarouselProfile titleProfile={'Perfis Públicos '} data={dataExample} />
+      </ContainerCarousel>
 
-        <BoxButtons>
-          <ButtonSquare label='Suporte' onPress={() => navigation.navigate('FrequentlyQuestions')}>
-            <Image source={Headset} />
-          </ButtonSquare>
+      <BoxButtons>
+        <ButtonSquare label='Suporte' onPress={() => navigation.navigate('FrequentlyQuestions')}>
+          <Image source={Headset} />
+        </ButtonSquare>
 
-          <ButtonSquare label='Tutorias de uso' onPress={() => navigation.navigate('Tutorials')}>
-            <Image source={Info} />
-          </ButtonSquare>
+        <ButtonSquare label='Tutorias de uso' onPress={() => navigation.navigate('Tutorials')}>
+          <Image source={Info} />
+        </ButtonSquare>
 
-          <ButtonSquare label='Configurações' onPress={() => console.log('Ir para configurações')}>
-            <Image source={Settings} />
-          </ButtonSquare>
-        </BoxButtons >
+        <ButtonSquare label='Configurações' onPress={() => console.log('Ir para configurações')}>
+          <Image source={Settings} />
+        </ButtonSquare>
+      </BoxButtons >
 
-        <Footer>
-          <Button title="Voltar" onPress={() => navigation.goBack()} />
-        </Footer >
-      </KeyboardAwareScrollView >
+      <Footer>
+        <Button title="Voltar" onPress={() => navigation.goBack()} />
+      </Footer >
 
       <Modal
         animationType="slide"
@@ -150,20 +156,27 @@ export function Device({ route, }: any) {
         }}
       >
         <ContainerModal>
-          <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
-            <HeaderModal>
-              <TitleModal>Dispositivos</TitleModal>
-              <Pressable onPress={onCloseModal}>
-                <Image source={Close} />
-              </Pressable>
-            </HeaderModal>
+          <HeaderModal>
+            <TitleModal>Dispositivos encontrados</TitleModal>
+            <Pressable onPress={handleCloseModal}>
+              <Image source={Close} />
+            </Pressable>
+          </HeaderModal>
 
-            {allDevices.map(device => (
+          {allDevices.map(device => (
+            <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
               <DeviceModal key={device.id}>
-                <DeviceTitle onPress={() => console.log(device.id)}>{device.name || device.id}</DeviceTitle>
+                <DeviceTitle onPress={() => connectToDevice(device)}>{device.name || device.id}</DeviceTitle>
               </DeviceModal>
-            ))}
-          </KeyboardAwareScrollView>
+            </KeyboardAwareScrollView>
+          ))}
+          <FooterModal>
+            {onStopSearch ?
+              <Button title="Fechar" onPress={() => setModalVisible(false)} />
+              :
+              <Button title="Parar busca" onPress={() => handleCancelSearchDevices()} />
+            }
+          </FooterModal>
         </ContainerModal>
       </Modal>
     </Container >

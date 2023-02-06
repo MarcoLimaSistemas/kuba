@@ -26,6 +26,6 @@ export const DropDownContent = styled.Text`
   padding: ${RFValue(8)}px;
   border-bottom-left-radius: ${RFValue(8)}px;
   border-bottom-right-radius: ${RFValue(8)}px;
-
+  color: ${({ theme }) => theme.COLORS.black};
   font-size: ${RFValue(16)}px;
 `

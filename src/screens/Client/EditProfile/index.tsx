@@ -87,7 +87,7 @@ export function EditProfile() {
         <InputMasked
           type='custom'
           options={{
-            mask: '99/99/9999'
+            mask: '9999-99-99'
           }}
           keyboardType='numeric'
           control={control}

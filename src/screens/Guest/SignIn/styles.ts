@@ -7,6 +7,7 @@ import styled from 'styled-components/native';
 export const Container = styled(SafeAreaView)`
   flex: 1;
   background-color: #f2f2f2;
+  justify-content: space-between;
 `;
 
 export const Content = styled(KeyboardAwareScrollView)`

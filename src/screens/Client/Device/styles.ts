@@ -5,6 +5,7 @@ import styled from 'styled-components/native';
 
 export const Container = styled(SafeAreaView)`
 flex: 1;
+justify-content: space-around;
 `;
 
 export const ImageDevice = styled.Image`
@@ -86,7 +87,7 @@ export const ContainerModal = styled.View`
   display: flex;
   align-self: flex-end;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: space-between;
 
   width: 100%;
   height: 75%;
@@ -102,6 +103,9 @@ export const ContainerModal = styled.View`
 
 export const HeaderModal = styled.View`
   flex-direction: row;
+`
+export const FooterModal = styled.View`
+  margin-top: 100%;
 `
 
 export const TitleModal = styled.Text`

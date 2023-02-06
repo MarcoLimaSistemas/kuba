@@ -1,16 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import api from '../../../services/api'
 
-import { Alert, FlatList, RefreshControl } from 'react-native'
-
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { Alert, FlatList, RefreshControl, StatusBar } from 'react-native'
 
 import { Button } from '@components/Button'
 import { CardVideo } from '@components/CardVideo'
 import { Navbar } from '@components/Navbar'
 import { Search } from '@components/Search'
 
-import { Container, ContainerVideos, MessageText } from './styles'
+import { Container, ContainerButton, ContainerVideos, MessageText } from './styles'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 
 export function School() {
@@ -24,7 +22,12 @@ export function School() {
 
   async function getVideosSchool() {
     try {
-      const { data } = await api.get('user/school/kuba/index')
+      const { data } = await api
+        .get('user/school/kuba/index', {
+          params: {
+            keyword: search
+          }
+        })
       console.log(data)
       setVideos(data)
       setRefreshing(false)
@@ -54,8 +57,13 @@ export function School() {
     }
   }
 
+  useEffect(() => {
+    getVideosSchool();
+  }, [search])
+
   return (
     <Container>
+      <StatusBar barStyle='light-content' />
       <Navbar darkTheme={true} />
       <Search
         searchCallback={getSearch}
@@ -66,37 +74,36 @@ export function School() {
         onChangeText={text => setSearch(text)}
       />
 
-      <KeyboardAwareScrollView>
-        <ContainerVideos>
+      <ContainerVideos>
+        {videos.length === 0 ?
+          <MessageText>No momento não temos nenhum video!</MessageText>
+          :
+          <FlatList
+            data={videos}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+              />
+            }
+            keyExtractor={(item) => String(item.id)}
+            showsHorizontalScrollIndicator={false}
+            horizontal
+            snapToAlignment={'start'}
+            scrollEventThrottle={14}
+            renderItem={({ item }) => (
+              <CardVideo title={item.title} thumbnail={item.thumbnail} link={item.link} />
+            )}
+          />}
+      </ContainerVideos>
 
-          {videos.length === 0 ?
-            <MessageText>No momento não temos nenhum video!</MessageText>
-            :
-            <FlatList
-              data={videos}
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={onRefresh}
-                />
-              }
-              keyExtractor={(item) => String(item.id)}
-              showsHorizontalScrollIndicator={false}
-              horizontal
-              snapToAlignment={'start'}
-              scrollEventThrottle={14}
-              renderItem={({ item }) => (
-                <CardVideo title={item.title} thumbnail={item.thumbnail} link={item.link} />
-              )}
-            />}
-
-          <Button
-            title="Voltar"
-            variant="secondary"
-            onPress={() => navigation.goBack()}
-          />
-        </ContainerVideos>
-      </KeyboardAwareScrollView>
+      <ContainerButton>
+        <Button
+          title="Voltar"
+          variant="secondary"
+          onPress={() => navigation.goBack()}
+        />
+      </ContainerButton>
     </Container>
   )
 }

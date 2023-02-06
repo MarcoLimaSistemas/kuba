@@ -60,32 +60,29 @@ export function Home() {
 
   return (
     <Container>
-      <KeyboardAwareScrollView>
+      <ImageHeaderHome source={background} />
 
-        <ImageHeaderHome source={background} />
+      <ContainerHeader>
+        <Image source={logoWhite} />
+        <ButtonPerfil onPress={() => navigation.navigate('Profile')}>
+          <Image source={perfil} />
+        </ButtonPerfil>
+      </ContainerHeader>
 
-        <ContainerHeader>
-          <Image source={logoWhite} />
-          <ButtonPerfil onPress={() => navigation.navigate('Profile')}>
-            <Image source={perfil} />
-          </ButtonPerfil>
-        </ContainerHeader>
+      <Title>Escola Kuba</Title>
+      <SubTitle>Como tirar o melhor som de um fone?</SubTitle>
 
-        <Title>Escola Kuba</Title>
-        <SubTitle>Como tirar o melhor som de um fone?</SubTitle>
+      <Carousel data={devices} />
 
-        <Carousel data={devices} />
+      <ButtonModal onLongPress={() => setModalVisible(true)} />
 
-        <ButtonModal onLongPress={() => setModalVisible(true)} />
-
-        <ContainerSchoolKuba onPress={() => navigation.navigate('School')}>
-          <ImageSchoolKuba source={backgroundSecondary} />
-          <TitleSecondary>Escola Kuba</TitleSecondary>
-          <SubTitleSecondary>
-            Aprenda mais sobre o mundo do áudio
-          </SubTitleSecondary>
-        </ContainerSchoolKuba>
-      </KeyboardAwareScrollView>
+      <ContainerSchoolKuba onPress={() => navigation.navigate('School')}>
+        <ImageSchoolKuba source={backgroundSecondary} />
+        <TitleSecondary>Escola Kuba</TitleSecondary>
+        <SubTitleSecondary>
+          Aprenda mais sobre o mundo do áudio
+        </SubTitleSecondary>
+      </ContainerSchoolKuba>
 
       <Modal
         animationType='slide'
