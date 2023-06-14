@@ -1,4 +1,3 @@
-import 'react-native-gesture-handler'
 
 import React, { useEffect } from 'react'
 
@@ -7,7 +6,9 @@ import { Routes } from './src/routes'
 import { StatusBar } from 'react-native'
 import SplashScreen from 'react-native-splash-screen'
 
-export default function App() {
+import {gestureHandlerRootHOC} from 'react-native-gesture-handler'
+
+const App =()=> {
 
   useEffect(() => {
     SplashScreen.hide(); //hides the splash screen on app load.
@@ -27,3 +28,5 @@ export default function App() {
     </>
   )
 }
+
+export default gestureHandlerRootHOC(App)
