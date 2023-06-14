@@ -2,7 +2,6 @@ import React, { ReactNode } from 'react';
 
 import { singerPreset } from '@assets/images';
 import { Button } from '@components/Button';
-import { ButtonConnected } from '@components/ButtonConnected';
 import { CarouselProfile } from '@components/CarouselProfile';
 
 import {
@@ -26,7 +25,7 @@ export function Preset() {
         <ImageProfile source={singerPreset} />
         <NamePreset>Criolo</NamePreset>
       </BoxImage>
-      <ButtonConnected />
+      
       <ContainerCarousel>
         <CarouselProfile titleProfile={'Perfis Personalizados'} data={data} />
         <CarouselProfile titleProfile={'Perfis Públicos '} data={data} />
