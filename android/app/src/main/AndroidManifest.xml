@@ -38,7 +38,7 @@
           android:name=".MainActivity"
           android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
           android:exported="true"
-          android:label="Kuba"
+          android:label="kubaApp"
           android:launchMode="singleTask"
           android:windowSoftInputMode="adjustResize">
         </activity>
