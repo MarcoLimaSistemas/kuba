@@ -45,7 +45,7 @@ export function SignIn() {
       setLoading(true)
       await signIn(data)
     } catch (err: any) {
-      alert(err.message)
+      alert(err?.message)
     } finally {
       setLoading(false)
     }
@@ -65,7 +65,7 @@ export function SignIn() {
           placeholder='Digite seu e-mail'
           keyboardType='email-address'
           error={
-            errors.email && <Error>{errors.email.message}</Error>
+            errors?.email && <Error>{errors?.email.message}</Error>
           }
         />
 
@@ -79,7 +79,7 @@ export function SignIn() {
           secureTextEntry={showPassword}
           placeholder='Digite sua senha'
           error={
-            errors.password && <Error>{errors.password.message}</Error>
+            errors?.password && <Error>{errors?.password.message}</Error>
           }
         />
 
