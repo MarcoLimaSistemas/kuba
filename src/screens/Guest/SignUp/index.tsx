@@ -56,7 +56,7 @@ export function SignUp() {
         type: 'error',
         text2: data.message,
       })
-      navigation.navigate('SignIn')
+      navigation.navigate('ScreenSuccessful')
     } catch (err: any) {
       console.log(err.response.data.message)
       Alert.alert('Error ao cadastrar', err.response.data.message)
