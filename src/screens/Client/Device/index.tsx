@@ -129,17 +129,29 @@ export function Device({ route, }: any) {
         <CarouselProfile titleProfile={'Perfis Públicos '} data={dataExample} />
       </ContainerCarousel>
 
-      <BoxButtons>
-        <ButtonSquare label='Suporte' onPress={() => navigation.navigate('FrequentlyQuestions')}>
-          <Image source={Headset} />
+      <BoxButtons
+      style={{
+        paddingHorizontal:16
+      }}
+      >
+        <ButtonSquare label='Suporte' onPress={() => navigation.navigate('Support')}>
+          <Image source={Headset} 
+          style={{
+            width:32,
+            height:32
+          }}
+          resizeMode='contain'
+          />
         </ButtonSquare>
 
         <ButtonSquare label='Tutorias de uso' onPress={() => navigation.navigate('Tutorials')}>
-          <Image source={Info} />
-        </ButtonSquare>
-
-        <ButtonSquare label='Configurações' onPress={() => console.log('Ir para configurações')}>
-          <Image source={Settings} />
+          <Image source={Info}
+          style={{
+            width:32,
+            height:32
+          }}
+          resizeMode='contain'
+          />
         </ButtonSquare>
       </BoxButtons >
 

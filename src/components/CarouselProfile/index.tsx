@@ -1,6 +1,6 @@
 import { CardProfile } from '@components/CardProfile';
 import React from 'react';
-import { Dimensions, FlatList, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 
 import { Container, Title } from './styles';
 
@@ -8,7 +8,7 @@ interface CarouselProfileProps {
   data: any;
   titleProfile: string;
 }
-const { width } = Dimensions.get('window');
+
 export function CarouselProfile({ data, titleProfile }: CarouselProfileProps) {
   return (
     <Container>
@@ -25,9 +25,9 @@ export function CarouselProfile({ data, titleProfile }: CarouselProfileProps) {
           <>
             <View
               style={{
-                height: width / 2.1,
-                width: width * 0.4 - 50,
-                marginHorizontal: 20,
+                height: 40,
+                width:104,
+                marginHorizontal: 8,
                 borderRadius: 12,
               }}
             >

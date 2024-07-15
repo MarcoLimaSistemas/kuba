@@ -40,7 +40,14 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { DeviceProps } from '@models/device';
 
 export function Home() {
-  const [devices, setDevices] = useState<DeviceProps[]>([])
+  const [devices, setDevices] = useState<DeviceProps[]>([
+    {
+    id:1,
+    is_bluetooth:true,
+    nome:'Kuba 01',
+    user_admin_id:2
+  }
+])
 
   async function getDevices() {
     try {
@@ -51,9 +58,9 @@ export function Home() {
     }
   }
 
-  useEffect(() => {
-    getDevices();
-  }, [])
+  // useEffect(() => {
+  //   getDevices();
+  // }, [])
 
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();

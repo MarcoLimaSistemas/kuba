@@ -6,9 +6,6 @@ import { CarouselProps } from '@models/device';
 
 export function Carousel({ data }: CarouselProps) {
   return (
-    data.length === 0 ?
-      <MessageText>Desculpe, no momento estamos sem dispositivos cadastrados!</MessageText>
-      :
       <ContainerCarousel>
         <TitleCarousel>Meus Dispositivos</TitleCarousel>
         <FlatList

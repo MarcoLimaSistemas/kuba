@@ -11,7 +11,6 @@ const Stack = createStackNavigator();
 const AppRoutes = () => {
   return (
     <Stack.Navigator
-      // initialRouteName="Device"
       screenOptions={{
         headerShown: false,
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
@@ -29,6 +28,7 @@ const AppRoutes = () => {
       <Stack.Screen name="FrequentlyQuestions" component={Client.FrequentlyQuestions} />
       <Stack.Screen name="ChangePassword" component={Client.ChangePassword} />
       <Stack.Screen name="PasswordResetSuccess" component={Client.PasswordResetSuccess} />
+      <Stack.Screen name="Support" component={Client.Support} />
     </Stack.Navigator>
   );
 };

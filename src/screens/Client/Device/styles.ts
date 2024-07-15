@@ -25,18 +25,16 @@ text-align: center;
 color: ${({ theme }) => theme.COLORS.black};
 letter-spacing:${RFValue(8)}px;
 text-transform: uppercase;
-margin-bottom: ${RFValue(42)}px;
+margin-bottom: ${RFValue(16)}px;
 `;
 
 export const ContainerCarousel = styled.View`
 `;
 
 export const BoxButtons = styled.View`
-display: flex;
 flex-direction: row;
 justify-content: space-between;
-margin-left: ${RFValue(16)}px;
-margin-right: ${RFValue(16)}px;
+width: 100%;
 `;
 
 export const Footer = styled.View`

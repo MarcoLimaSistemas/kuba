@@ -1,0 +1,22 @@
+import { RFValue } from "react-native-responsive-fontsize";
+import { SafeAreaView } from "react-native-safe-area-context";
+import styled from "styled-components/native";
+
+
+export const Container = styled(SafeAreaView)`
+  flex: 1;
+`
+
+export const ContainerBody = styled.ScrollView`
+padding: 0 16px;
+`
+
+export const Title = styled.Text`
+font-size: ${RFValue(16)}px;
+text-align: center;
+color: ${({ theme }) => theme.COLORS.black};
+letter-spacing:${RFValue(8)}px;
+text-transform: uppercase;
+margin-bottom: ${RFValue(42)}px;
+font-weight: 700;
+`;
