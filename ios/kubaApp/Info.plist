@@ -36,7 +36,7 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -51,9 +51,15 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-  <key>NSBluetoothAlwaysUsageDescription</key>
+	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>The application would like to use Bluetooth to connect with the headset</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>The application would like to use Bluetooth to connect with the headset</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Lato-Bold.ttf</string>
+		<string>Lato-LightItalic.ttf</string>
+		<string>Lato-Regular.ttf</string>
+	</array>
 </dict>
 </plist>
