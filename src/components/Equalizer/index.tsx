@@ -10,17 +10,14 @@ import VerticalSlider from '@components/Slider'
 
 import * as S from './styles'
 import {useEqualizer} from '../../context/EqualizerContext'
+import {Button} from '@components/Button'
 
 interface EqualizerProps {
     handleScrollEnabled: (enabled: boolean) => void
 }
 
 export const Equalizer = ({handleScrollEnabled}: EqualizerProps) => {
-    const {isInitialized, bands, currentValues, setBandLevel} = useEqualizer()
-
-    const handleSliderChange = (band: number, level: number) => {
-        setBandLevel(band, level)
-    }
+    const {} = useEqualizer()
 
     const [frequencies, setFrequencies] = useState(frequenciesList)
 
@@ -37,14 +34,6 @@ export const Equalizer = ({handleScrollEnabled}: EqualizerProps) => {
             `Ajustando frequência ${frequencies[index].frequency} para ${value} dB`
         )
         // Exemplo simples: console.log ou enviar para uma API de ajuste de áudio local
-    }
-
-    if (!isInitialized) {
-        return (
-            <View>
-                <Text>Carregando Equalizador...</Text>
-            </View>
-        )
     }
 
     return (

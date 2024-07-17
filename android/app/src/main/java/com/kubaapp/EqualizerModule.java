@@ -1,77 +1,91 @@
 package com.kubaapp;
 
+import android.media.MediaPlayer;
 import android.media.audiofx.Equalizer;
 
-import androidx.annotation.NonNull;
-
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Promise;
 
 public class EqualizerModule extends ReactContextBaseJavaModule {
-  private Equalizer equalizer;
+    private static final String MODULE_NAME = "EqualizerModule";
+    private Equalizer mEqualizer;
+    private MediaPlayer mPlayer;
 
-  public EqualizerModule(ReactApplicationContext reactContext) {
-    super(reactContext);
-  }
-
-  @NonNull
-  @Override
-  public String getName() {
-    return "EqualizerModule";
-  }
-
-  @ReactMethod
-  public void createEqualizer(int audioSessionId, Callback successCallback) {
-    try {
-      equalizer = new Equalizer(0, audioSessionId);
-      equalizer.setEnabled(true);
-      successCallback.invoke(true);
-    } catch (Exception e) {
-      successCallback.invoke(false, e.getMessage());
+    public EqualizerModule(ReactApplicationContext reactContext) {
+        super(reactContext);
     }
-  }
 
-  @ReactMethod
-  public void setBandLevel(int band, int level) {
-    if (equalizer != null) {
-      equalizer.setBandLevel((short) band, (short) level);
+    @Override
+    public String getName() {
+        return MODULE_NAME;
     }
-  }
 
-  @ReactMethod
-  public void getBandLevelRange(Callback callback) {
-    if (equalizer != null) {
-      short[] range = equalizer.getBandLevelRange();
-      WritableMap map = Arguments.createMap();
-      map.putInt("min", range[0]);
-      map.putInt("max", range[1]);
-      callback.invoke(map);
+    @ReactMethod
+    public void initEqualizer(Promise promise) {
+        try {
+            // Inicializa o MediaPlayer
+            mPlayer = MediaPlayer.create(getReactApplicationContext(), R.raw.beautiful);
+            // Inicializa o Equalizer
+            mEqualizer = new Equalizer(0, mPlayer.getAudioSessionId());
+            mEqualizer.setEnabled(true);
+            mPlayer.start();
+            promise.resolve("Equalizer initialized");
+        } catch (Exception e) {
+            promise.reject("Error initializing equalizer", e);
+        }
     }
-  }
 
-  @ReactMethod
-  public void getNumberOfBands(Callback callback) {
-    if (equalizer != null) {
-      callback.invoke(equalizer.getNumberOfBands());
+    @ReactMethod
+    public void setBandLevel(int band, int level, Promise promise) {
+        try {
+            short minEQLevel = mEqualizer.getBandLevelRange()[0];
+            mEqualizer.setBandLevel((short) band, (short) level);
+            promise.resolve("Band level set");
+        } catch (Exception e) {
+            promise.reject("Error setting band level", e);
+        }
     }
-  }
 
-  @ReactMethod
-  public void getCenterFreq(int band, Callback callback) {
-    if (equalizer != null) {
-      callback.invoke(equalizer.getCenterFreq((short) band));
+    @ReactMethod
+    public void getNumberOfBands(Promise promise) {
+        try {
+            int numberOfBands = mEqualizer.getNumberOfBands();
+            promise.resolve(numberOfBands);
+        } catch (Exception e) {
+            promise.reject("Error getting number of bands", e);
+        }
     }
-  }
 
-  @ReactMethod
-  public void releaseEqualizer() {
-    if (equalizer != null) {
-      equalizer.release();
-      equalizer = null;
+    @ReactMethod
+    public void getBandLevelRange(Promise promise) {
+        try {
+            short[] range = mEqualizer.getBandLevelRange();
+            promise.resolve(range);
+        } catch (Exception e) {
+            promise.reject("Error getting band level range", e);
+        }
     }
-  }
+
+    @ReactMethod
+    public void getBandFreq(int band, Promise promise) {
+        try {
+            int freq = mEqualizer.getCenterFreq((short) band);
+            promise.resolve(freq);
+        } catch (Exception e) {
+            promise.reject("Error getting band frequency", e);
+        }
+    }
+
+    @Override
+    public void onCatalystInstanceDestroy() {
+        super.onCatalystInstanceDestroy();
+        if (mEqualizer != null) {
+            mEqualizer.release();
+        }
+        if (mPlayer != null) {
+            mPlayer.release();
+        }
+    }
 }

@@ -1,9 +1,19 @@
-import React, {createContext, useContext, ReactNode} from 'react'
-import {NativeModules} from 'react-native'
+import React, {
+    createContext,
+    useContext,
+    ReactNode,
+    useEffect,
+    useState
+} from 'react'
 
-const {} = NativeModules
+import Equalizer from '../utils/equalizerModule'
 
-type EqualizerContextType = {}
+type EqualizerContextType = {
+    numBands: number
+    bandLevelRange: [number, number]
+    bandFrequencies: number[]
+    setBandLevel: (band: number, level: number) => void
+}
 
 const EqualizerContext = createContext<EqualizerContextType | undefined>(
     undefined
@@ -17,15 +27,38 @@ export const useEqualizer = (): EqualizerContextType => {
     return context
 }
 
-type EqualizerProviderProps = {
-    children: ReactNode
-}
+export const EqualizerProvider = ({children}: {children: ReactNode}) => {
+    const [numBands, setNumBands] = useState(0)
+    const [bandLevelRange, setBandLevelRange] = useState<[number, number]>([
+        0, 0
+    ])
+    const [bandFrequencies, setBandFrequencies] = useState<number[]>([])
 
-export const EqualizerProvider = ({children}: EqualizerProviderProps) => {
-    const value = {}
+    useEffect(() => {
+        async function fetchData() {
+            await Equalizer.initEqualizer()
+            const bands = await Equalizer.getNumberOfBands()
+            setNumBands(bands)
+            const range = await Equalizer.getBandLevelRange()
+            setBandLevelRange(range)
+
+            const frequencies = []
+            for (let i = 0; i < bands; i++) {
+                const freq = await Equalizer.getBandFreq(i)
+                frequencies.push(freq)
+            }
+            setBandFrequencies(frequencies)
+        }
+        fetchData()
+    }, [])
+
+    const setBandLevel = async (band: number, level: number) => {
+        await Equalizer.setBandLevel(band, level)
+    }
 
     return (
-        <EqualizerContext.Provider value={value}>
+        <EqualizerContext.Provider
+            value={{numBands, bandLevelRange, bandFrequencies, setBandLevel}}>
             {children}
         </EqualizerContext.Provider>
     )
