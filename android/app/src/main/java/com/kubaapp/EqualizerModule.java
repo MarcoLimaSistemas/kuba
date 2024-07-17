@@ -1,17 +1,21 @@
 package com.kubaapp;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.media.audiofx.Equalizer;
 
 import androidx.annotation.NonNull;
 
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.Arguments;
 
 public class EqualizerModule extends ReactContextBaseJavaModule {
-  public EqualizerModule(ReactApplicationContext reactApplicationContext) {
-    super(reactApplicationContext);
+  private Equalizer equalizer;
+
+  public EqualizerModule(ReactApplicationContext reactContext) {
+    super(reactContext);
   }
 
   @NonNull
@@ -19,11 +23,55 @@ public class EqualizerModule extends ReactContextBaseJavaModule {
   public String getName() {
     return "EqualizerModule";
   }
-  
+
   @ReactMethod
-  void navigateToEqualizer() {
-    Activity activity = getCurrentActivity();
-    Intent intent = new Intent(activity, EqualizerActivity.class);
-    activity.startActivity(intent);
+  public void createEqualizer(int audioSessionId, Callback successCallback) {
+    try {
+      equalizer = new Equalizer(0, audioSessionId);
+      equalizer.setEnabled(true);
+      successCallback.invoke(true);
+    } catch (Exception e) {
+      successCallback.invoke(false, e.getMessage());
+    }
+  }
+
+  @ReactMethod
+  public void setBandLevel(int band, int level) {
+    if (equalizer != null) {
+      equalizer.setBandLevel((short) band, (short) level);
+    }
+  }
+
+  @ReactMethod
+  public void getBandLevelRange(Callback callback) {
+    if (equalizer != null) {
+      short[] range = equalizer.getBandLevelRange();
+      WritableMap map = Arguments.createMap();
+      map.putInt("min", range[0]);
+      map.putInt("max", range[1]);
+      callback.invoke(map);
+    }
+  }
+
+  @ReactMethod
+  public void getNumberOfBands(Callback callback) {
+    if (equalizer != null) {
+      callback.invoke(equalizer.getNumberOfBands());
+    }
+  }
+
+  @ReactMethod
+  public void getCenterFreq(int band, Callback callback) {
+    if (equalizer != null) {
+      callback.invoke(equalizer.getCenterFreq((short) band));
+    }
+  }
+
+  @ReactMethod
+  public void releaseEqualizer() {
+    if (equalizer != null) {
+      equalizer.release();
+      equalizer = null;
+    }
   }
 }
