@@ -29,18 +29,20 @@ export const useEqualizer = (): EqualizerContextType => {
 
 export const EqualizerProvider = ({children}: {children: ReactNode}) => {
     const [numBands, setNumBands] = useState(0)
+    console.log('🚀 ~ EqualizerProvider ~ numBands:', numBands)
     const [bandLevelRange, setBandLevelRange] = useState<[number, number]>([
         0, 0
     ])
     const [bandFrequencies, setBandFrequencies] = useState<number[]>([])
+    console.log('🚀 ~ EqualizerProvider ~ bandFrequencies:', bandFrequencies)
 
     useEffect(() => {
         async function fetchData() {
             await Equalizer.initEqualizer()
             const bands = await Equalizer.getNumberOfBands()
             setNumBands(bands)
-            const range = await Equalizer.getBandLevelRange()
-            setBandLevelRange(range)
+            // const range = await Equalizer.getBandLevelRange()
+            // setBandLevelRange(range)
 
             const frequencies = []
             for (let i = 0; i < bands; i++) {

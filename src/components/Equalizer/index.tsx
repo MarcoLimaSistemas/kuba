@@ -17,7 +17,7 @@ interface EqualizerProps {
 }
 
 export const Equalizer = ({handleScrollEnabled}: EqualizerProps) => {
-    const {} = useEqualizer()
+    const {setBandLevel} = useEqualizer()
 
     const [frequencies, setFrequencies] = useState(frequenciesList)
 
@@ -29,9 +29,12 @@ export const Equalizer = ({handleScrollEnabled}: EqualizerProps) => {
     }
 
     const adjustAudio = (index: number, value: number) => {
+        if (index < 5) {
+            setBandLevel(index, value * 100)
+        }
         // Aqui você pode implementar a lógica para ajustar o áudio com base no valor do decibelQuantity
         console.log(
-            `Ajustando frequência ${frequencies[index].frequency} para ${value} dB`
+            `Ajustando frequência ${frequencies[index].frequency} para ${value * 100} dB`
         )
         // Exemplo simples: console.log ou enviar para uma API de ajuste de áudio local
     }
