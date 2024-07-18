@@ -15,9 +15,7 @@ export const Routes = () => {
     return (
         <>
             <NavigationContainer ref={navigationRef}>
-                {/* <AuthRoutes /> */}
-                <AppRoutes />
-                {/* {user.id !== undefined ? <AppRoutes /> : <AuthRoutes />} */}
+                {user.id ? <AppRoutes /> : <AuthRoutes />}
             </NavigationContainer>
             <Toast />
         </>
