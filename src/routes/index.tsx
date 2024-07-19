@@ -9,17 +9,17 @@ import {navigationRef} from '../config/RootNavigation'
 import {useAuth} from '../hooks/auth'
 
 export const Routes = () => {
-    const {user} = useAuth()
-    console.log('ID', user?.id)
+	const {user} = useAuth()
+	console.log('ID', user?.id)
 
-    return (
-        <>
-            <NavigationContainer ref={navigationRef}>
-                {/* <AuthRoutes /> */}
-                {/* <AppRoutes /> */}
-                {user.id !== undefined ? <AppRoutes /> : <AuthRoutes />}
-            </NavigationContainer>
-            <Toast />
-        </>
-    )
+	return (
+		<>
+			<NavigationContainer ref={navigationRef}>
+				{/* <AuthRoutes /> */}
+				{/* <AppRoutes /> */}
+				{user.id !== undefined ? <AppRoutes /> : <AuthRoutes />}
+			</NavigationContainer>
+			<Toast />
+		</>
+	)
 }
