@@ -8,18 +8,41 @@ import {Icons} from '@assets/icons'
 import {scale} from 'react-native-size-matters'
 import VerticalSlider from '@components/Slider'
 
+import {NativeModules} from 'react-native'
+import Slider from '@react-native-community/slider'
+
 import * as S from './styles'
-import {useEqualizer} from '../../context/EqualizerContext'
-import {Button} from '@components/Button'
+
+const {AudioEqualizerModule} = NativeModules
 
 interface EqualizerProps {
     handleScrollEnabled: (enabled: boolean) => void
 }
 
 export const Equalizer = ({handleScrollEnabled}: EqualizerProps) => {
-    const {} = useEqualizer()
-
     const [frequencies, setFrequencies] = useState(frequenciesList)
+    const [preAmpDB, setPreAmpDB] = useState(0)
+    console.log('🚀 ~ Equalizer ~ preAmpDB:', preAmpDB)
+
+    const handleBandGain = async (band: number, level: number) => {
+        try {
+            await AudioEqualizerModule.setBandGain(band, level)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    const handlePreAmpGain = async (level: number) => {
+        try {
+            await AudioEqualizerModule.setInputGain(level)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const handlePreAmpDB = (level: number) => {
+        setPreAmpDB(level)
+        handlePreAmpGain(level)
+    }
 
     const handleValueChange = (index: number, value: number) => {
         const updatedFrequencies = [...frequencies]
@@ -29,6 +52,10 @@ export const Equalizer = ({handleScrollEnabled}: EqualizerProps) => {
     }
 
     const adjustAudio = (index: number, value: number) => {
+        handleBandGain(index, value)
+        // if (index < 5) {
+        //     setBandLevel(index, value * 100)
+        // }
         // Aqui você pode implementar a lógica para ajustar o áudio com base no valor do decibelQuantity
         console.log(
             `Ajustando frequência ${frequencies[index].frequency} para ${value} dB`
@@ -60,8 +87,8 @@ export const Equalizer = ({handleScrollEnabled}: EqualizerProps) => {
                         onTouchEnd={() => handleScrollEnabled(true)}
                         onTouchCancel={() => handleScrollEnabled(true)}>
                         <VerticalSlider
-                            min={-10}
-                            max={10}
+                            min={-12}
+                            max={12}
                             step={1}
                             value={bar.decibelQuantity}
                             onValueChange={value =>
@@ -74,6 +101,54 @@ export const Equalizer = ({handleScrollEnabled}: EqualizerProps) => {
                     </S.ContainerBar>
                 ))}
             </S.ContainerBars>
+
+            <Spacer h={16} />
+
+            <Text fontSize={12} style={{textAlign: 'center'}}>
+                PREAMP/dB
+            </Text>
+
+            <Spacer h={16} />
+
+            <S.ContainerSlider>
+                <Text fontSize={12}>-12</Text>
+
+                <View
+                    style={{
+                        height: 2,
+                        width: '80%',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}>
+                    <Slider
+                        minimumValue={-12}
+                        maximumValue={12}
+                        step={1}
+                        value={preAmpDB}
+                        onValueChange={value => handlePreAmpDB(value)}
+                        minimumTrackTintColor="transparent"
+                        maximumTrackTintColor="transparent"
+                        thumbTintColor="#242424"
+                        style={{
+                            width: '100%',
+                            height: 2
+                        }}
+                    />
+                    <View
+                        style={{
+                            position: 'absolute',
+                            width: '90%',
+                            height: 2,
+                            backgroundColor: '#242424',
+                            zIndex: -10
+                        }}
+                    />
+                </View>
+
+                <Text fontSize={12}>+12</Text>
+            </S.ContainerSlider>
+
+            <Spacer h={16} />
         </S.Container>
     )
 }

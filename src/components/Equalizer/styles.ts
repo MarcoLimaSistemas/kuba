@@ -21,5 +21,10 @@ export const ContainerBars = styled.View`
 
 export const ContainerBar = styled.View`
     align-items: center;
-    /* border: red; */
+`
+
+export const ContainerSlider = styled.View`
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 `
