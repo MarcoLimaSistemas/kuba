@@ -27,6 +27,7 @@ interface IGetInfoResponse {
 }
 
 interface IUserEditInfoRequest {
+	profilePhoto?: string;
 	name: string;
 	description: string;
 	email: string;
@@ -38,8 +39,9 @@ interface IUserEditInfoRequest {
 }
 
 class User {
-	static getInfo(): AxiosPromise<IGetInfoResponse> {
-		return api.get('/user/perfil');
+	static async getInfo() {
+		const response = await api.get<IGetInfoResponse>('/user/perfil');
+		return response.data;
 	}
 
 	static editInfo(data: IUserEditInfoRequest): AxiosPromise<any> {
