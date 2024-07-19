@@ -88,7 +88,7 @@ export function AuthProvider({ children }: AuthProps): ReactElement {
 
       showToast()
     } catch (err: any) {
-      throw new Error(err?.response.data.error.message)
+      throw new Error(err?.response.data.message)
     }
   }
 
