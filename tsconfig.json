@@ -22,7 +22,8 @@
 			"@screens/*": ["screens/*"],
 			"@schemas/*": ["schemas/*"],
 			"@models/*": ["models/*"],
-			"@services/*": ["services/*"]
+			"@services/*": ["services/*"],
+			"@utils/*": ["utils/*"]
 		}
 	}
 }
