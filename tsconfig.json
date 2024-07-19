@@ -21,7 +21,8 @@
 			"@hooks/*": ["hooks/*"],
 			"@screens/*": ["screens/*"],
 			"@schemas/*": ["schemas/*"],
-			"@models/*": ["models/*"]
+			"@models/*": ["models/*"],
+			"@services/*": ["services/*"]
 		}
 	}
 }
