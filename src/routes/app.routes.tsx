@@ -6,14 +6,11 @@ import {
 
 import * as Client from '../screens/Client'
 import {BluetoothProvider} from '../context/BluetoothContext'
-import {EqualizerProvider} from '../context/EqualizerContext'
 
 const ScreenDeviceWrapper = () => {
     return (
         <BluetoothProvider>
-            <EqualizerProvider>
-                <Client.Device />
-            </EqualizerProvider>
+            <Client.Device />
         </BluetoothProvider>
     )
 }

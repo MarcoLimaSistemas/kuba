@@ -1,19 +1,6 @@
-import React, {
-    createContext,
-    useContext,
-    ReactNode,
-    useEffect,
-    useState
-} from 'react'
+import React, {createContext, useContext, ReactNode} from 'react'
 
-import Equalizer from '../utils/equalizerModule'
-
-type EqualizerContextType = {
-    numBands: number
-    bandLevelRange: [number, number]
-    bandFrequencies: number[]
-    setBandLevel: (band: number, level: number) => void
-}
+type EqualizerContextType = {}
 
 const EqualizerContext = createContext<EqualizerContextType | undefined>(
     undefined
@@ -28,39 +15,8 @@ export const useEqualizer = (): EqualizerContextType => {
 }
 
 export const EqualizerProvider = ({children}: {children: ReactNode}) => {
-    const [numBands, setNumBands] = useState(0)
-    console.log('🚀 ~ EqualizerProvider ~ numBands:', numBands)
-    const [bandLevelRange, setBandLevelRange] = useState<[number, number]>([
-        0, 0
-    ])
-    const [bandFrequencies, setBandFrequencies] = useState<number[]>([])
-    console.log('🚀 ~ EqualizerProvider ~ bandFrequencies:', bandFrequencies)
-
-    useEffect(() => {
-        async function fetchData() {
-            await Equalizer.initEqualizer()
-            const bands = await Equalizer.getNumberOfBands()
-            setNumBands(bands)
-            // const range = await Equalizer.getBandLevelRange()
-            // setBandLevelRange(range)
-
-            const frequencies = []
-            for (let i = 0; i < bands; i++) {
-                const freq = await Equalizer.getBandFreq(i)
-                frequencies.push(freq)
-            }
-            setBandFrequencies(frequencies)
-        }
-        fetchData()
-    }, [])
-
-    const setBandLevel = async (band: number, level: number) => {
-        await Equalizer.setBandLevel(band, level)
-    }
-
     return (
-        <EqualizerContext.Provider
-            value={{numBands, bandLevelRange, bandFrequencies, setBandLevel}}>
+        <EqualizerContext.Provider value={{}}>
             {children}
         </EqualizerContext.Provider>
     )
