@@ -104,7 +104,7 @@ export function Profile() {
 				</BoxText>
 
 				<BoxButtons>
-					<Button title="Loggout" onPress={logout} />
+					<Button title="Sair" onPress={logout} />
 					<Button
 						title="Editar Perfil"
 						onPress={() => navigation.navigate('EditProfile')}
