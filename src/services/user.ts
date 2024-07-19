@@ -12,6 +12,10 @@ class User {
 	static getInfo(): AxiosPromise<any> {
 		return api.get('/user/perfil');
 	}
+
+	static editInfo(data: any): AxiosPromise<any> {
+		return api.put('/user/perfil', data);
+	}
 }
 
 export default User;

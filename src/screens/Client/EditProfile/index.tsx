@@ -20,6 +20,7 @@ import { InputMasked } from '@components/InputMasked';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { EditProfileSchema } from '../../../schemas/editProfile';
 import User from '@services/user';
+import Toast from 'react-native-toast-message';
 
 type FormData = {
 	name: string;
@@ -55,7 +56,13 @@ export function EditProfile() {
 		}
 	});
 
-	const onSubmit = (data: FormData) => console.log(data);
+	const onSubmit = async (data: FormData) => {
+		await User.editInfo(data);
+		Toast.show({
+			type: 'success',
+			text1: 'Perfil atualizado com sucesso!'
+		});
+	};
 
 	//get user from service by useEffect
 	React.useEffect(() => {
