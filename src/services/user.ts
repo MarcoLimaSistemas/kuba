@@ -26,7 +26,7 @@ interface IGetInfoResponse {
 	socialNetworks: ISocialNetworks[];
 }
 
-interface IUserEditInfoRequest {
+export interface IUserEditInfoRequest {
 	profilePhoto?: string;
 	name: string;
 	description: string;
@@ -38,14 +38,19 @@ interface IUserEditInfoRequest {
 	qobuzz: string;
 }
 
+export interface IEditInfoProps {
+	userId: number;
+	data: IUserEditInfoRequest;
+}
+
 class User {
 	static async getInfo() {
 		const response = await api.get<IGetInfoResponse>('/user/perfil');
 		return response.data;
 	}
 
-	static editInfo(data: IUserEditInfoRequest): AxiosPromise<any> {
-		return api.put('/user/perfil', data);
+	static editInfo({ userId, data }: IEditInfoProps) {
+		return api.put('/user/' + userId, data);
 	}
 }
 

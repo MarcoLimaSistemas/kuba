@@ -1,6 +1,6 @@
 import { ISendEmail } from '../models/auth';
 import { useNavigation } from '@react-navigation/native';
-import User from '@services/user';
+import User, { IEditInfoProps } from '@services/user';
 import { useMutation } from '@tanstack/react-query';
 import Toast from 'react-native-toast-message';
 
@@ -8,7 +8,11 @@ export const useEditUser = () => {
 	const navigation = useNavigation();
 
 	const { mutate, isPending } = useMutation({
-		mutationFn: User.editInfo,
+		mutationFn: ({ userId, data }: IEditInfoProps) =>
+			User.editInfo({
+				userId,
+				data
+			}),
 		onSuccess: () => {
 			Toast.show({
 				type: 'success',

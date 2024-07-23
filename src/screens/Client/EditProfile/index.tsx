@@ -26,6 +26,7 @@ import { useGetUserInfo } from '@react-query/getUserInfo';
 // import { isPendingEditUser, mutateEditUser } from '@react-query/mutateEditUser';
 
 export type UserInfoFormData = {
+	profilePhoto?: string;
 	name: string;
 	description: string;
 	email: string;
@@ -39,7 +40,7 @@ export type UserInfoFormData = {
 export function EditProfile() {
 	const navigation = useNavigation();
 
-	const { data: userInfo, isLoading } = useGetUserInfo();
+	const { data: userInfo } = useGetUserInfo();
 	const { mutateEditUser, isPendingEditUser } = useEditUser();
 
 	const {
@@ -52,6 +53,8 @@ export function EditProfile() {
 	});
 
 	const onSubmit = async (data: UserInfoFormData) => {
+		if (!userInfo) return;
+
 		const requestData = {
 			name: data.name,
 			description: data.description,
@@ -63,23 +66,23 @@ export function EditProfile() {
 			qobuzz: data.qobuzz
 		};
 
-		mutateEditUser(requestData);
+		mutateEditUser({
+			userId: userInfo.user.id,
+			data: requestData
+		});
 	};
 
 	React.useEffect(() => {
 		if (!userInfo) return;
 
-		setValue('name', userInfo.data.user.name);
-		setValue('description', userInfo.data.userClient.description ?? '');
-		setValue('email', userInfo.data.user.email);
-		setValue(
-			'birthDate',
-			timestampToDate(userInfo.data.userClient.birth_date)
-		);
-		setValue('facebook', userInfo.data.socialNetworks[0]?.link ?? '');
-		setValue('instagram', userInfo.data.socialNetworks[1]?.link ?? '');
-		setValue('spotify', userInfo.data.socialNetworks[2]?.link ?? '');
-		setValue('qobuzz', userInfo.data.socialNetworks[3]?.link ?? '');
+		setValue('name', userInfo.user.name);
+		setValue('description', userInfo.userClient.description ?? '');
+		setValue('email', userInfo.user.email);
+		setValue('birthDate', timestampToDate(userInfo.userClient.birth_date));
+		setValue('facebook', userInfo.socialNetworks[0]?.link ?? '');
+		setValue('instagram', userInfo.socialNetworks[1]?.link ?? '');
+		setValue('spotify', userInfo.socialNetworks[2]?.link ?? '');
+		setValue('qobuzz', userInfo.socialNetworks[3]?.link ?? '');
 	}, [userInfo]);
 
 	console.log(' isPendingEditUser:', isPendingEditUser);
