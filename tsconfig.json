@@ -23,7 +23,8 @@
 			"@schemas/*": ["schemas/*"],
 			"@models/*": ["models/*"],
 			"@services/*": ["services/*"],
-			"@utils/*": ["utils/*"]
+			"@utils/*": ["utils/*"],
+			"@react-query/*": ["react-query/*"]
 		}
 	}
 }
