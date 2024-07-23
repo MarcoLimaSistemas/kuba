@@ -1,154 +1,156 @@
-import React, {useState} from 'react'
-import Text from '@components/Text'
+import React, { useEffect, useState } from 'react';
+import Text from '@components/Text';
 
-import {frequencies as frequenciesList} from './data'
-import {Spacer} from '@components/Spacer'
-import {View} from 'react-native'
-import {Icons} from '@assets/icons'
-import {scale} from 'react-native-size-matters'
-import VerticalSlider from '@components/Slider'
+import { frequencies as frequenciesList } from './data';
+import { Spacer } from '@components/Spacer';
+import { View } from 'react-native';
+import { Icons } from '@assets/icons';
+import { scale } from 'react-native-size-matters';
+import VerticalSlider from '@components/Slider';
 
-import {NativeModules} from 'react-native'
-import Slider from '@react-native-community/slider'
+import { NativeModules } from 'react-native';
+import Slider from '@react-native-community/slider';
 
-import * as S from './styles'
+import * as S from './styles';
 
-const {AudioEqualizerModule} = NativeModules
+const { AudioEqualizerModule } = NativeModules;
 
 interface EqualizerProps {
-    handleScrollEnabled: (enabled: boolean) => void
+	handleScrollEnabled: (enabled: boolean) => void;
 }
 
-export const Equalizer = ({handleScrollEnabled}: EqualizerProps) => {
-    const [frequencies, setFrequencies] = useState(frequenciesList)
-    const [preAmpDB, setPreAmpDB] = useState(0)
-    console.log('🚀 ~ Equalizer ~ preAmpDB:', preAmpDB)
+export const Equalizer = ({ handleScrollEnabled }: EqualizerProps) => {
+	const [frequencies, setFrequencies] = useState(frequenciesList);
+	const [preAmpDB, setPreAmpDB] = useState(0);
 
-    const handleBandGain = async (band: number, level: number) => {
-        try {
-            await AudioEqualizerModule.setBandGain(band, level)
-        } catch (error) {
-            console.log(error)
-        }
-    }
-    const handlePreAmpGain = async (level: number) => {
-        try {
-            await AudioEqualizerModule.setInputGain(level)
-        } catch (error) {
-            console.log(error)
-        }
-    }
+	const handleBandGain = async (band: number, level: number) => {
+		try {
+			await AudioEqualizerModule.setBandGain(band, level);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
-    const handlePreAmpDB = (level: number) => {
-        setPreAmpDB(level)
-        handlePreAmpGain(level)
-    }
+	const handlePreAmpGain = async (level: number) => {
+		try {
+			await AudioEqualizerModule.setInputGain(level);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
-    const handleValueChange = (index: number, value: number) => {
-        const updatedFrequencies = [...frequencies]
-        updatedFrequencies[index].decibelQuantity = value
-        setFrequencies(updatedFrequencies)
-        adjustAudio(index, value)
-    }
+	const handlePreAmpDB = (level: number) => {
+		setPreAmpDB(level);
+	};
 
-    const adjustAudio = (index: number, value: number) => {
-        handleBandGain(index, value)
-        // if (index < 5) {
-        //     setBandLevel(index, value * 100)
-        // }
-        // Aqui você pode implementar a lógica para ajustar o áudio com base no valor do decibelQuantity
-        console.log(
-            `Ajustando frequência ${frequencies[index].frequency} para ${value} dB`
-        )
-        // Exemplo simples: console.log ou enviar para uma API de ajuste de áudio local
-    }
+	const handleValueChange = (index: number, value: number) => {
+		const updatedFrequencies = [...frequencies];
+		updatedFrequencies[index].decibelQuantity = value;
+		setFrequencies(updatedFrequencies);
+		adjustAudio(index, value);
+	};
 
-    return (
-        <S.Container>
-            <S.Header>
-                <Text variant="bold">Equalizador</Text>
+	const adjustAudio = (index: number, value: number) => {
+		handleBandGain(index, value);
 
-                <View
-                    style={{
-                        flexDirection: 'row'
-                    }}>
-                    <Icons.Plus width={scale(32)} height={scale(32)} />
-                    <Spacer w={16} />
-                    <Icons.Pencil width={scale(32)} height={scale(32)} />
-                </View>
-            </S.Header>
+		console.log(
+			`Ajustando frequência ${frequencies[index].frequency} para ${value} dB`
+		);
+	};
 
-            <S.ContainerBars>
-                {frequencies.map((bar, index) => (
-                    <S.ContainerBar
-                        key={bar.frequency}
-                        style={{width: 32}}
-                        onTouchStart={() => handleScrollEnabled(false)}
-                        onTouchEnd={() => handleScrollEnabled(true)}
-                        onTouchCancel={() => handleScrollEnabled(true)}>
-                        <VerticalSlider
-                            min={-12}
-                            max={12}
-                            step={1}
-                            value={bar.decibelQuantity}
-                            onValueChange={value =>
-                                handleValueChange(index, value)
-                            }
-                        />
+	useEffect(() => {
+		handlePreAmpGain(preAmpDB);
+	}, [preAmpDB]);
 
-                        <Spacer h={16} />
-                        <Text fontSize={12}>{bar.frequency}</Text>
-                    </S.ContainerBar>
-                ))}
-            </S.ContainerBars>
+	return (
+		<S.Container>
+			<S.Header>
+				<Text variant="bold">Equalizador</Text>
 
-            <Spacer h={16} />
+				<View
+					style={{
+						flexDirection: 'row'
+					}}>
+					<Icons.Plus width={scale(32)} height={scale(32)} />
+					<Spacer w={16} />
+					<Icons.Pencil width={scale(32)} height={scale(32)} />
+				</View>
+			</S.Header>
 
-            <Text fontSize={12} style={{textAlign: 'center'}}>
-                PREAMP/dB
-            </Text>
+			<S.ContainerBars>
+				{frequencies.map((bar, index) => (
+					<S.ContainerBar
+						key={bar.frequency}
+						style={{ width: 32 }}
+						onTouchStart={() => handleScrollEnabled(false)}
+						onTouchEnd={() => handleScrollEnabled(true)}
+						onTouchCancel={() => handleScrollEnabled(true)}>
+						<VerticalSlider
+							min={0.0}
+							max={24.0}
+							step={1}
+							value={bar.decibelQuantity}
+							onValueChange={value =>
+								handleValueChange(index, value)
+							}
+						/>
 
-            <Spacer h={16} />
+						<Spacer h={16} />
+						<Text fontSize={12}>{bar.frequency}</Text>
+					</S.ContainerBar>
+				))}
+			</S.ContainerBars>
 
-            <S.ContainerSlider>
-                <Text fontSize={12}>-12</Text>
+			<Spacer h={16} />
 
-                <View
-                    style={{
-                        height: 2,
-                        width: '80%',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}>
-                    <Slider
-                        minimumValue={-12}
-                        maximumValue={12}
-                        step={1}
-                        value={preAmpDB}
-                        onValueChange={value => handlePreAmpDB(value)}
-                        minimumTrackTintColor="transparent"
-                        maximumTrackTintColor="transparent"
-                        thumbTintColor="#242424"
-                        style={{
-                            width: '100%',
-                            height: 2
-                        }}
-                    />
-                    <View
-                        style={{
-                            position: 'absolute',
-                            width: '90%',
-                            height: 2,
-                            backgroundColor: '#242424',
-                            zIndex: -10
-                        }}
-                    />
-                </View>
+			<Text fontSize={12} style={{ textAlign: 'center' }}>
+				PREAMP/dB
+			</Text>
 
-                <Text fontSize={12}>+12</Text>
-            </S.ContainerSlider>
+			<Spacer h={16} />
 
-            <Spacer h={16} />
-        </S.Container>
-    )
-}
+			<S.ContainerSlider>
+				<Text fontSize={12}>-12</Text>
+
+				<View
+					style={{
+						height: 2,
+						width: '80%',
+						justifyContent: 'center',
+						alignItems: 'center'
+					}}
+					onTouchStart={() => handleScrollEnabled(false)}
+					onTouchEnd={() => handleScrollEnabled(true)}
+					onTouchCancel={() => handleScrollEnabled(true)}>
+					<Slider
+						minimumValue={0.0}
+						maximumValue={24.0}
+						step={1}
+						value={preAmpDB}
+						onValueChange={value => handlePreAmpDB(value)}
+						minimumTrackTintColor="transparent"
+						maximumTrackTintColor="transparent"
+						thumbTintColor="#242424"
+						style={{
+							width: '100%',
+							height: 2
+						}}
+					/>
+					<View
+						style={{
+							position: 'absolute',
+							width: '90%',
+							height: 2,
+							backgroundColor: '#242424',
+							zIndex: -10
+						}}
+					/>
+				</View>
+
+				<Text fontSize={12}>+12</Text>
+			</S.ContainerSlider>
+
+			<Spacer h={16} />
+		</S.Container>
+	);
+};
