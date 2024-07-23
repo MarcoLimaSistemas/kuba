@@ -24,6 +24,7 @@
 			"@models/*": ["models/*"],
 			"@services/*": ["services/*"],
 			"@utils/*": ["utils/*"],
+			"@config/*": ["config/*"],
 			"@react-query/*": ["react-query/*"]
 		}
 	}
