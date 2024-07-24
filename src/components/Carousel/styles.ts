@@ -1,24 +1,16 @@
 import styled from 'styled-components/native';
-import { RFValue } from 'react-native-responsive-fontsize';
 
+import { scale } from 'react-native-size-matters';
 
-export const MessageText = styled.Text`
-  color: ${({ theme }) => theme.COLORS.red_900};
-  font-size: 14px;
-  padding: 24px;
-  text-align: center;
-`
-
-export const ContainerCarousel = styled.View`
-  width: 100%;
+export const Container = styled.View`
+	padding: 0 ${scale(16)}px;
 `;
 
-
-export const TitleCarousel = styled.Text`
-  font-size: ${RFValue(18)}px;
-  color: ${({ theme }) => theme.COLORS.gray_100};
-  padding-left: 16px;
-  margin: ${RFValue(8)}px;
-  margin-bottom: ${RFValue(16)}px;
+export const ButtonAdd = styled.TouchableOpacity`
+	background: rgba(255, 255, 255, 0.8);
+	width: ${scale(152)}px;
+	justify-content: center;
+	align-items: center;
+	border-radius: ${scale(8)}px;
+	height: ${scale(180)}px;
 `;
-

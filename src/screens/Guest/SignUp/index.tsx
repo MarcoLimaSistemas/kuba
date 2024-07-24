@@ -18,6 +18,7 @@ import { Error } from '../SignIn/styles';
 import { SignUpSchema } from '../../../schemas/signup';
 import { InputMasked } from '@components/InputMasked';
 import Toast from 'react-native-toast-message';
+import { Spacer } from '@components/Spacer';
 
 export function SignUp() {
 	const navigation = useNavigation();
@@ -73,9 +74,11 @@ export function SignUp() {
 
 	return (
 		<Container>
-			<Header title="Cadastro" activeButtonGoBack={true} />
+			<Header title="Cadastro" />
 
-			<Content>
+			<Spacer h={32} />
+
+			<Content showsVerticalScrollIndicator={false}>
 				<InputsContainer>
 					<InputUnMasked
 						control={control}

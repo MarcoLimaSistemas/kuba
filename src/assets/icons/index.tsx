@@ -13,10 +13,14 @@ import Pencil from './pencil.svg';
 import Plus from './plus.svg';
 import Close from './close.svg';
 import Trash from './trash.svg';
+import Logo from './logo.svg';
+import ArrowLeft from './arrow_left.svg';
 
 export const Icons = {
 	Pencil,
 	Plus,
 	Close,
-	Trash
+	Trash,
+	Logo,
+	ArrowLeft
 };
