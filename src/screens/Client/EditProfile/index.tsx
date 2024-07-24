@@ -23,7 +23,7 @@ import User from '@services/user';
 import { dateToTimestamp, timestampToDate } from '@utils/date';
 import { useEditUser } from '@react-query/mutateEditUser';
 import { useGetUserInfo } from '@react-query/getUserInfo';
-// import { isPendingEditUser, mutateEditUser } from '@react-query/mutateEditUser';
+import { useAuth } from '@hooks/auth';
 
 export type UserInfoFormData = {
 	profilePhoto?: string;
@@ -39,8 +39,9 @@ export type UserInfoFormData = {
 
 export function EditProfile() {
 	const navigation = useNavigation();
+	const { user } = useAuth();
+	const { data: userInfo } = useGetUserInfo(user.id);
 
-	const { data: userInfo } = useGetUserInfo();
 	const { mutateEditUser, isPendingEditUser } = useEditUser();
 
 	const {
@@ -67,7 +68,7 @@ export function EditProfile() {
 		};
 
 		mutateEditUser({
-			userId: userInfo.user.id,
+			userId: userInfo.id,
 			data: requestData
 		});
 	};
@@ -75,17 +76,15 @@ export function EditProfile() {
 	React.useEffect(() => {
 		if (!userInfo) return;
 
-		setValue('name', userInfo.user.name);
-		setValue('description', userInfo.userClient.description ?? '');
-		setValue('email', userInfo.user.email);
-		setValue('birthDate', timestampToDate(userInfo.userClient.birth_date));
-		setValue('facebook', userInfo.socialNetworks[0]?.link ?? '');
-		setValue('instagram', userInfo.socialNetworks[1]?.link ?? '');
-		setValue('spotify', userInfo.socialNetworks[2]?.link ?? '');
-		setValue('qobuzz', userInfo.socialNetworks[3]?.link ?? '');
+		setValue('name', userInfo.name);
+		setValue('description', userInfo.client.description ?? '');
+		setValue('email', userInfo.email);
+		setValue('birthDate', timestampToDate(userInfo.client.birth_date));
+		setValue('facebook', userInfo.client.socialNetworks[0]?.link ?? '');
+		setValue('instagram', userInfo.client.socialNetworks[1]?.link ?? '');
+		setValue('spotify', userInfo.client.socialNetworks[2]?.link ?? '');
+		setValue('qobuzz', userInfo.client.socialNetworks[3]?.link ?? '');
 	}, [userInfo]);
-
-	console.log(' isPendingEditUser:', isPendingEditUser);
 
 	return (
 		<Container>
