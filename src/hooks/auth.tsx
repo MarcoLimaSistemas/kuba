@@ -14,12 +14,14 @@ import {
 	ISendToken,
 	ISignInCredentials
 } from '../models/auth';
-import { IUserClient } from '../models/user';
+import { IUser } from '../models/user';
 import api from '../services/api';
 import Auth from '../services/auth';
+import { STORAGE_KEY } from '@config/storage';
+import User from '@services/user';
 
 interface AuthContextData {
-	user: IUserClient;
+	user: IUser;
 	token: string | null;
 	emailForgetPassword: string;
 
@@ -29,6 +31,17 @@ interface AuthContextData {
 	updatePassword: (data: IResetPassword) => Promise<void>;
 	logout(): void;
 }
+
+export interface ISignInData {
+	id: number;
+	name: string;
+	token: {
+		type: string;
+		token: string;
+		expires_at: string;
+	};
+}
+
 interface AuthProps {
 	children: ReactNode;
 }
@@ -36,7 +49,7 @@ interface AuthProps {
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export function AuthProvider({ children }: AuthProps): ReactElement {
-	const [user, setUser] = useState<IUserClient>({} as IUserClient);
+	const [user, setUser] = useState<IUser>({} as IUser);
 	const [token, setToken] = useState('');
 
 	const [emailForgetPassword, setEmailForgetPassword] = useState('');
@@ -52,15 +65,14 @@ export function AuthProvider({ children }: AuthProps): ReactElement {
 	useEffect(() => {
 		async function loadStorageData(): Promise<void> {
 			try {
-				const storage = await AsyncStorage.getItem('@KubaApp:data');
+				const storage = await AsyncStorage.getItem(STORAGE_KEY);
 
 				if (storage !== null) {
-					const storageData = JSON.parse(storage);
+					const storageData: ISignInData = JSON.parse(storage);
 
-					api.defaults.headers.common.Authorization = `Bearer ${storageData.data.token}`;
+					api.defaults.headers.common.Authorization = `Bearer ${storageData.token.token}`;
 
-					setUser(storageData.user[0]);
-					setToken(storageData.data.token);
+					setToken(storageData.token.token);
 				}
 			} catch (error: any) {
 				Toast.show({
@@ -78,18 +90,41 @@ export function AuthProvider({ children }: AuthProps): ReactElement {
 
 	async function signIn(data: ISignInCredentials) {
 		try {
-			const response = await Auth.signin(data);
-			console.log('🚀 ~ signIn ~ response:', response.data);
+			const response = await Auth.signIn(data);
+
 			await AsyncStorage.setItem(
-				'@KubaApp:data',
+				STORAGE_KEY,
 				JSON.stringify(response.data)
 			);
 
 			api.defaults.headers.common['Authorization'] =
-				`Bearer ${response.data.token}`;
+				`Bearer ${response.data.token.token}`;
 
-			setToken(response.data.token);
-			setUser(response.data);
+			setToken(response.data.token.token);
+
+			//get user info
+			const userInfoResponse = await User.getInfo(response.data.id);
+
+			setUser({
+				id: userInfoResponse.id,
+				name: userInfoResponse.name,
+				email: userInfoResponse.email,
+				role: userInfoResponse.role,
+				created_at: userInfoResponse.created_at,
+				updated_at: userInfoResponse.updated_at,
+				client: {
+					id: userInfoResponse.client.id,
+					user_id: userInfoResponse.client.user_id,
+					description: userInfoResponse.client.description,
+					phone: userInfoResponse.client.phone,
+					has_kuba_product: userInfoResponse.client.has_kuba_product,
+					birth_date: userInfoResponse.client.birth_date,
+					profile_url: userInfoResponse.client.profile_url,
+					created_at: userInfoResponse.client.created_at,
+					updated_at: userInfoResponse.client.updated_at,
+					socialNetworks: userInfoResponse.client.socialNetworks
+				}
+			});
 
 			showToast();
 		} catch (err: any) {
@@ -150,8 +185,8 @@ export function AuthProvider({ children }: AuthProps): ReactElement {
 	}
 
 	async function logout() {
-		AsyncStorage.clear();
-		setUser({} as IUserClient);
+		await AsyncStorage.clear();
+		setUser({} as IUser);
 		setToken('');
 		!!user;
 	}

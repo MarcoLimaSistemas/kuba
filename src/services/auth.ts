@@ -1,22 +1,29 @@
 import { AxiosPromise } from 'axios';
-import { IResetPassword, ISendEmail, ISendToken, ISignInCredentials } from '../models/auth';
+import {
+	IResetPassword,
+	ISendEmail,
+	ISendToken,
+	ISignInCredentials
+} from '../models/auth';
 
 import api from './api';
+import { ISignInData } from '@hooks/auth';
 
 class Auth {
-  static signin(data: ISignInCredentials): AxiosPromise<any> {
-    return api.post('/signin', data);
-  }
-  static sendEmailResetPassword(data: ISendEmail): AxiosPromise<any> {
-    return api.post('/auth/forgot-password', data);
-  }
-  static validateToken(data: ISendToken): AxiosPromise<any> {
-    return api.post('/auth/validate-code', data);
-  }
+	static signIn(data: ISignInCredentials): AxiosPromise<ISignInData> {
+		return api.post('/signin', data);
+	}
 
-  static resetPassword(data: IResetPassword): AxiosPromise<any> {
-    return api.post('/auth/reset-password', data);
-  }
-};
+	static sendEmailResetPassword(data: ISendEmail): AxiosPromise<any> {
+		return api.post('/auth/forgot-password', data);
+	}
+	static validateToken(data: ISendToken): AxiosPromise<any> {
+		return api.post('/auth/validate-code', data);
+	}
+
+	static resetPassword(data: IResetPassword): AxiosPromise<any> {
+		return api.post('/auth/reset-password', data);
+	}
+}
 
 export default Auth;

@@ -36,11 +36,10 @@ import {
 export function Profile() {
 	const navigation = useNavigation();
 
-	const { logout } = useAuth();
-
-	const { data: userInfo } = useGetUserInfo();
+	const { user, logout } = useAuth();
 
 	const [isEnabled, setIsEnabled] = useState(false);
+
 	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
 	async function onProductKuba() {
@@ -62,18 +61,16 @@ export function Profile() {
 		// onProductKuba();
 	}, [isEnabled]);
 
-	if (!userInfo) return;
+	if (!user) return;
 
 	return (
 		<Container>
 			<ScrollView showsVerticalScrollIndicator={false}>
 				<Header title="Perfil" activeButtonGoBack={true} />
 				<ImageProfile source={profile} />
-				<Name>{userInfo.user?.name}</Name>
+				<Name>{user?.name}</Name>
 
-				<Description>
-					{userInfo?.userClient?.description ?? '---'}
-				</Description>
+				<Description>{user.client?.description ?? '---'}</Description>
 
 				<ContainerSwitch>
 					<Switch
@@ -98,13 +95,11 @@ export function Profile() {
 				<BoxText>
 					<Separator>
 						<TextBold>Data de nascimento</TextBold>
-						<Text>
-							{timestampToDate(userInfo.userClient.birth_date)}
-						</Text>
+						<Text>{timestampToDate(user.client.birth_date)}</Text>
 					</Separator>
 
 					<TextBold>Email</TextBold>
-					<Text>{userInfo.user.email}</Text>
+					<Text>{user.email}</Text>
 				</BoxText>
 
 				<BoxButtons>
