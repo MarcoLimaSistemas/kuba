@@ -56,11 +56,15 @@ export function AuthProvider({ children }: AuthProps): ReactElement {
 
 				if (storage !== null) {
 					const storageData = JSON.parse(storage);
+					console.log(
+						'🚀 ~ loadStorageData ~ storageData:',
+						storageData
+					);
 
-					api.defaults.headers.common.Authorization = `Bearer ${storageData.data.token}`;
+					api.defaults.headers.common.Authorization = `Bearer ${storageData.token.token}`;
 
-					setUser(storageData.user[0]);
-					setToken(storageData.data.token);
+					setUser(storageData);
+					setToken(storageData.token);
 				}
 			} catch (error: any) {
 				Toast.show({
@@ -88,7 +92,7 @@ export function AuthProvider({ children }: AuthProps): ReactElement {
 			api.defaults.headers.common['Authorization'] =
 				`Bearer ${response.data.token}`;
 
-			setToken(response.data.token);
+			setToken(response.data.token.token);
 			setUser(response.data);
 
 			showToast();
