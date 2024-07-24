@@ -1,30 +1,5 @@
-import { AxiosPromise } from 'axios';
-
 import api from './api';
-import { UserInfoFormData } from '@screens/Client/EditProfile';
-import { ISocialNetworks, UserType } from '@models/user';
-
-interface IGetInfoResponse {
-	user: {
-		id: number;
-		name: string;
-		email: string;
-		user_type: UserType;
-		created_at: string;
-		updated_at: string;
-	};
-	userClient: {
-		id: number;
-		user_id: number;
-		description: string | null;
-		phone: string | null;
-		kuba_product: string | null;
-		birth_date: string;
-		created_at: string;
-		updated_at: string;
-	};
-	socialNetworks: ISocialNetworks[];
-}
+import { IUser } from '@models/user';
 
 export interface IUserEditInfoRequest {
 	profilePhoto?: string;
@@ -44,8 +19,8 @@ export interface IEditInfoProps {
 }
 
 class User {
-	static async getInfo() {
-		const response = await api.get<IGetInfoResponse>('/user/perfil');
+	static async getInfo(userId: number) {
+		const response = await api.get<IUser>('/user/' + userId);
 		return response.data;
 	}
 

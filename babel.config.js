@@ -27,6 +27,7 @@ module.exports = function (api) {
 						'@models': './src/models',
 						'@services': './src/services',
 						'@utils': './src/utils',
+						'@config': './src/config',
 						'@react-query': './src/react-query'
 					}
 				}
