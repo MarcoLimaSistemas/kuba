@@ -84,12 +84,10 @@ export function Home() {
 
 			<Spacer h={32} />
 
-			{/* <View style={{}}> */}
 			<Carousel data={devices} />
-			{/* </View> */}
 
 			<Container>
-				<Spacer h={16} />
+				{/* <Spacer h={16} /> */}
 
 				<ContainerSchoolKuba
 					onPress={() => navigation.navigate('School')}>

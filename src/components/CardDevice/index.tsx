@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Box, Container, ContainerImage, Image } from './styles';
 import { Spacer } from '@components/Spacer';
 import Text from '@components/Text';
+import { scale } from 'react-native-size-matters';
 
 interface CardDeviceProps {
 	title: string;
@@ -17,7 +18,9 @@ export function CardDevice({ title, id }: CardDeviceProps) {
 	return (
 		<Container
 			style={{
-				elevation: 8
+				elevation: 4,
+				marginVertical: scale(4),
+				marginRight: scale(8)
 			}}
 			onPress={() => navigate('Device', { deviceID: id })}>
 			<ContainerImage>
