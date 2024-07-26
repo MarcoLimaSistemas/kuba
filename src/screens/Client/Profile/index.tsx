@@ -54,7 +54,13 @@ export function Profile() {
 			<ScrollView showsVerticalScrollIndicator={false}>
 				<Header title="Perfil" />
 				<Spacer h={32} />
-				<ImageProfile source={profile} />
+				<ImageProfile
+					source={
+						user?.client.profile_url
+							? { uri: user.client.profile_url }
+							: require('@assets/images/avatar.png')
+					}
+				/>
 				<Name>{user?.name}</Name>
 
 				<Description>
