@@ -32,6 +32,7 @@ import {
 } from './styles';
 import { userDetails } from '../../../react-query/userDetails';
 import { Spacer } from '@components/Spacer';
+import { Loading } from '@components/Loading';
 
 export function Profile() {
 	const navigation = useNavigation();
@@ -45,7 +46,7 @@ export function Profile() {
 	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
 	if (isLoading) {
-		return null;
+		return <Loading />;
 	}
 
 	return (

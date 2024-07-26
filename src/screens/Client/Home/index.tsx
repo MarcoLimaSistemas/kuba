@@ -63,7 +63,7 @@ export function Home() {
 	return (
 		<>
 			<ContainerHeader>
-				<Header />
+				<Header typeLogo="white" />
 				<ImageHeaderHome source={background} />
 
 				<View
@@ -71,7 +71,9 @@ export function Home() {
 						paddingHorizontal: scale(16),
 						marginTop: 'auto'
 					}}>
-					<Text color="#FFF">Escola Kuba</Text>
+					<Text color="#FFF" variant="light">
+						Escola Kuba
+					</Text>
 					<Spacer h={4} />
 					<Text variant="bold" color="#FFF">
 						Como tirar o melhor som de um fone?

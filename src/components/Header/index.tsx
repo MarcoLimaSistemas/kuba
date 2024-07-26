@@ -8,14 +8,20 @@ import { TouchableOpacity } from 'react-native';
 import * as S from './styles';
 import Text from '@components/Text';
 import { Spacer } from '@components/Spacer';
+import { userDetails } from '@react-query/userDetails';
 
 interface IHeaderProps {
 	title?: string | undefined;
+	typeLogo?: 'black' | 'white';
 }
 
-export const Header = ({ title }: IHeaderProps) => {
+export const Header = ({ title, typeLogo = 'black' }: IHeaderProps) => {
 	const navigation = useNavigation();
 	const insets = useSafeAreaInsets();
+
+	const { data } = userDetails({
+		isEnabled: !title
+	});
 
 	const goToProfile = () => {
 		navigation.navigate('Profile');
@@ -43,11 +49,19 @@ export const Header = ({ title }: IHeaderProps) => {
 				</S.ContainerWithoutAvatar>
 			) : (
 				<S.ContainerWithAvatar>
-					<Icons.Logo />
+					{typeLogo === 'black' ? (
+						<Icons.Logo />
+					) : (
+						<Icons.LogoWhite />
+					)}
 
 					<TouchableOpacity onPress={goToProfile}>
 						<S.Avatar
-							source={require('@assets/images/Profile.png')}
+							source={
+								data?.client.profile_url
+									? { uri: data?.client?.profile_url }
+									: require('@assets/images/avatar.png')
+							}
 						/>
 					</TouchableOpacity>
 				</S.ContainerWithAvatar>

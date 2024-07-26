@@ -49,31 +49,6 @@ export function AuthProvider({
 		});
 	};
 
-	useEffect(() => {
-		async function loadStorageData(): Promise<void> {
-			try {
-				const storage = await AsyncStorage.getItem(STORAGE_KEY);
-
-				if (storage !== null) {
-					const storageData = JSON.parse(storage);
-
-					api.defaults.headers.common.Authorization = `Bearer ${storageData.token.token}`;
-					setUser(storageData);
-				}
-			} catch (error: any) {
-				Toast.show({
-					type: 'error',
-					text1: 'Error',
-					text2: 'Logout realizado!'
-				});
-
-				logout();
-			}
-		}
-
-		loadStorageData();
-	}, []);
-
 	async function signIn(credentials: ISignInCredentials) {
 		try {
 			const { data } = await Auth.signIn(credentials);
@@ -147,6 +122,29 @@ export function AuthProvider({
 		await AsyncStorage.clear();
 		setUser(null);
 	}
+
+	useEffect(() => {
+		(async () => {
+			try {
+				const storage = await AsyncStorage.getItem(STORAGE_KEY);
+
+				if (storage !== null) {
+					const storageData = JSON.parse(storage);
+
+					api.defaults.headers.common.Authorization = `Bearer ${storageData.token.token}`;
+					setUser(storageData);
+				}
+			} catch (error: any) {
+				Toast.show({
+					type: 'error',
+					text1: 'Error',
+					text2: 'Logout realizado!'
+				});
+
+				logout();
+			}
+		})();
+	}, []);
 
 	return (
 		<AuthContext.Provider

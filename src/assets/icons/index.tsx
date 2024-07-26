@@ -14,6 +14,7 @@ import Plus from './plus.svg';
 import Close from './close.svg';
 import Trash from './trash.svg';
 import Logo from './logo.svg';
+import LogoWhite from './logo_white.svg';
 import ArrowLeft from './arrow_left.svg';
 
 export const Icons = {
@@ -22,5 +23,6 @@ export const Icons = {
 	Close,
 	Trash,
 	Logo,
+	LogoWhite,
 	ArrowLeft
 };

@@ -1,11 +1,17 @@
-import {StyleProp, TextStyle} from 'react-native'
+import { StyleProp, TextStyle } from 'react-native';
 
-export type TTextVariant = 'regular' | 'lightItalic' | 'bold'
+export type TTextVariant =
+	| 'thin'
+	| 'light'
+	| 'lightItalic'
+	| 'regular'
+	| 'bold'
+	| 'black';
 
 export interface ITextProps {
-    variant?: TTextVariant
-    color?: string
-    fontSize?: number
-    style?: StyleProp<TextStyle>
-    children: React.ReactNode
+	variant?: TTextVariant;
+	color?: string;
+	fontSize?: number;
+	style?: StyleProp<TextStyle>;
+	children: React.ReactNode;
 }
