@@ -12,17 +12,15 @@ import {
 	IResetPassword,
 	ISendEmail,
 	ISendToken,
-	ISignInCredentials
+	ISignInCredentials,
+	IUserAuth
 } from '../models/auth';
-import { IUser } from '../models/user';
 import api from '../services/api';
 import Auth from '../services/auth';
 import { STORAGE_KEY } from '@config/storage';
-import User from '@services/user';
 
 interface AuthContextData {
-	user: IUser;
-	token: string | null;
+	user: IUserAuth | null;
 	emailForgetPassword: string;
 
 	signIn: (data: ISignInCredentials) => Promise<void>;
@@ -32,25 +30,14 @@ interface AuthContextData {
 	logout(): void;
 }
 
-export interface ISignInData {
-	id: number;
-	name: string;
-	token: {
-		type: string;
-		token: string;
-		expires_at: string;
-	};
-}
-
-interface AuthProps {
-	children: ReactNode;
-}
-
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
-export function AuthProvider({ children }: AuthProps): ReactElement {
-	const [user, setUser] = useState<IUser>({} as IUser);
-	const [token, setToken] = useState('');
+export function AuthProvider({
+	children
+}: {
+	children: ReactNode;
+}): ReactElement {
+	const [user, setUser] = useState<IUserAuth | null>(null);
 
 	const [emailForgetPassword, setEmailForgetPassword] = useState('');
 
@@ -68,11 +55,9 @@ export function AuthProvider({ children }: AuthProps): ReactElement {
 				const storage = await AsyncStorage.getItem(STORAGE_KEY);
 
 				if (storage !== null) {
-					const storageData: ISignInData = JSON.parse(storage);
+					const storageData = JSON.parse(storage);
 
 					api.defaults.headers.common.Authorization = `Bearer ${storageData.token.token}`;
-
-					setToken(storageData.token.token);
 				}
 			} catch (error: any) {
 				Toast.show({
@@ -88,47 +73,16 @@ export function AuthProvider({ children }: AuthProps): ReactElement {
 		loadStorageData();
 	}, []);
 
-	async function signIn(data: ISignInCredentials) {
+	async function signIn(credentials: ISignInCredentials) {
 		try {
-			const response = await Auth.signIn(data);
+			const { data } = await Auth.signIn(credentials);
 
-			await AsyncStorage.setItem(
-				STORAGE_KEY,
-				JSON.stringify(response.data)
-			);
+			await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 
 			api.defaults.headers.common['Authorization'] =
-				`Bearer ${response.data.token.token}`;
+				`Bearer ${data.token.token}`;
 
-			setToken(response.data.token.token);
-<<<<<<< HEAD
-			setUser(response.data);
-=======
-
-			//get user info
-			const userInfoResponse = await User.getInfo(response.data.id);
-
-			setUser({
-				id: userInfoResponse.id,
-				name: userInfoResponse.name,
-				email: userInfoResponse.email,
-				role: userInfoResponse.role,
-				created_at: userInfoResponse.created_at,
-				updated_at: userInfoResponse.updated_at,
-				client: {
-					id: userInfoResponse.client.id,
-					user_id: userInfoResponse.client.user_id,
-					description: userInfoResponse.client.description,
-					phone: userInfoResponse.client.phone,
-					has_kuba_product: userInfoResponse.client.has_kuba_product,
-					birth_date: userInfoResponse.client.birth_date,
-					profile_url: userInfoResponse.client.profile_url,
-					created_at: userInfoResponse.client.created_at,
-					updated_at: userInfoResponse.client.updated_at,
-					socialNetworks: userInfoResponse.client.socialNetworks
-				}
-			});
->>>>>>> 6444ad45f7823d9b6797b55695317b97ef198eb8
+			setUser(data);
 
 			showToast();
 		} catch (err: any) {
@@ -190,9 +144,7 @@ export function AuthProvider({ children }: AuthProps): ReactElement {
 
 	async function logout() {
 		await AsyncStorage.clear();
-		setUser({} as IUser);
-		setToken('');
-		!!user;
+		setUser(null);
 	}
 
 	return (
@@ -204,7 +156,6 @@ export function AuthProvider({ children }: AuthProps): ReactElement {
 				sendEmailResetPassword,
 				validateToken,
 				updatePassword,
-				token,
 				logout
 			}}>
 			{children}

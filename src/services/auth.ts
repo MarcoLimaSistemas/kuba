@@ -3,14 +3,14 @@ import {
 	IResetPassword,
 	ISendEmail,
 	ISendToken,
-	ISignInCredentials
+	ISignInCredentials,
+	IUserAuth
 } from '../models/auth';
 
 import api from './api';
-import { ISignInData } from '@hooks/auth';
 
 class Auth {
-	static signIn(data: ISignInCredentials): AxiosPromise<ISignInData> {
+	static signIn(data: ISignInCredentials): AxiosPromise<IUserAuth> {
 		return api.post('/signin', data);
 	}
 

@@ -22,8 +22,9 @@ import { EditProfileSchema } from '../../../schemas/editProfile';
 import User from '@services/user';
 import { dateToTimestamp, timestampToDate } from '@utils/date';
 import { useEditUser } from '@react-query/mutateEditUser';
-import { useGetUserInfo } from '@react-query/getUserInfo';
 import { useAuth } from '@hooks/auth';
+import { userDetails } from '@react-query/userDetails';
+import { Spacer } from '@components/Spacer';
 
 export type UserInfoFormData = {
 	profilePhoto?: string;
@@ -40,7 +41,8 @@ export type UserInfoFormData = {
 export function EditProfile() {
 	const navigation = useNavigation();
 	const { user } = useAuth();
-	const { data: userInfo } = useGetUserInfo(user.id);
+
+	const { data: userDetailsData } = userDetails({});
 
 	const { mutateEditUser, isPendingEditUser } = useEditUser();
 
@@ -54,7 +56,7 @@ export function EditProfile() {
 	});
 
 	const onSubmit = async (data: UserInfoFormData) => {
-		if (!userInfo) return;
+		if (!userDetailsData) return;
 
 		const requestData = {
 			name: data.name,
@@ -68,27 +70,43 @@ export function EditProfile() {
 		};
 
 		mutateEditUser({
-			userId: userInfo.id,
+			userId: userDetailsData.id,
 			data: requestData
 		});
 	};
 
 	React.useEffect(() => {
-		if (!userInfo) return;
+		if (!userDetailsData) return;
 
-		setValue('name', userInfo.name);
-		setValue('description', userInfo.client.description ?? '');
-		setValue('email', userInfo.email);
-		setValue('birthDate', timestampToDate(userInfo.client.birth_date));
-		setValue('facebook', userInfo.client.socialNetworks[0]?.link ?? '');
-		setValue('instagram', userInfo.client.socialNetworks[1]?.link ?? '');
-		setValue('spotify', userInfo.client.socialNetworks[2]?.link ?? '');
-		setValue('qobuzz', userInfo.client.socialNetworks[3]?.link ?? '');
-	}, [userInfo]);
+		setValue('name', userDetailsData.name);
+		setValue('description', userDetailsData.client.description ?? '');
+		setValue('email', userDetailsData.email);
+		setValue(
+			'birthDate',
+			timestampToDate(userDetailsData.client.birth_date)
+		);
+		setValue(
+			'facebook',
+			userDetailsData.client.socialNetworks[0]?.link ?? ''
+		);
+		setValue(
+			'instagram',
+			userDetailsData.client.socialNetworks[1]?.link ?? ''
+		);
+		setValue(
+			'spotify',
+			userDetailsData.client.socialNetworks[2]?.link ?? ''
+		);
+		setValue(
+			'qobuzz',
+			userDetailsData.client.socialNetworks[3]?.link ?? ''
+		);
+	}, [userDetailsData]);
 
 	return (
 		<Container>
-			<Header title="Editar perfil" activeButtonGoBack={true} />
+			<Header title="Editar perfil" />
+			<Spacer h={32} />
 			<BoxPhoto>
 				<Photo source={profile} />
 				<TextPhoto>Alterar foto de perfil</TextPhoto>

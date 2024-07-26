@@ -2,12 +2,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import styled from 'styled-components/native';
 import { Image } from 'react-native';
 
-export const Container = styled.View`
-	flex: 1;
-	display: flex;
-	align-items: center;
-	text-align: center;
-`;
+export const Container = styled.View``;
 
 export const BoxText = styled.View`
 	flex-direction: column;

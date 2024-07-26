@@ -22,7 +22,7 @@ interface EqualizerProps {
 
 export const Equalizer = ({ handleScrollEnabled }: EqualizerProps) => {
 	const [frequencies, setFrequencies] = useState(frequenciesList);
-	const [preAmpDB, setPreAmpDB] = useState(12);
+	const [preAmpDB, setPreAmpDB] = useState(0);
 
 	const [showModal, setShowModal] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
@@ -108,8 +108,8 @@ export const Equalizer = ({ handleScrollEnabled }: EqualizerProps) => {
 							onTouchEnd={() => handleScrollEnabled(true)}
 							onTouchCancel={() => handleScrollEnabled(true)}>
 							<VerticalSlider
-								min={0.0}
-								max={24.0}
+								min={-12}
+								max={12}
 								step={1}
 								value={bar.decibelQuantity}
 								onValueChange={value =>
@@ -145,8 +145,8 @@ export const Equalizer = ({ handleScrollEnabled }: EqualizerProps) => {
 						onTouchEnd={() => handleScrollEnabled(true)}
 						onTouchCancel={() => handleScrollEnabled(true)}>
 						<Slider
-							minimumValue={0.0}
-							maximumValue={24.0}
+							minimumValue={-12}
+							maximumValue={12}
 							step={1}
 							value={preAmpDB}
 							onValueChange={value => handlePreAmpDB(value)}

@@ -19,7 +19,7 @@ export interface IEditInfoProps {
 }
 
 class User {
-	static async getInfo(userId: number) {
+	static async getInfo(userId: number | undefined) {
 		const response = await api.get<IUser>('/user/' + userId);
 		return response.data;
 	}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ScrollView, Switch } from 'react-native';
 
 import { Button } from '@components/Button';
@@ -14,9 +14,7 @@ import {
 
 import { useAuth } from '@hooks/auth';
 import { useNavigation } from '@react-navigation/native';
-import { useGetUserInfo } from '@react-query/getUserInfo';
 import { timestampToDate } from '@utils/date';
-import api from '../../../services/api';
 import {
 	BoxButtons,
 	BoxText,
@@ -32,45 +30,35 @@ import {
 	TextBold,
 	TextSwitch
 } from './styles';
+import { userDetails } from '../../../react-query/userDetails';
+import { Spacer } from '@components/Spacer';
 
 export function Profile() {
 	const navigation = useNavigation();
 
-	const { user, logout } = useAuth();
+	const { logout } = useAuth();
+
+	const { data: user, isLoading } = userDetails({});
 
 	const [isEnabled, setIsEnabled] = useState(false);
 
 	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
-	async function onProductKuba() {
-		try {
-			const res = await api.get('/user/perfil/update/product/kuba', {
-				params: {
-					kuba_product: isEnabled
-				}
-			});
-
-			console.log(res.data);
-		} catch (err) {
-			console.log(err);
-		} finally {
-		}
+	if (isLoading) {
+		return null;
 	}
-
-	useEffect(() => {
-		// onProductKuba();
-	}, [isEnabled]);
-
-	if (!user) return;
 
 	return (
 		<Container>
 			<ScrollView showsVerticalScrollIndicator={false}>
-				<Header title="Perfil" activeButtonGoBack={true} />
+				<Header title="Perfil" />
+				<Spacer h={32} />
 				<ImageProfile source={profile} />
 				<Name>{user?.name}</Name>
 
-				<Description>{user.client?.description ?? '---'}</Description>
+				<Description>
+					{user?.client?.description ?? 'No description'}
+				</Description>
 
 				<ContainerSwitch>
 					<Switch
@@ -95,11 +83,13 @@ export function Profile() {
 				<BoxText>
 					<Separator>
 						<TextBold>Data de nascimento</TextBold>
-						<Text>{timestampToDate(user.client.birth_date)}</Text>
+						<Text>
+							{timestampToDate(user?.client?.birth_date ?? '')}
+						</Text>
 					</Separator>
 
 					<TextBold>Email</TextBold>
-					<Text>{user.email}</Text>
+					<Text>{user?.email}</Text>
 				</BoxText>
 
 				<BoxButtons>
