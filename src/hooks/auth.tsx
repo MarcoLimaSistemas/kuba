@@ -58,6 +58,7 @@ export function AuthProvider({
 					const storageData = JSON.parse(storage);
 
 					api.defaults.headers.common.Authorization = `Bearer ${storageData.token.token}`;
+					setUser(storageData);
 				}
 			} catch (error: any) {
 				Toast.show({
