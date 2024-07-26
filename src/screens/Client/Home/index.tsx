@@ -84,7 +84,9 @@ export function Home() {
 
 			<Spacer h={32} />
 
+			{/* <View style={{}}> */}
 			<Carousel data={devices} />
+			{/* </View> */}
 
 			<Container>
 				<Spacer h={16} />

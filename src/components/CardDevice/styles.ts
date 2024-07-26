@@ -9,7 +9,7 @@ interface PropsPage {
 
 export const Container = styled.TouchableOpacity`
 	border-radius: ${scale(8)}px;
-	background: rgba(255, 255, 255, 0.8);
+	background: #fff;
 	height: ${scale(180)}px;
 `;
 export const Image = styled.Image<PropsPage>`

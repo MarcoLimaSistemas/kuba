@@ -10,7 +10,7 @@ import * as S from './styles';
 
 export function Carousel({ data }: CarouselProps) {
 	return (
-		<S.Container>
+		<>
 			<Text color="#656565" variant="bold" fontSize={18}>
 				Meus Dispositivos
 			</Text>
@@ -22,14 +22,10 @@ export function Carousel({ data }: CarouselProps) {
 				showsHorizontalScrollIndicator={false}
 				horizontal
 				renderItem={({ item }) => (
-					<View
-						style={{ elevation: 8, marginRight: 8 }}
-						key={item.id}>
-						<CardDevice title={item.nome} id={item.id} />
-					</View>
+					<CardDevice key={item.id} title={item.nome} id={item.id} />
 				)}
 				ListFooterComponent={
-					<S.ButtonAdd>
+					<S.ButtonAdd style={{ elevation: 8 }}>
 						<Icons.Plus />
 
 						<Text style={{ textAlign: 'center' }} fontSize={14}>
@@ -38,6 +34,6 @@ export function Carousel({ data }: CarouselProps) {
 					</S.ButtonAdd>
 				}
 			/>
-		</S.Container>
+		</>
 	);
 }

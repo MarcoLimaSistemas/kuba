@@ -15,7 +15,11 @@ export function CardDevice({ title, id }: CardDeviceProps) {
 	const { navigate } = useNavigation<any>();
 
 	return (
-		<Container onPress={() => navigate('Device', { deviceID: id })}>
+		<Container
+			style={{
+				elevation: 8
+			}}
+			onPress={() => navigate('Device', { deviceID: id })}>
 			<ContainerImage>
 				<Image source={KubaFone} />
 			</ContainerImage>

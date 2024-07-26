@@ -7,7 +7,7 @@ export const Container = styled.View`
 `;
 
 export const ButtonAdd = styled.TouchableOpacity`
-	background: rgba(255, 255, 255, 0.8);
+	background: #fff;
 	width: ${scale(152)}px;
 	justify-content: center;
 	align-items: center;
