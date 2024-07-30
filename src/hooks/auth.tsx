@@ -22,6 +22,7 @@ import { STORAGE_KEY } from '@config/storage';
 interface AuthContextData {
 	user: IUserAuth | null;
 	emailForgetPassword: string;
+	loading: boolean;
 
 	signIn: (data: ISignInCredentials) => Promise<void>;
 	sendEmailResetPassword: (data: ISendEmail) => Promise<void>;
@@ -37,6 +38,7 @@ export function AuthProvider({
 }: {
 	children: ReactNode;
 }): ReactElement {
+	const [loading, setLoading] = useState(false);
 	const [user, setUser] = useState<IUserAuth | null>(null);
 
 	const [emailForgetPassword, setEmailForgetPassword] = useState('');
@@ -51,6 +53,7 @@ export function AuthProvider({
 
 	async function signIn(credentials: ISignInCredentials) {
 		try {
+			setLoading(true);
 			const { data } = await Auth.signIn(credentials);
 
 			await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -63,6 +66,8 @@ export function AuthProvider({
 			showToast();
 		} catch (err: any) {
 			throw new Error(err?.response.data.message);
+		} finally {
+			setLoading(false);
 		}
 	}
 
@@ -126,6 +131,7 @@ export function AuthProvider({
 	useEffect(() => {
 		(async () => {
 			try {
+				setLoading(true);
 				const storage = await AsyncStorage.getItem(STORAGE_KEY);
 
 				if (storage !== null) {
@@ -142,6 +148,8 @@ export function AuthProvider({
 				});
 
 				logout();
+			} finally {
+				setLoading(false);
 			}
 		})();
 	}, []);
@@ -150,6 +158,7 @@ export function AuthProvider({
 		<AuthContext.Provider
 			value={{
 				user,
+				loading,
 				signIn,
 				emailForgetPassword,
 				sendEmailResetPassword,
