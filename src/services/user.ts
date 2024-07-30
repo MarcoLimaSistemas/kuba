@@ -5,7 +5,6 @@ export interface IUserEditInfoRequest {
 	profilePhoto?: string;
 	name: string;
 	description: string;
-	email: string;
 	birthDate: string;
 	facebook: string;
 	instagram: string;
@@ -25,7 +24,8 @@ class User {
 	}
 
 	static editInfo({ userId, data }: IEditInfoProps) {
-		return api.put('/user/' + userId, data);
+		console.log('🚀 ~ User ~ editInfo ~ data:', data);
+		return api.putForm('/user/' + userId, data);
 	}
 }
 

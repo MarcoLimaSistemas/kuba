@@ -19,18 +19,17 @@ import { InputUnMasked } from '@components/InputUnMasked';
 import { InputMasked } from '@components/InputMasked';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { EditProfileSchema } from '../../../schemas/editProfile';
-import User from '@services/user';
-import { dateToTimestamp, timestampToDate } from '@utils/date';
+import { timestampToDate } from '@utils/date';
 import { useEditUser } from '@react-query/mutateEditUser';
-import { useAuth } from '@hooks/auth';
 import { userDetails } from '@react-query/userDetails';
 import { Spacer } from '@components/Spacer';
+import { View } from 'react-native';
+import Text from '@components/Text';
 
 export type UserInfoFormData = {
 	profilePhoto?: string;
 	name: string;
 	description: string;
-	email: string;
 	birthDate: string;
 	facebook: string;
 	instagram: string;
@@ -40,7 +39,6 @@ export type UserInfoFormData = {
 
 export function EditProfile() {
 	const navigation = useNavigation();
-	const { user } = useAuth();
 
 	const { data: userDetailsData } = userDetails({});
 
@@ -50,9 +48,11 @@ export function EditProfile() {
 		control,
 		handleSubmit,
 		formState: { errors },
-		setValue
+		setValue,
+		watch
 	} = useForm<UserInfoFormData>({
-		resolver: yupResolver(EditProfileSchema)
+		resolver: yupResolver(EditProfileSchema),
+		defaultValues: { description: '' }
 	});
 
 	const onSubmit = async (data: UserInfoFormData) => {
@@ -61,8 +61,7 @@ export function EditProfile() {
 		const requestData = {
 			name: data.name,
 			description: data.description,
-			email: data.email,
-			birthDate: dateToTimestamp(data.birthDate),
+			birthDate: data.birthDate.split('/').reverse().join('-'),
 			facebook: data.facebook,
 			instagram: data.instagram,
 			spotify: data.spotify,
@@ -80,7 +79,7 @@ export function EditProfile() {
 
 		setValue('name', userDetailsData.name);
 		setValue('description', userDetailsData.client.description ?? '');
-		setValue('email', userDetailsData.email);
+
 		setValue(
 			'birthDate',
 			timestampToDate(userDetailsData.client.birth_date)
@@ -102,6 +101,8 @@ export function EditProfile() {
 			userDetailsData.client.socialNetworks[3]?.link ?? ''
 		);
 	}, [userDetailsData]);
+
+	const descriptionLength = watch('description').length;
 
 	return (
 		<Container>
@@ -125,20 +126,22 @@ export function EditProfile() {
 					}
 				/>
 
-				<InputUnMasked
-					control={control}
-					label="Descrição"
-					name="description"
-					placeholder="Digite sua Descrição"
-					multiline={true}
-					numberOfLines={4}
-					textAlignVertical="top"
-					error={
-						errors.description && (
-							<TextError>{errors.description.message}</TextError>
-						)
-					}
-				/>
+				<View>
+					<InputUnMasked
+						control={control}
+						label="Descrição"
+						name="description"
+						placeholder="Adicionar descrição"
+						multiline
+						height={128}
+					/>
+					<Text
+						fontSize={12}
+						style={{ textAlign: 'right' }}
+						color={descriptionLength > 500 ? '#A60000' : '#242424'}>
+						{descriptionLength}/500
+					</Text>
+				</View>
 
 				{/* <InputUnMasked
 					control={control}
