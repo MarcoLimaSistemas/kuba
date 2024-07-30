@@ -24,7 +24,6 @@ class User {
 	}
 
 	static editInfo({ userId, data }: IEditInfoProps) {
-		console.log('🚀 ~ User ~ editInfo ~ data:', data);
 		return api.putForm('/user/' + userId, data);
 	}
 }
