@@ -1,27 +1,13 @@
-import { RFValue } from 'react-native-responsive-fontsize';
+import { scale } from 'react-native-size-matters';
 import styled from 'styled-components/native';
 
-export const Container = styled.View`
-display: flex;
-width: ${RFValue(340)}px;
-height: ${RFValue(249)}px;
-align-items: center;
-justify-content: center;
-background-color: ${({ theme }) => theme.COLORS.gray_100};
-padding: 16px;
-border-radius: 16px;
-margin-bottom:${RFValue(24)}px; 
+export const Container = styled.TouchableOpacity`
+	background-color: rgba(255, 255, 255, 0.1);
+	padding: ${scale(8)}px;
+	border-radius: ${scale(16)}px;
 `;
 export const Thumbnail = styled.Image`
-width: 104%;
-height: 87%;
-border-radius: 16px;
-margin-bottom: ${RFValue(20)}px;
-padding: 8px;
-`;
-
-export const Title = styled.Text`
-font-size: ${RFValue(16)}px;
-text-align: center;
-color:${({ theme }) => theme.COLORS.white_100};
+	height: ${scale(176)}px;
+	border-radius: ${scale(8)}px;
+	width: 100%;
 `;
