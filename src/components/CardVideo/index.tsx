@@ -1,9 +1,10 @@
 import ImageBrokenPng from '@assets/images/image_broken.png';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Container, Thumbnail } from './styles';
 import Text from '@components/Text';
 import { Spacer } from '@components/Spacer';
 import { scale } from 'react-native-size-matters';
+import { Alert, Linking } from 'react-native';
 
 interface CardVideoProps {
 	title: string;
@@ -22,8 +23,18 @@ export function CardVideo({ title, link }: CardVideoProps) {
 	const videoId = getYouTubeVideoId(link);
 	const [imageBroken, setImageBroken] = useState(false);
 
+	const handlePress = useCallback(async () => {
+		const supported = await Linking.canOpenURL(link);
+
+		if (supported) {
+			await Linking.openURL(link);
+		} else {
+			Alert.alert(`Don't know how to open this URL: ${link}`);
+		}
+	}, [link]);
+
 	return (
-		<Container>
+		<Container onPress={handlePress}>
 			<Thumbnail
 				source={
 					imageBroken
