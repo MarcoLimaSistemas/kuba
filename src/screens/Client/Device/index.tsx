@@ -3,50 +3,29 @@ import React, { useState } from 'react';
 import { KubaFone } from '@assets/images';
 import { Button } from '@components/Button';
 import { CarouselProfile } from '@components/CarouselProfile';
-import { Navbar } from '@components/Navbar';
 import { useNavigation } from '@react-navigation/native';
 
-import { Close, Headset, Info, Lighting } from '@assets/icons';
+import { Headset, Info, Lighting } from '@assets/icons';
 
 import {
 	BoxButtons,
 	Container,
 	ContainerCarousel,
 	ContainerConnections,
-	ContainerModal,
-	DeviceModal,
-	DeviceTitle,
-	Disconnected,
 	Footer,
-	FooterModal,
-	HeaderModal,
-	HFlex,
-	ImageDevice,
-	NameDevice,
-	Percentage,
-	TextStatus,
-	TitleModal
+	ImageDevice
 } from './styles';
 
-import {
-	ActivityIndicator,
-	Image,
-	Modal,
-	NativeModules,
-	Pressable,
-	ScrollView,
-	TouchableOpacity,
-	View
-} from 'react-native';
+import { Image, TouchableOpacity, View } from 'react-native';
 import { ButtonSquare } from '@components/ButtonSquare';
 
 import { Spacer } from '@components/Spacer';
 import { Equalizer } from '@components/Equalizer';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Text from '@components/Text';
 import { useBluetooth } from '../../../context/BluetoothContext';
-import theme from '../../../styles/theme';
 import { Header } from '@components/Header';
+import Text from '@components/Text';
+import { scale } from 'react-native-size-matters';
 
 const dataExample = [
 	{
@@ -69,25 +48,11 @@ const dataExample = [
 
 export function Device({ route }: any) {
 	const [scrollEnabled, setScrollEnabled] = useState(true);
-	const [modalVisible, setModalVisible] = useState(false);
 	const { top } = useSafeAreaInsets();
 
 	const navigation = useNavigation();
 
-	const {
-		searchingDevices,
-		devices,
-		connectedDevice,
-		scanDevices,
-		pairToDevice
-	} = useBluetooth();
-
-	async function handlePermissions() {
-		setModalVisible(true);
-		scanDevices();
-	}
-
-	async function handleCloseModal() {}
+	const { connectedDevice, connectToDevice } = useBluetooth();
 
 	const handleScrollEnabled = (enabled: boolean) => {
 		setScrollEnabled(enabled);
@@ -103,39 +68,64 @@ export function Device({ route }: any) {
 				showsVerticalScrollIndicator={false}
 				scrollEnabled={scrollEnabled}>
 				<ImageDevice source={KubaFone} />
-				<NameDevice>{'Kuba disco'}</NameDevice>
+
+				<Spacer h={16} />
+
+				<Text
+					variant="bold"
+					style={{
+						color: '#656565',
+						textAlign: 'center',
+						textTransform: 'uppercase',
+						letterSpacing: scale(6)
+					}}>
+					{'Kuba disco'}
+				</Text>
+
+				<Spacer h={16} />
 
 				<ContainerConnections>
-					{connectedDevice !== null ? (
+					{/* {connectedDevice !== null ? ( */}
+					{true ? (
 						<>
-							<TextStatus>Conectado</TextStatus>
-							<HFlex>
+							<Text fontSize={12} variant="bold" color="#777777">
+								CONECTADO
+							</Text>
+
+							<View
+								style={{
+									flexDirection: 'row',
+									alignItems: 'center'
+								}}>
 								<Image source={Lighting} />
-								<Percentage>{'100%'}</Percentage>
-							</HFlex>
-							<TouchableOpacity onPress={handlePermissions}>
-								<Disconnected>{'Desconectar'}</Disconnected>
-							</TouchableOpacity>
+								<Spacer w={8} />
+								<Text>{'100%'}</Text>
+
+								<Spacer w={16} />
+								<TouchableOpacity
+									onPress={() => {
+										// connectToDevice()
+									}}>
+									<Text color="#2E9CCB" variant="bold">
+										Desconectar
+									</Text>
+								</TouchableOpacity>
+							</View>
 						</>
 					) : (
 						<>
-							<TextStatus>Desconectado</TextStatus>
+							<Text fontSize={12} variant="bold" color="#777777">
+								DESCONECTADO
+							</Text>
 
-							<TouchableOpacity onPress={handlePermissions}>
-								<Disconnected>Conectar</Disconnected>
+							<TouchableOpacity onPress={() => {}}>
+								<Text color="#2E9CCB" variant="bold">
+									Conectar
+								</Text>
 							</TouchableOpacity>
 						</>
 					)}
 				</ContainerConnections>
-
-				{/* <BoxButtons>
-                    <Button
-                        title="Equalizador"
-                        onPress={() =>
-                            NativeModules.EqualizerModule.navigateToEqualizer()
-                        }
-                    />
-                </BoxButtons> */}
 
 				<ContainerCarousel>
 					<Equalizer handleScrollEnabled={handleScrollEnabled} />
@@ -191,62 +181,6 @@ export function Device({ route }: any) {
 				</Footer>
 				<Spacer h={32} />
 			</Container>
-
-			<Modal
-				animationType="slide"
-				transparent={true}
-				visible={modalVisible}
-				onRequestClose={() => {
-					setModalVisible(!modalVisible);
-				}}>
-				<ContainerModal>
-					<HeaderModal>
-						<TitleModal>Dispositivos encontrados</TitleModal>
-						<Pressable onPress={handleCloseModal}>
-							<Image source={Close} />
-						</Pressable>
-					</HeaderModal>
-
-					{searchingDevices ? (
-						<View
-							style={{
-								flex: 1,
-								justifyContent: 'center',
-								alignItems: 'center'
-							}}>
-							<ActivityIndicator color={theme.COLORS.gold_100} />
-						</View>
-					) : (
-						<ScrollView style={{ flex: 1 }}>
-							{devices.map(device => (
-								<DeviceModal key={device.id}>
-									<DeviceTitle
-										onPress={() => pairToDevice(device)}>
-										<Text variant="bold" fontSize={12}>
-											Dispositivo:{' '}
-										</Text>
-										{device.name ?? device.id}
-									</DeviceTitle>
-								</DeviceModal>
-							))}
-						</ScrollView>
-					)}
-
-					<FooterModal>
-						{/* {onStopSearch ? ( */}
-						<Button
-							title="Fechar"
-							onPress={() => setModalVisible(false)}
-						/>
-						{/* ) : (
-                            <Button
-                                title="Parar busca"
-                                onPress={() => handleCancelSearchDevices()}
-                            />
-                        )} */}
-					</FooterModal>
-				</ContainerModal>
-			</Modal>
 		</>
 	);
 }

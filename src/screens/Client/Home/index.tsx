@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import api from '../../../services/api';
+import React from 'react';
 
 import { Button } from '@components/Button';
 import { Carousel } from '@components/Carousel';
@@ -16,7 +15,6 @@ import {
 import { Close } from '@assets/icons';
 
 import {
-	ButtonModal,
 	Container,
 	ContainerHeader,
 	ContainerModal,
@@ -44,20 +42,6 @@ export function Home() {
 		}
 	]);
 
-	async function getDevices() {
-		try {
-			const { data } = await api.get('/user/products/index');
-			setDevices(data);
-		} catch (error: any) {
-			Alert.alert(error.response.data.message);
-		}
-	}
-
-	// useEffect(() => {
-	//   getDevices();
-	// }, [])
-
-	const [modalVisible, setModalVisible] = useState(false);
 	const navigation = useNavigation();
 
 	return (
@@ -87,8 +71,6 @@ export function Home() {
 			<Carousel data={devices} />
 
 			<Container>
-				{/* <Spacer h={16} /> */}
-
 				<ContainerSchoolKuba
 					onPress={() => navigation.navigate('School')}>
 					<ImageSchoolKuba source={backgroundSecondary} />
@@ -129,7 +111,7 @@ export function Home() {
 				<Spacer h={16} />
 			</Container>
 
-			<Modal
+			{/* <Modal
 				animationType="slide"
 				transparent={true}
 				visible={modalVisible}
@@ -165,7 +147,7 @@ export function Home() {
 						/>
 					</KeyboardAwareScrollView>
 				</ContainerModal>
-			</Modal>
+			</Modal> */}
 		</>
 	);
 }

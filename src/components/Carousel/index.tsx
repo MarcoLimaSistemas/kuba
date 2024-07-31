@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { CardDevice } from '@components/CardDevice';
 import { FlatList, View } from 'react-native';
 import { CarouselProps } from '@models/device';
@@ -9,7 +9,15 @@ import Text from '@components/Text';
 import * as S from './styles';
 import { scale } from 'react-native-size-matters';
 
+import { Modalize } from 'react-native-modalize';
+import { ModalDevices } from '@components/ModalDevices';
+
 export function Carousel({ data }: CarouselProps) {
+	const modalizeRef = useRef<Modalize>(null);
+
+	const onOpen = () => modalizeRef.current?.open();
+	const onClose = () => modalizeRef.current?.close();
+
 	return (
 		<>
 			<Text
@@ -34,6 +42,7 @@ export function Carousel({ data }: CarouselProps) {
 				)}
 				ListFooterComponent={
 					<S.ButtonAdd
+						onPress={onOpen}
 						style={{
 							elevation: 8,
 							marginVertical: scale(4),
@@ -47,6 +56,8 @@ export function Carousel({ data }: CarouselProps) {
 					</S.ButtonAdd>
 				}
 			/>
+
+			<ModalDevices ref={modalizeRef} close={onClose} />
 		</>
 	);
 }

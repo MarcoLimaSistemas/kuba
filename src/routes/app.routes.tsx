@@ -1,61 +1,67 @@
-import React from 'react'
+import React from 'react';
 import {
-    CardStyleInterpolators,
-    createStackNavigator
-} from '@react-navigation/stack'
+	CardStyleInterpolators,
+	createStackNavigator
+} from '@react-navigation/stack';
 
-import * as Client from '../screens/Client'
-import {BluetoothProvider} from '../context/BluetoothContext'
+import * as Client from '../screens/Client';
+import { BluetoothProvider } from '../context/BluetoothContext';
 
-const ScreenDeviceWrapper = () => {
-    return (
-        <BluetoothProvider>
-            <Client.Device />
-        </BluetoothProvider>
-    )
-}
-
-const Stack = createStackNavigator()
+const Stack = createStackNavigator();
 
 const AppRoutes = () => {
-    return (
-        <Stack.Navigator
-            screenOptions={{
-                headerShown: false,
-                cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
-            }}>
-            <Stack.Screen name="Home" component={Client.Home} />
-            <Stack.Screen name="Profile" component={Client.Profile} />
-            <Stack.Screen name="EditProfile" component={Client.EditProfile} />
+	return (
+		<Stack.Navigator
+			screenOptions={{
+				headerShown: false,
+				cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+			}}>
+			<Stack.Screen
+				name="Home"
+				component={() => (
+					<BluetoothProvider>
+						<Client.Home />
+					</BluetoothProvider>
+				)}
+			/>
+			<Stack.Screen name="Profile" component={Client.Profile} />
+			<Stack.Screen name="EditProfile" component={Client.EditProfile} />
 
-            <Stack.Screen name="Device" component={ScreenDeviceWrapper} />
+			<Stack.Screen
+				name="Device"
+				component={() => (
+					<BluetoothProvider>
+						<Client.Device />
+					</BluetoothProvider>
+				)}
+			/>
 
-            <Stack.Screen name="Tutorials" component={Client.Tutorials} />
-            <Stack.Screen
-                name="SettingsEarphone"
-                component={Client.SettingsEarphone}
-            />
-            <Stack.Screen name="Preset" component={Client.Preset} />
-            <Stack.Screen name="School" component={Client.School} />
-            <Stack.Screen
-                name="Personalities"
-                component={Client.Personalities}
-            />
-            <Stack.Screen
-                name="FrequentlyQuestions"
-                component={Client.FrequentlyQuestions}
-            />
-            <Stack.Screen
-                name="ChangePassword"
-                component={Client.ChangePassword}
-            />
-            <Stack.Screen
-                name="PasswordResetSuccess"
-                component={Client.PasswordResetSuccess}
-            />
-            <Stack.Screen name="Support" component={Client.Support} />
-        </Stack.Navigator>
-    )
-}
+			<Stack.Screen name="Tutorials" component={Client.Tutorials} />
+			<Stack.Screen
+				name="SettingsEarphone"
+				component={Client.SettingsEarphone}
+			/>
+			<Stack.Screen name="Preset" component={Client.Preset} />
+			<Stack.Screen name="School" component={Client.School} />
+			<Stack.Screen
+				name="Personalities"
+				component={Client.Personalities}
+			/>
+			<Stack.Screen
+				name="FrequentlyQuestions"
+				component={Client.FrequentlyQuestions}
+			/>
+			<Stack.Screen
+				name="ChangePassword"
+				component={Client.ChangePassword}
+			/>
+			<Stack.Screen
+				name="PasswordResetSuccess"
+				component={Client.PasswordResetSuccess}
+			/>
+			<Stack.Screen name="Support" component={Client.Support} />
+		</Stack.Navigator>
+	);
+};
 
-export default AppRoutes
+export default AppRoutes;
