@@ -16,6 +16,8 @@ import Trash from './trash.svg';
 import Logo from './logo.svg';
 import LogoWhite from './logo_white.svg';
 import ArrowLeft from './arrow_left.svg';
+import Camera from './camera.svg';
+import Gallery from './gallery.svg';
 
 export const Icons = {
 	Pencil,
@@ -24,5 +26,7 @@ export const Icons = {
 	Trash,
 	Logo,
 	LogoWhite,
-	ArrowLeft
+	ArrowLeft,
+	Camera,
+	Gallery
 };

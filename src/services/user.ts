@@ -14,7 +14,7 @@ export interface IUserEditInfoRequest {
 
 export interface IEditInfoProps {
 	userId: number;
-	data: IUserEditInfoRequest;
+	data: FormData;
 }
 
 class User {
@@ -24,7 +24,11 @@ class User {
 	}
 
 	static editInfo({ userId, data }: IEditInfoProps) {
-		return api.putForm('/user/' + userId, data);
+		return api.put('/user/' + userId, data, {
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			}
+		});
 	}
 }
 

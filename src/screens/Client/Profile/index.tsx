@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { ScrollView, Switch } from 'react-native';
+import { ScrollView, Switch, View } from 'react-native';
 
 import { Button } from '@components/Button';
 import { Header } from '@components/Header';
 
-import { profile } from '@assets/images';
 import {
 	FacebookLogo,
 	InstagramLogo,
@@ -16,23 +15,17 @@ import { useAuth } from '@hooks/auth';
 import { useNavigation } from '@react-navigation/native';
 import { timestampToDate } from '@utils/date';
 import {
-	BoxButtons,
-	BoxText,
 	Container,
 	ContainerSocial,
 	ContainerSwitch,
-	Description,
 	ImageProfile,
-	LogoSocial,
-	Name,
-	Separator,
-	Text,
-	TextBold,
-	TextSwitch
+	LogoSocial
 } from './styles';
 import { userDetails } from '../../../react-query/userDetails';
 import { Spacer } from '@components/Spacer';
 import { Loading } from '@components/Loading';
+import Text from '@components/Text';
+import { scale } from 'react-native-size-matters';
 
 export function Profile() {
 	const navigation = useNavigation();
@@ -50,10 +43,13 @@ export function Profile() {
 	}
 
 	return (
-		<Container>
-			<ScrollView showsVerticalScrollIndicator={false}>
-				<Header title="Perfil" />
-				<Spacer h={32} />
+		<>
+			<Header title="Perfil" />
+			<Spacer h={16} />
+			<ScrollView
+				showsVerticalScrollIndicator={false}
+				contentContainerStyle={{ flexGrow: 1 }}>
+				<Spacer h={16} />
 				<ImageProfile
 					source={
 						user?.client.profile_url
@@ -61,45 +57,66 @@ export function Profile() {
 							: require('@assets/images/avatar.png')
 					}
 				/>
-				<Name>{user?.name}</Name>
 
-				<Description>
-					{user?.client?.description ?? 'No description'}
-				</Description>
+				<Spacer h={16} />
+				<Container>
+					<Text
+						fontSize={24}
+						variant="bold"
+						style={{ textAlign: 'center' }}>
+						{user?.name}
+					</Text>
 
-				<ContainerSwitch>
-					<Switch
-						trackColor={{ false: '#656565', true: '#D4BD85' }}
-						thumbColor={isEnabled ? '#656565' : '#f4f3f4'}
-						ios_backgroundColor="#3e3e3e"
-						onValueChange={toggleSwitch}
-						value={isEnabled}
-					/>
-					<TextSwitch>
-						{isEnabled ? 'Tenho' : 'Não tenho'} um produto Kuba
-					</TextSwitch>
-				</ContainerSwitch>
+					<Spacer h={16} />
 
-				<ContainerSocial>
-					<LogoSocial source={FacebookLogo} />
-					<LogoSocial source={InstagramLogo} />
-					<LogoSocial source={SpotifyLogo} />
-					<LogoSocial source={QobuzzLogo} />
-				</ContainerSocial>
+					<Text>{user?.client?.description ?? 'Sem descrição.'}</Text>
 
-				<BoxText>
-					<Separator>
-						<TextBold>Data de nascimento</TextBold>
+					<Spacer h={16} />
+
+					<ContainerSwitch>
+						<Switch
+							trackColor={{ false: '#656565', true: '#D4BD85' }}
+							thumbColor={isEnabled ? '#656565' : '#f4f3f4'}
+							ios_backgroundColor="#3e3e3e"
+							onValueChange={toggleSwitch}
+							value={isEnabled}
+						/>
+						<Spacer w={8} />
 						<Text>
-							{timestampToDate(user?.client?.birth_date ?? '')}
+							{isEnabled ? 'Tenho' : 'Não tenho'} um produto Kuba
 						</Text>
-					</Separator>
+					</ContainerSwitch>
 
-					<TextBold>Email</TextBold>
-					<Text>{user?.email}</Text>
-				</BoxText>
+					<Spacer h={32} />
 
-				<BoxButtons>
+					<ContainerSocial>
+						<LogoSocial source={FacebookLogo} />
+						<LogoSocial source={InstagramLogo} />
+						<LogoSocial source={SpotifyLogo} />
+						<LogoSocial source={QobuzzLogo} />
+					</ContainerSocial>
+
+					<Spacer h={32} />
+
+					<Text style={{ lineHeight: scale(24) }}>
+						<Text variant="bold">Data de nascimento</Text>
+						<Text>
+							{'\n' +
+								timestampToDate(user?.client?.birth_date ?? '')}
+						</Text>
+					</Text>
+
+					<Spacer h={16} />
+					<Text style={{ lineHeight: scale(24) }}>
+						<Text variant="bold">Email</Text>
+						<Text>{'\n' + user?.email}</Text>
+					</Text>
+					<Spacer h={32} />
+				</Container>
+
+				<View style={{ flex: 1 }} />
+
+				<Container>
 					<Button title="Sair" onPress={logout} />
 					<Button
 						title="Editar Perfil"
@@ -110,8 +127,8 @@ export function Profile() {
 						variant="secondary"
 						onPress={() => navigation.navigate('ChangePassword')}
 					/>
-				</BoxButtons>
+				</Container>
 			</ScrollView>
-		</Container>
+		</>
 	);
 }

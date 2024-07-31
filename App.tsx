@@ -9,9 +9,9 @@ import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 import { DevToolsBubble } from 'react-native-react-query-devtools';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const App = () => {
-	const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
+const App = () => {
 	useEffect(() => {
 		SplashScreen.hide(); //hides the splash screen on app load.
 	}, []);

@@ -53,7 +53,6 @@ export function AuthProvider({
 
 	async function signIn(credentials: ISignInCredentials) {
 		try {
-			setLoading(true);
 			const { data } = await Auth.signIn(credentials);
 
 			await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -66,8 +65,6 @@ export function AuthProvider({
 			showToast();
 		} catch (err: any) {
 			throw new Error(err?.response.data.message);
-		} finally {
-			setLoading(false);
 		}
 	}
 
