@@ -13,6 +13,8 @@ import Slider from '@react-native-community/slider';
 
 import { ModalPreset } from '@components/ModalPreset';
 import * as S from './styles';
+import DropDownPicker, { ValueType } from 'react-native-dropdown-picker';
+import { typography } from '../../styles/typography';
 
 const { AudioEqualizerModule } = NativeModules;
 
@@ -26,6 +28,17 @@ export const Equalizer = ({ handleScrollEnabled }: EqualizerProps) => {
 
 	const [showModal, setShowModal] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
+
+	const [openDropdown, setOpenDropdown] = useState(false);
+	const [presets, setPresets] = useState([
+		{ label: 'Padrão', value: 'padrao' },
+		{ label: 'Preset01', value: 'preset01' },
+		{ label: 'sitemasked', value: 'preset02' },
+		{ label: 'molecularpioneer', value: 'preset03' }
+	]);
+	const [currentPreset, setCurrentPreset] = useState<ValueType | null>(
+		presets[0].value
+	);
 
 	const handleBandGain = async (band: number, level: number) => {
 		try {
@@ -70,7 +83,9 @@ export const Equalizer = ({ handleScrollEnabled }: EqualizerProps) => {
 		<>
 			<S.Container>
 				<S.Header>
-					<Text variant="bold">Equalizador</Text>
+					<Text variant="bold" color="#656565">
+						Equalizador
+					</Text>
 
 					<View
 						style={{
@@ -98,6 +113,47 @@ export const Equalizer = ({ handleScrollEnabled }: EqualizerProps) => {
 						</TouchableOpacity>
 					</View>
 				</S.Header>
+
+				<S.ContainerDropdown>
+					<DropDownPicker
+						open={openDropdown}
+						value={currentPreset}
+						items={presets}
+						setOpen={setOpenDropdown}
+						setValue={setCurrentPreset}
+						setItems={setPresets}
+						selectedItemContainerStyle={{
+							backgroundColor: '#e4e1e1'
+						}}
+						showTickIcon={false}
+						textStyle={{
+							color: '#656565',
+							fontFamily: typography['Lato-Regular'].fontFamily,
+							fontSize: scale(16)
+						}}
+						listItemLabelStyle={{
+							fontFamily: typography['Lato-Regular'].fontFamily,
+							color: '#656565'
+						}}
+						labelProps={{
+							numberOfLines: 1
+						}}
+						style={{
+							borderColor: 'transparent',
+							paddingLeft: 0,
+							width: '41%'
+						}}
+						dropDownContainerStyle={{
+							borderColor: 'transparent',
+							width: '60%',
+							elevation: 4,
+							borderRadius: 0
+						}}
+						flatListProps={{
+							ItemSeparatorComponent: () => <S.LineSeparator />
+						}}
+					/>
+				</S.ContainerDropdown>
 
 				<S.ContainerBars>
 					{frequencies.map((bar, index) => (
