@@ -39,10 +39,6 @@ const dataExample = [
 	{
 		id: 3,
 		name: 'Cliolo'
-	},
-	{
-		id: 4,
-		name: 'Cliolo'
 	}
 ];
 
@@ -131,9 +127,12 @@ export function Device({ route }: any) {
 					<Equalizer handleScrollEnabled={handleScrollEnabled} />
 
 					<CarouselProfile
-						titleProfile={'Perfis Personalizados'}
+						titleProfile={'Perfis Personalidades'}
 						data={dataExample}
 					/>
+
+					<Spacer h={16} />
+
 					<CarouselProfile
 						titleProfile={'Perfis Públicos '}
 						data={dataExample}
