@@ -47,6 +47,7 @@ const AppRoutes = () => {
 				name="Personalities"
 				component={Client.Personalities}
 			/>
+			<Stack.Screen name="Profiles" component={Client.Profiles} />
 			<Stack.Screen
 				name="FrequentlyQuestions"
 				component={Client.FrequentlyQuestions}

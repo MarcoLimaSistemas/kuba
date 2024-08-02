@@ -136,6 +136,7 @@ export function Device({ route }: any) {
 					<CarouselProfile
 						titleProfile={'Perfis Públicos '}
 						data={dataExample}
+						isPersonalities={false}
 					/>
 				</ContainerCarousel>
 

@@ -18,6 +18,7 @@ import LogoWhite from './logo_white.svg';
 import ArrowLeft from './arrow_left.svg';
 import Camera from './camera.svg';
 import Gallery from './gallery.svg';
+import Search from './search.svg';
 
 export const Icons = {
 	Pencil,
@@ -28,5 +29,6 @@ export const Icons = {
 	LogoWhite,
 	ArrowLeft,
 	Camera,
-	Gallery
+	Gallery,
+	Search
 };

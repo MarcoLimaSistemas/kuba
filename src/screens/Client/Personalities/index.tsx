@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@components/Button';
 import { Search } from '@components/Search';
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 
 import { Container } from './styles';
 import Text from '@components/Text';
@@ -11,12 +11,10 @@ import theme from '../../../styles/theme';
 import { scale } from 'react-native-size-matters';
 import { Spacer } from '@components/Spacer';
 import { CardPersonality } from '@components/CardProfile/CardPersonality';
-
-interface PersonalitiesProps {
-	children: ReactNode;
-}
+import { useNavigation } from '@react-navigation/native';
 
 export function Personalities() {
+	const navigation = useNavigation();
 	const [search, setSearch] = useState('');
 
 	return (
@@ -52,7 +50,11 @@ export function Personalities() {
 					renderItem={({ item }) => <CardPersonality key={item} />}
 					ItemSeparatorComponent={() => <Spacer h={16} />}
 					ListFooterComponent={() => (
-						<Button title={'Voltar'} variant="secondary" />
+						<Button
+							title={'Voltar'}
+							variant="secondary"
+							onPress={() => navigation.goBack()}
+						/>
 					)}
 					ListFooterComponentStyle={{
 						marginTop: scale(32)

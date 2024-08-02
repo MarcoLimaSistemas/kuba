@@ -11,9 +11,14 @@ import { scale } from 'react-native-size-matters';
 interface CarouselProfileProps {
 	data: any;
 	titleProfile: string;
+	isPersonalities?: boolean;
 }
 
-export function CarouselProfile({ data, titleProfile }: CarouselProfileProps) {
+export function CarouselProfile({
+	data,
+	titleProfile,
+	isPersonalities = true
+}: CarouselProfileProps) {
 	const navigation = useNavigation();
 
 	return (
@@ -42,7 +47,9 @@ export function CarouselProfile({ data, titleProfile }: CarouselProfileProps) {
 								marginHorizontal: scale(16)
 							}}
 							onPress={() =>
-								navigation.navigate('Personalities')
+								isPersonalities
+									? navigation.navigate('Personalities')
+									: navigation.navigate('Profiles')
 							}>
 							<Text color="#6E6E6E" fontSize={12} variant="bold">
 								Acessar galeria
