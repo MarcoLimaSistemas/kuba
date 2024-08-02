@@ -1,109 +1,110 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import api from '../../../services/api'
+import React, { useMemo, useState } from 'react';
 
-import { Alert, FlatList, RefreshControl, StatusBar } from 'react-native'
+import { FlatList, RefreshControl, StatusBar, View } from 'react-native';
 
-import { Button } from '@components/Button'
-import { CardVideo } from '@components/CardVideo'
-import { Navbar } from '@components/Navbar'
-import { Search } from '@components/Search'
+import { Button } from '@components/Button';
+import { CardVideo } from '@components/CardVideo';
+import { Search } from '@components/Search';
 
-import { Container, ContainerButton, ContainerVideos, MessageText } from './styles'
-import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import {
+	Container,
+	ContainerButton,
+	ContainerVideos,
+	ContainerBody
+} from './styles';
+
+import { useNavigation } from '@react-navigation/native';
+import { Header } from '@components/Header';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { getClasses } from '@services/kubaSchool';
+import { useAuth } from '@hooks/auth';
+import { Spacer } from '@components/Spacer';
+import Text from '@components/Text';
 
 export function School() {
-  const navigation = useNavigation()
+	const [search, setSearch] = useState<string>();
+	const { user } = useAuth();
+	const navigation = useNavigation();
 
-  const [loading, setLoading] = useState(false)
-  const [search, setSearch] = useState<string>()
+	const { data, refetch, isLoading } = useInfiniteQuery({
+		queryKey: ['kubaSchool'],
+		queryFn: ({ pageParam }) =>
+			getClasses({
+				userId: user?.id,
+				page: pageParam,
+				perPage: undefined,
+				search
+			}),
+		initialPageParam: 1,
+		getNextPageParam: (lastPage, pages) => lastPage.data.last_page
+	});
 
-  const [videos, setVideos] = useState<any[]>([])
-  const [refreshing, setRefreshing] = useState(false)
+	const classes = useMemo(() => {
+		const classes: any[] = [];
+		data?.pages.forEach(e => classes.push(...e.data.data));
+		return classes;
+	}, [data]);
 
-  async function getVideosSchool() {
-    try {
-      const { data } = await api
-        .get('user/school/kuba/index', {
-          params: {
-            keyword: search
-          }
-        })
-      console.log(data)
-      setVideos(data)
-      setRefreshing(false)
-    } catch (err: any) {
-      Alert.alert(err.response.data.message)
-    }
-  }
+	return (
+		<>
+			<StatusBar barStyle="light-content" />
+			<Container
+				contentContainerStyle={{
+					flexGrow: 1
+				}}
+				refreshControl={
+					<RefreshControl
+						refreshing={isLoading}
+						onRefresh={refetch}
+					/>
+				}>
+				<ContainerBody>
+					<Header typeLogo="white" />
+					<Search
+						searchCallback={() => {
+							refetch();
+						}}
+						search={setSearch}
+						loading={false}
+						placeholder="Procurar vídeos"
+						value={search}
+						onChangeText={text => setSearch(text)}
+					/>
 
-  function onRefresh() {
-    setRefreshing(true)
-    setVideos([])
-    getVideosSchool()
-  }
+					<ContainerVideos>
+						{classes.length === 0 ? (
+							<Text>No momento não temos nenhum video!</Text>
+						) : (
+							<FlatList
+								data={classes}
+								ItemSeparatorComponent={() => <Spacer h={16} />}
+								scrollEnabled={false}
+								keyExtractor={item => String(item.id)}
+								showsHorizontalScrollIndicator={false}
+								snapToAlignment={'start'}
+								scrollEventThrottle={14}
+								renderItem={({ item }) => (
+									<CardVideo
+										title={item.title}
+										thumbnail={item.thumbnail}
+										link={item.link}
+									/>
+								)}
+							/>
+						)}
+					</ContainerVideos>
+				</ContainerBody>
 
-  useFocusEffect(
-    useCallback(() => {
-      getVideosSchool()
-    }, [])
-  )
+				<View style={{ flex: 1 }} />
 
-  async function getSearch() {
-    try {
-      setLoading(true)
-    } catch (error: any) {
-      setLoading(false)
-      throw new Error(error)
-    }
-  }
-
-  useEffect(() => {
-    getVideosSchool();
-  }, [search])
-
-  return (
-    <Container>
-      <StatusBar barStyle='light-content' />
-      <Navbar darkTheme={true} />
-      <Search
-        searchCallback={getSearch}
-        search={setSearch}
-        loading={loading}
-        placeholder="Procurar vídeos"
-        value={search}
-        onChangeText={text => setSearch(text)}
-      />
-
-      <ContainerVideos>
-        {videos.length === 0 ?
-          <MessageText>No momento não temos nenhum video!</MessageText>
-          :
-          <FlatList
-            data={videos}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-              />
-            }
-            keyExtractor={(item) => String(item.id)}
-            showsHorizontalScrollIndicator={false}
-            horizontal
-            snapToAlignment={'start'}
-            scrollEventThrottle={14}
-            renderItem={({ item }) => (
-              <CardVideo title={item.title} thumbnail={item.thumbnail} link={item.link} />
-            )}
-          />}
-      </ContainerVideos>
-
-      <ContainerButton>
-        <Button
-          title="Voltar"
-          variant="secondary"
-          onPress={() => navigation.goBack()}
-        />
-      </ContainerButton>
-    </Container>
-  )
+				<ContainerButton>
+					<Button
+						title="Voltar"
+						variant="secondary"
+						onPress={() => navigation.goBack()}
+					/>
+				</ContainerButton>
+			</Container>
+		</>
+	);
 }

@@ -2,55 +2,67 @@ import { Button } from '@components/Button';
 import { useModal } from '@hooks/modal';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { Modal, Platform, Pressable, ScrollView } from 'react-native';
+import { Modal, Platform, Pressable, ScrollView, View } from 'react-native';
 
 import {
-  Container,
-  ContainerModal,
-  IconClose,
-  IconTrash,
-  TitleModal,
+	Container,
+	ContainerModal,
+	IconClose,
+	IconTrash,
+	TitleModal
 } from './styles';
+import Text from '@components/Text';
+import { Spacer } from '@components/Spacer';
+import { Icons } from '@assets/icons';
+import { scale } from 'react-native-size-matters';
+import Trash from '@assets/icons/trash-2.svg';
 
 interface ModalDeleteProps {
-  visible: boolean;
+	visible: boolean;
+	onClose(): void;
 }
 
-export function ModalDelete() {
-  const { openModalDelete, setOpenModalDelete } = useModal();
+export function ModalDelete({ visible, onClose }: ModalDeleteProps) {
+	return (
+		<Modal animationType="slide" transparent={true} visible={visible}>
+			<Container>
+				<ContainerModal>
+					<Spacer h={16} />
 
-  const navigation = useNavigation();
-  return (
-    <Container behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={openModalDelete}
-        onRequestClose={() => {
-          setOpenModalDelete(!openModalDelete);
-        }}
-      >
-        <ContainerModal>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <Pressable onPress={() => setOpenModalDelete(false)}>
-              <IconClose>
-                {/* <Ionicons name="close" size={30} color="black" /> */}
-              </IconClose>
-            </Pressable>
+					<Pressable
+						onPress={() => {
+							onClose();
+						}}>
+						<IconClose>
+							<Icons.Close width={scale(12)} height={scale(12)} />
+						</IconClose>
+					</Pressable>
 
-            <TitleModal>{'Realmente deseja excluir este Preset'}</TitleModal>
-            <IconTrash>
-              {/* <FontAwesome name="trash-o" size={104} color="black" /> */}
-            </IconTrash>
-            <Button title="Excluir" />
-            <Button
-              title="Voltar"
-              variant="secondary"
-              onPress={() => navigation.goBack()}
-            />
-          </ScrollView>
-        </ContainerModal>
-      </Modal>
-    </Container>
-  );
+					<Spacer h={64} />
+					<View
+						style={{
+							justifyContent: 'center',
+							alignItems: 'center'
+						}}>
+						<Text
+							variant="bold"
+							style={{ textAlign: 'center', width: '70%' }}>
+							REALMENTE DESEJA EXCLUIR ESTE PRESET?
+						</Text>
+					</View>
+
+					<IconTrash>
+						<Trash width={scale(96)} height={scale(96)} />
+					</IconTrash>
+
+					<Button title="Excluir" />
+					<Button
+						title="Voltar"
+						variant="secondary"
+						onPress={() => onClose()}
+					/>
+				</ContainerModal>
+			</Container>
+		</Modal>
+	);
 }

@@ -1,27 +1,38 @@
-import React, { PropsWithChildren } from 'react';
+import React from 'react';
 
 import { KubaFone } from '@assets/images';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { Box, Container, ContainerImage, Image, TitleCard } from './styles';
+import { useNavigation } from '@react-navigation/native';
+import { Box, Container, ContainerImage, Image } from './styles';
+import { Spacer } from '@components/Spacer';
+import Text from '@components/Text';
+import { scale } from 'react-native-size-matters';
 
 interface CardDeviceProps {
-  title: string
-  id: number
+	title: string;
+	id: number;
 }
 
 export function CardDevice({ title, id }: CardDeviceProps) {
-  const { navigate } = useNavigation() as NavigationProp<ReactNavigation.RootParamList> | any
+	const { navigate } = useNavigation<any>();
 
-  return (
-    <Container
-      onPress={() => navigate('Device', { deviceID: id })}
-    >
-      <ContainerImage>
-        <Image source={KubaFone} />
-      </ContainerImage>
-      <Box>
-        <TitleCard>{title}</TitleCard>
-      </Box>
-    </Container>
-  );
+	return (
+		<Container
+			style={{
+				elevation: 4,
+				marginVertical: scale(4),
+				marginRight: scale(8)
+			}}
+			onPress={() => navigate('Device', { deviceID: id })}>
+			<ContainerImage>
+				<Image source={KubaFone} />
+			</ContainerImage>
+
+			<Spacer h={4} />
+
+			<Text style={{ textAlign: 'center' }} fontSize={14}>
+				{title}
+			</Text>
+			<Spacer h={16} />
+		</Container>
+	);
 }

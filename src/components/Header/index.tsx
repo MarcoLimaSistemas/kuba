@@ -1,40 +1,71 @@
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { Image } from 'react-native';
 
-import {
-  ButtonBack,
-  ContainerIHeaderShadow,
-  ContainerLogo,
-  ContainerShadow,
-  Title,
-} from './styles';
-
-import { ArrowBack } from '@assets/icons'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Icons } from '@assets/icons';
+import { TouchableOpacity } from 'react-native';
 
-interface Props {
-  activeButtonGoBack?: boolean;
-  title: string;
+import * as S from './styles';
+import Text from '@components/Text';
+import { Spacer } from '@components/Spacer';
+import { userDetails } from '@react-query/userDetails';
+
+interface IHeaderProps {
+	title?: string | undefined;
+	typeLogo?: 'black' | 'white';
 }
 
-export function Header({ activeButtonGoBack, title }: Props) {
-  const navigation = useNavigation();
-  const insets = useSafeAreaInsets();
+export const Header = ({ title, typeLogo = 'black' }: IHeaderProps) => {
+	const navigation = useNavigation();
+	const insets = useSafeAreaInsets();
 
-  return (
-    <ContainerIHeaderShadow marginTop={`${insets.top}px`}>
-      <ContainerShadow>
-        {activeButtonGoBack && (
-          <ButtonBack onPress={() => navigation.goBack()}>
-            <Image source={ArrowBack} />
-          </ButtonBack>
-        )}
+	const { data } = userDetails({
+		isEnabled: !title
+	});
 
-        <ContainerLogo activeButtonGoBack={activeButtonGoBack}>
-          <Title>{title}</Title>
-        </ContainerLogo>
-      </ContainerShadow>
-    </ContainerIHeaderShadow>
-  );
-}
+	const goToProfile = () => {
+		navigation.navigate('Profile');
+	};
+
+	const goBack = () => {
+		if (navigation.canGoBack()) {
+			navigation.goBack();
+		}
+	};
+
+	return (
+		<S.Container style={{ marginTop: insets.top }}>
+			{Boolean(title) ? (
+				<S.ContainerWithoutAvatar>
+					<TouchableOpacity onPress={goBack}>
+						<Icons.ArrowLeft />
+					</TouchableOpacity>
+
+					<Spacer w={16} />
+
+					<Text variant="bold" fontSize={24}>
+						{title}
+					</Text>
+				</S.ContainerWithoutAvatar>
+			) : (
+				<S.ContainerWithAvatar>
+					{typeLogo === 'black' ? (
+						<Icons.Logo />
+					) : (
+						<Icons.LogoWhite />
+					)}
+
+					<TouchableOpacity onPress={goToProfile}>
+						<S.Avatar
+							source={
+								data?.client.profile_url
+									? { uri: data?.client?.profile_url }
+									: require('@assets/images/avatar.png')
+							}
+						/>
+					</TouchableOpacity>
+				</S.ContainerWithAvatar>
+			)}
+		</S.Container>
+	);
+};

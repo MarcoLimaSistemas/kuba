@@ -1,10 +1,9 @@
-import React, { ReactNode, useEffect, useState } from 'react';
-import { ScrollView, Switch } from 'react-native';
+import React, { useState } from 'react';
+import { ScrollView, Switch, View } from 'react-native';
 
 import { Button } from '@components/Button';
 import { Header } from '@components/Header';
 
-import { profile } from '@assets/images';
 import {
 	FacebookLogo,
 	InstagramLogo,
@@ -12,99 +11,113 @@ import {
 	SpotifyLogo
 } from '@assets/sociais';
 
+import { useAuth } from '@hooks/auth';
+import { useNavigation } from '@react-navigation/native';
+import { timestampToDate } from '@utils/date';
 import {
-	BoxButtons,
-	BoxText,
 	Container,
 	ContainerSocial,
 	ContainerSwitch,
-	Description,
 	ImageProfile,
-	LogoSocial,
-	Name,
-	Separator,
-	Text,
-	TextBold,
-	TextSwitch
+	LogoSocial
 } from './styles';
-import { useNavigation } from '@react-navigation/native';
-import api from '../../../services/api';
-import { useAuth } from '@hooks/auth';
+import { userDetails } from '../../../react-query/userDetails';
+import { Spacer } from '@components/Spacer';
+import { Loading } from '@components/Loading';
+import Text from '@components/Text';
+import { scale } from 'react-native-size-matters';
 
 export function Profile() {
 	const navigation = useNavigation();
+
 	const { logout } = useAuth();
 
+	const { data: user, isLoading } = userDetails({});
+
 	const [isEnabled, setIsEnabled] = useState(false);
+
 	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
-	async function onProductKuba() {
-		try {
-			const res = await api.get('/user/perfil/update/product/kuba', {
-				params: {
-					kuba_product: isEnabled
-				}
-			});
-
-			console.log(res.data);
-		} catch (err) {
-			console.log(err);
-		} finally {
-		}
+	if (isLoading) {
+		return <Loading />;
 	}
 
-	useEffect(() => {
-		onProductKuba();
-	}, [isEnabled]);
-
 	return (
-		<Container>
-			<ScrollView showsVerticalScrollIndicator={false}>
-				<Header title="Perfil" activeButtonGoBack={true} />
-				<ImageProfile source={profile} />
-				<Name>Kabir McKinney</Name>
+		<>
+			<Header title="Perfil" />
+			<Spacer h={16} />
+			<ScrollView
+				showsVerticalScrollIndicator={false}
+				contentContainerStyle={{ flexGrow: 1 }}>
+				<Spacer h={16} />
+				<ImageProfile
+					source={
+						user?.client.profile_url
+							? { uri: user.client.profile_url }
+							: require('@assets/images/avatar.png')
+					}
+				/>
 
-				<Description>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut
-					eget porttitor urna. In gravida, orci vel pretium lobortis,
-					lorem purus auctor mauris, in sollicitudin orci enim vel
-					enim. Integer consequat ex id tortor molestie accumsan.
-					Quisque egestas, mi sed porta auctor, turpis sapien
-					dignissim purus, et volutpat urna lorem blandit lectus.
-				</Description>
+				<Spacer h={16} />
+				<Container>
+					<Text
+						fontSize={24}
+						variant="bold"
+						style={{ textAlign: 'center' }}>
+						{user?.name}
+					</Text>
 
-				<ContainerSwitch>
-					<Switch
-						trackColor={{ false: '#656565', true: '#D4BD85' }}
-						thumbColor={isEnabled ? '#656565' : '#f4f3f4'}
-						ios_backgroundColor="#3e3e3e"
-						onValueChange={toggleSwitch}
-						value={isEnabled}
-					/>
-					<TextSwitch>
-						{isEnabled ? 'Tenho' : 'Não tenho'} um produto Kuba
-					</TextSwitch>
-				</ContainerSwitch>
+					<Spacer h={16} />
 
-				<ContainerSocial>
-					<LogoSocial source={FacebookLogo} />
-					<LogoSocial source={InstagramLogo} />
-					<LogoSocial source={SpotifyLogo} />
-					<LogoSocial source={QobuzzLogo} />
-				</ContainerSocial>
+					<Text>{user?.client?.description ?? 'Sem descrição.'}</Text>
 
-				<BoxText>
-					<Separator>
-						<TextBold>Data de nascimento</TextBold>
-						<Text>{'05/08/1999'}</Text>
-					</Separator>
+					<Spacer h={16} />
 
-					<TextBold>Email</TextBold>
-					<Text>{'teste@gmail.com'}</Text>
-				</BoxText>
+					<ContainerSwitch>
+						<Switch
+							trackColor={{ false: '#656565', true: '#D4BD85' }}
+							thumbColor={isEnabled ? '#656565' : '#f4f3f4'}
+							ios_backgroundColor="#3e3e3e"
+							onValueChange={toggleSwitch}
+							value={isEnabled}
+						/>
+						<Spacer w={8} />
+						<Text>
+							{isEnabled ? 'Tenho' : 'Não tenho'} um produto Kuba
+						</Text>
+					</ContainerSwitch>
 
-				<BoxButtons>
-					<Button title="Loggout" onPress={logout} />
+					<Spacer h={32} />
+
+					<ContainerSocial>
+						<LogoSocial source={FacebookLogo} />
+						<LogoSocial source={InstagramLogo} />
+						<LogoSocial source={SpotifyLogo} />
+						<LogoSocial source={QobuzzLogo} />
+					</ContainerSocial>
+
+					<Spacer h={32} />
+
+					<Text style={{ lineHeight: scale(24) }}>
+						<Text variant="bold">Data de nascimento</Text>
+						<Text>
+							{'\n' +
+								timestampToDate(user?.client?.birth_date ?? '')}
+						</Text>
+					</Text>
+
+					<Spacer h={16} />
+					<Text style={{ lineHeight: scale(24) }}>
+						<Text variant="bold">Email</Text>
+						<Text>{'\n' + user?.email}</Text>
+					</Text>
+					<Spacer h={32} />
+				</Container>
+
+				<View style={{ flex: 1 }} />
+
+				<Container>
+					<Button title="Sair" onPress={logout} />
 					<Button
 						title="Editar Perfil"
 						onPress={() => navigation.navigate('EditProfile')}
@@ -114,8 +127,8 @@ export function Profile() {
 						variant="secondary"
 						onPress={() => navigation.navigate('ChangePassword')}
 					/>
-				</BoxButtons>
+				</Container>
 			</ScrollView>
-		</Container>
+		</>
 	);
 }

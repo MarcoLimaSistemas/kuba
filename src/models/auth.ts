@@ -1,20 +1,30 @@
 export interface ISignInCredentials {
-  email: string;
-  password: string;
+	email: string;
+	password: string;
 }
 export interface IUpdatePassword {
-  old_password: string;
-  new_password: string;
+	old_password: string;
+	new_password: string;
 }
 export interface ISendEmail {
-  email: string;
+	email: string;
 }
 export interface ISendToken {
-  email: string;
-  token: string;
+	email: string;
+	token: string;
 }
 export interface IResetPassword {
-  token: string;
-  password: string;
-  password_confirm: string;
+	token: string;
+	password: string;
+	password_confirm: string;
+}
+
+export interface IUserAuth {
+	id: number;
+	name: string;
+	token: {
+		type: string;
+		token: string;
+		expires_at: string;
+	};
 }

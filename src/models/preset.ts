@@ -1,6 +1,7 @@
 export interface IPresets {
-  name: string;
-  description: string;
-  genre: string;
-  is_public?: boolean;
+	name: string;
+	description: string;
+	settings: string;
+	genreId: string;
+	isPublic: boolean;
 }

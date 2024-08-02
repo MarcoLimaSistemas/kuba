@@ -1,132 +1,153 @@
-import React, { useEffect } from 'react';
-import api from '../../../services/api';
+import React from 'react';
 
 import { Button } from '@components/Button';
 import { Carousel } from '@components/Carousel';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
-import { Modal, Pressable, Image, Alert } from 'react-native';
+import { Modal, Pressable, Image, Alert, View } from 'react-native';
 
 import {
-  background,
-  backgroundSecondary,
-  FigureCompleted,
-  logoWhite,
-  perfil,
+	background,
+	backgroundSecondary,
+	FigureCompleted
 } from '@assets/images';
 
-import { Close } from '@assets/icons'
+import { Close } from '@assets/icons';
 
 import {
-  ButtonPerfil,
-  ButtonModal,
-  Container,
-  ContainerHeader,
-  ContainerModal,
-  ContainerSchoolKuba,
-  IconClose,
-  ImageHeaderHome,
-  ImageModalContainer,
-  ImageSchoolKuba,
-  SubTitle,
-  SubTitleModal,
-  SubTitleSecondary,
-  Title,
-  TitleModal,
-  TitleSecondary,
+	Container,
+	ContainerHeader,
+	ContainerModal,
+	ContainerSchoolKuba,
+	IconClose,
+	ImageHeaderHome,
+	ImageModalContainer,
+	ImageSchoolKuba
 } from './styles';
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { DeviceProps } from '@models/device';
+import { Header } from '@components/Header';
+import Text from '@components/Text';
+import { scale } from 'react-native-size-matters';
+import { Spacer } from '@components/Spacer';
 
 export function Home() {
-  const [devices, setDevices] = useState<DeviceProps[]>([
-    {
-    id:1,
-    is_bluetooth:true,
-    nome:'Kuba 01',
-    user_admin_id:2
-  }
-])
+	const [devices, setDevices] = useState<DeviceProps[]>([
+		{
+			id: 1,
+			is_bluetooth: true,
+			nome: 'Kuba 01',
+			user_admin_id: 2
+		}
+	]);
 
-  async function getDevices() {
-    try {
-      const { data } = await api.get('/user/products/index')
-      setDevices(data)
-    } catch (error: any) {
-      Alert.alert(error.response.data.message)
-    }
-  }
+	const navigation = useNavigation();
 
-  // useEffect(() => {
-  //   getDevices();
-  // }, [])
+	return (
+		<>
+			<ContainerHeader>
+				<Header typeLogo="white" />
+				<ImageHeaderHome source={background} />
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const navigation = useNavigation();
+				<View
+					style={{
+						paddingHorizontal: scale(16),
+						marginTop: 'auto'
+					}}>
+					<Text color="#FFF" variant="light">
+						Escola Kuba
+					</Text>
+					<Spacer h={4} />
+					<Text variant="bold" color="#FFF">
+						Como tirar o melhor som de um fone?
+					</Text>
+				</View>
+				<Spacer h={16} />
+			</ContainerHeader>
 
-  return (
-    <Container>
-      <ImageHeaderHome source={background} />
+			<Spacer h={32} />
 
-      <ContainerHeader>
-        <Image source={logoWhite} />
-        <ButtonPerfil onPress={() => navigation.navigate('Profile')}>
-          <Image source={perfil} />
-        </ButtonPerfil>
-      </ContainerHeader>
+			<Carousel data={devices} />
 
-      <Title>Escola Kuba</Title>
-      <SubTitle>Como tirar o melhor som de um fone?</SubTitle>
+			<Container>
+				<ContainerSchoolKuba
+					onPress={() => navigation.navigate('School')}>
+					<ImageSchoolKuba source={backgroundSecondary} />
 
-      <Carousel data={devices} />
+					<View
+						style={{
+							position: 'absolute',
+							justifyContent: 'center',
+							alignItems: 'center',
+							top: 0,
+							left: 0,
+							bottom: 0,
+							right: 0,
+							flex: 1,
+							paddingHorizontal: scale(16)
+						}}>
+						<View>
+							<Text
+								color="#FFF"
+								variant="bold"
+								style={{
+									textAlign: 'center',
+									letterSpacing: scale(6)
+								}}>
+								ESCOLA KUBA
+							</Text>
+							<Spacer h={8} />
+							<Text
+								fontSize={12}
+								color="#FFF"
+								style={{ textAlign: 'center' }}>
+								Aprenda mais sobre o mundo do áudio
+							</Text>
+						</View>
+					</View>
+				</ContainerSchoolKuba>
 
-      <ButtonModal onLongPress={() => setModalVisible(true)} />
+				<Spacer h={16} />
+			</Container>
 
-      <ContainerSchoolKuba onPress={() => navigation.navigate('School')}>
-        <ImageSchoolKuba source={backgroundSecondary} />
-        <TitleSecondary>Escola Kuba</TitleSecondary>
-        <SubTitleSecondary>
-          Aprenda mais sobre o mundo do áudio
-        </SubTitleSecondary>
-      </ContainerSchoolKuba>
+			{/* <Modal
+				animationType="slide"
+				transparent={true}
+				visible={modalVisible}
+				onRequestClose={() => {
+					setModalVisible(!modalVisible);
+				}}>
+				<ContainerModal>
+					<KeyboardAwareScrollView
+						showsVerticalScrollIndicator={false}>
+						<Pressable onPress={() => setModalVisible(false)}>
+							<IconClose>
+								<Image source={Close} />
+							</IconClose>
+						</Pressable>
 
-      <Modal
-        animationType='slide'
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <ContainerModal>
-          <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
-            <Pressable onPress={() => setModalVisible(false)}>
-              <IconClose>
-                <Image source={Close} />
-              </IconClose>
-            </Pressable>
+						<ImageModalContainer>
+							<Image source={FigureCompleted} />
+						</ImageModalContainer>
 
-            <ImageModalContainer>
-              <Image source={FigureCompleted} />
-            </ImageModalContainer>
-
-            <TitleModal>Complete seu Perfil!</TitleModal>
-            <SubTitleModal>
-              Complete seu perfil para ter uma experiência Kuba completa!
-            </SubTitleModal>
-            <Button
-              title='Completar Perfil'
-              onPress={() => navigation.navigate('Profile')}
-            />
-            <Button
-              title='Mais Tarde'
-              variant='secondary'
-              onPress={() => setModalVisible(false)}
-            />
-          </KeyboardAwareScrollView>
-        </ContainerModal>
-      </Modal>
-    </Container >
-  );
+						<Text>Complete seu Perfil!</Text>
+						<Text>
+							Complete seu perfil para ter uma experiência Kuba
+							completa!
+						</Text>
+						<Button
+							title="Completar Perfil"
+							onPress={() => navigation.navigate('Profile')}
+						/>
+						<Button
+							title="Mais Tarde"
+							variant="secondary"
+							onPress={() => setModalVisible(false)}
+						/>
+					</KeyboardAwareScrollView>
+				</ContainerModal>
+			</Modal> */}
+		</>
+	);
 }

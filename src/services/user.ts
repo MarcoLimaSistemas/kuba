@@ -1,20 +1,34 @@
-import { AxiosPromise } from 'axios';
-import {
-	IResetPassword,
-	ISendEmail,
-	ISendToken,
-	ISignInCredentials
-} from '../models/auth';
-
 import api from './api';
+import { IUser } from '@models/user';
+
+export interface IUserEditInfoRequest {
+	profilePhoto?: string;
+	name: string;
+	description: string;
+	birthDate: string;
+	facebook: string;
+	instagram: string;
+	spotify: string;
+	qobuzz: string;
+}
+
+export interface IEditInfoProps {
+	userId: number;
+	data: FormData;
+}
 
 class User {
-	static getInfo(): AxiosPromise<any> {
-		return api.get('/user/perfil');
+	static async getInfo(userId: number | undefined) {
+		const response = await api.get<IUser>('/user/' + userId);
+		return response.data;
 	}
 
-	static editInfo(data: any): AxiosPromise<any> {
-		return api.put('/user/perfil', data);
+	static editInfo({ userId, data }: IEditInfoProps) {
+		return api.put('/user/' + userId, data, {
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			}
+		});
 	}
 }
 

@@ -25,7 +25,10 @@ module.exports = function (api) {
 						'@screens': './src/screens',
 						'@schemas': './src/schemas',
 						'@models': './src/models',
-						'@services': './src/services'
+						'@services': './src/services',
+						'@utils': './src/utils',
+						'@config': './src/config',
+						'@react-query': './src/react-query'
 					}
 				}
 			]

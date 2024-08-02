@@ -1,20 +1,24 @@
-import { RFValue } from 'react-native-responsive-fontsize';
+import { scale } from 'react-native-size-matters';
 import styled from 'styled-components/native';
 
 export const Container = styled.TouchableOpacity`
-width: ${RFValue(104)}px;
-height: ${RFValue(29)}px;
+	width: ${scale(104)}px;
+	height: ${scale(40)}px;
+	border-radius: ${scale(4)}px;
+`;
+
+export const ContainerText = styled.View`
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	justify-content: center;
+	align-items: center;
 `;
 
 export const ImageBackground = styled.Image`
-`;
-
-export const Title = styled.Text`
-position: absolute;
-left: ${RFValue(20)}px;
-top: ${RFValue(10)}px;
-font-size: ${RFValue(14)}px;
-text-align: center;
-color:${({ theme }) => theme.COLORS.white_100};
-text-transform: uppercase;
+	width: 100%;
+	height: 100%;
+	border-radius: ${scale(4)}px;
 `;
