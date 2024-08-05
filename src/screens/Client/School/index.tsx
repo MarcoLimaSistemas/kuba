@@ -64,7 +64,6 @@ export function School() {
 						searchCallback={() => {
 							refetch();
 						}}
-						search={setSearch}
 						loading={false}
 						placeholder="Procurar vídeos"
 						value={search}
