@@ -28,13 +28,16 @@ import Text from '@components/Text';
 import { scale } from 'react-native-size-matters';
 
 export function Profile() {
+	const [isEnabled, setIsEnabled] = useState(false);
 	const navigation = useNavigation();
 
 	const { logout } = useAuth();
 
 	const { data: user, isLoading } = userDetails({});
+	console.log('🚀 ~ Profile ~ user:', user);
 
-	const [isEnabled, setIsEnabled] = useState(false);
+	const socialNetworks = user?.client.socialNetworks ?? [];
+	console.log('🚀 ~ Profile ~ socialNetworks:', socialNetworks);
 
 	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
@@ -90,10 +93,39 @@ export function Profile() {
 					<Spacer h={32} />
 
 					<ContainerSocial>
-						<LogoSocial source={FacebookLogo} />
-						<LogoSocial source={InstagramLogo} />
-						<LogoSocial source={SpotifyLogo} />
-						<LogoSocial source={QobuzzLogo} />
+						{socialNetworks.map(e => {
+							const name = e.name;
+							switch (name) {
+								case 'Facebook':
+									return <LogoSocial source={FacebookLogo} />;
+								case 'Instagram':
+									return (
+										<>
+											<Spacer w={16} />
+											<LogoSocial
+												source={InstagramLogo}
+											/>
+										</>
+									);
+								case 'Spotify':
+									return (
+										<>
+											<Spacer w={16} />
+											<LogoSocial source={SpotifyLogo} />
+										</>
+									);
+								case 'Qobuzz':
+									return (
+										<>
+											<Spacer w={16} />
+											<LogoSocial source={QobuzzLogo} />
+										</>
+									);
+
+								default:
+									return null;
+							}
+						})}
 					</ContainerSocial>
 
 					<Spacer h={32} />

@@ -51,11 +51,12 @@ export function EditProfile() {
 
 	const { mutateEditUser, isPendingEditUser } = useEditUser();
 
+	const socialNetworks = userDetailsData?.client.socialNetworks ?? [];
+
 	const {
 		control,
 		handleSubmit,
 		formState: { errors },
-		setValue,
 		watch
 	} = useForm<UserInfoFormData>({
 		resolver: yupResolver(EditProfileSchema),
@@ -65,10 +66,12 @@ export function EditProfile() {
 			birthDate: userDetailsData?.client.birth_date
 				? timestampToDate(userDetailsData.client.birth_date)
 				: '',
-			facebook: userDetailsData?.client.socialNetworks[0]?.link ?? '',
-			instagram: userDetailsData?.client.socialNetworks[1]?.link ?? '',
-			qobuzz: userDetailsData?.client.socialNetworks[2]?.link ?? '',
-			spotify: userDetailsData?.client.socialNetworks[3]?.link ?? ''
+			facebook:
+				socialNetworks.find(e => e.name === 'Facebook')?.link ?? '',
+			instagram:
+				socialNetworks.find(e => e.name === 'Instagram')?.link ?? '',
+			qobuzz: socialNetworks.find(e => e.name === 'Qobuzz')?.link ?? '',
+			spotify: socialNetworks.find(e => e.name === 'Spotify')?.link ?? ''
 		}
 	});
 
@@ -89,10 +92,27 @@ export function EditProfile() {
 			'birthDate',
 			data.birthDate.split('/').reverse().join('-')
 		);
-		formData.append('facebook', data.facebook);
-		formData.append('instagram', data.instagram);
-		formData.append('spotify', data.spotify);
-		formData.append('qobuzz', data.qobuzz);
+
+		const socialNetworks = [
+			{
+				name: 'Facebook',
+				link: data.facebook
+			},
+			{
+				name: 'Instagram',
+				link: data.instagram
+			},
+			{
+				name: 'Spotify',
+				link: data.spotify
+			},
+			{ name: 'Qobuzz', link: data.qobuzz }
+		].filter(e => e.link !== '');
+
+		socialNetworks.forEach((e, i) => {
+			formData.append(`socialNetworks[${i}][name]`, e.name);
+			formData.append(`socialNetworks[${i}][link]`, e.link);
+		});
 
 		if (avatar) {
 			formData.append('profileImg', {
