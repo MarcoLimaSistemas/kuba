@@ -6,9 +6,10 @@ export const Container = styled.ScrollView`
 	background: #f4f2f2;
 `;
 
-export const ImageDevice = styled.Image`
-	margin-left: auto;
-	margin-right: auto;
+export const ContainerImg = styled.View`
+	height: ${scale(200)}px;
+	justify-content: center;
+	align-items: center;
 `;
 
 export const ContainerCarousel = styled.View`
@@ -27,7 +28,6 @@ export const BoxButtons = styled.View`
 
 export const Footer = styled.View`
 	padding: ${scale(16)}px;
-	margin-top: ${scale(32)}px;
 `;
 
 export const ContainerConnections = styled.View`

@@ -1,28 +1,12 @@
-import { RFValue } from 'react-native-responsive-fontsize';
 import { scale } from 'react-native-size-matters';
-import styled, { css } from 'styled-components/native';
-
-interface PropsPage {
-	active?: boolean;
-	opacityIconImage?: boolean;
-}
+import styled from 'styled-components/native';
 
 export const Container = styled.TouchableOpacity`
 	border-radius: ${scale(8)}px;
 	background: #fff;
 	height: ${scale(180)}px;
 `;
-export const Image = styled.Image<PropsPage>`
-	${({ active }) =>
-		active
-			? css`
-					border-radius: 5px;
-				`
-			: css`
-					border-top-left-radius: 8px;
-					border-top-right-radius: 8px;
-				`};
-`;
+
 export const ContainerImage = styled.View`
 	width: ${scale(152)}px;
 	height: ${scale(152)}px;
@@ -32,5 +16,4 @@ export const ContainerImage = styled.View`
 export const Box = styled.View`
 	justify-content: center;
 	align-items: center;
-	padding: 5px;
 `;

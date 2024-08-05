@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { KubaFone } from '@assets/images';
 import { Button } from '@components/Button';
 import { CarouselProfile } from '@components/CarouselProfile';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { Headset, Info, Lighting } from '@assets/icons';
 
@@ -12,8 +12,8 @@ import {
 	Container,
 	ContainerCarousel,
 	ContainerConnections,
-	Footer,
-	ImageDevice
+	ContainerImg,
+	Footer
 } from './styles';
 
 import { Image, TouchableOpacity, View } from 'react-native';
@@ -42,11 +42,15 @@ const dataExample = [
 	}
 ];
 
-export function Device({ route }: any) {
+export function Device() {
+	const route = useRoute();
+
+	const device = route.params as any;
+
 	const [scrollEnabled, setScrollEnabled] = useState(true);
 	const { top } = useSafeAreaInsets();
 
-	const navigation = useNavigation();
+	const navigation = useNavigation<any>();
 
 	const { connectedDevice, connectToDevice } = useBluetooth();
 
@@ -61,9 +65,21 @@ export function Device({ route }: any) {
 				style={{
 					paddingTop: top
 				}}
+				contentContainerStyle={{ flexGrow: 1 }}
 				showsVerticalScrollIndicator={false}
 				scrollEnabled={scrollEnabled}>
-				<ImageDevice source={KubaFone} />
+				<ContainerImg>
+					<Image
+						style={{
+							width: '80%',
+							height: '80%'
+						}}
+						resizeMode="contain"
+						source={{
+							uri: device?.imgURL
+						}}
+					/>
+				</ContainerImg>
 
 				<Spacer h={16} />
 
@@ -75,72 +91,87 @@ export function Device({ route }: any) {
 						textTransform: 'uppercase',
 						letterSpacing: scale(6)
 					}}>
-					{'Kuba disco'}
+					{device?.name}
 				</Text>
 
 				<Spacer h={16} />
 
-				<ContainerConnections>
-					{/* {connectedDevice !== null ? ( */}
-					{true ? (
-						<>
-							<Text fontSize={12} variant="bold" color="#777777">
-								CONECTADO
-							</Text>
-
-							<View
-								style={{
-									flexDirection: 'row',
-									alignItems: 'center'
-								}}>
-								<Image source={Lighting} />
-								<Spacer w={8} />
-								<Text>{'100%'}</Text>
-
-								<Spacer w={16} />
-								<TouchableOpacity
-									onPress={() => {
-										// connectToDevice()
-									}}>
-									<Text color="#2E9CCB" variant="bold">
-										Desconectar
+				{device?.isBluetooth && (
+					<>
+						<ContainerConnections>
+							{connectedDevice !== null ? (
+								<>
+									<Text
+										fontSize={12}
+										variant="bold"
+										color="#777777">
+										CONECTADO
 									</Text>
-								</TouchableOpacity>
-							</View>
-						</>
-					) : (
-						<>
-							<Text fontSize={12} variant="bold" color="#777777">
-								DESCONECTADO
-							</Text>
 
-							<TouchableOpacity onPress={() => {}}>
-								<Text color="#2E9CCB" variant="bold">
-									Conectar
-								</Text>
-							</TouchableOpacity>
-						</>
-					)}
-				</ContainerConnections>
+									<View
+										style={{
+											flexDirection: 'row',
+											alignItems: 'center'
+										}}>
+										<Image source={Lighting} />
+										<Spacer w={8} />
+										<Text>{'100%'}</Text>
 
-				<ContainerCarousel>
-					<Equalizer handleScrollEnabled={handleScrollEnabled} />
+										<Spacer w={16} />
+										<TouchableOpacity
+											onPress={() => {
+												// connectToDevice()
+											}}>
+											<Text
+												color="#2E9CCB"
+												variant="bold">
+												Desconectar
+											</Text>
+										</TouchableOpacity>
+									</View>
+								</>
+							) : (
+								<>
+									<Text
+										fontSize={12}
+										variant="bold"
+										color="#777777">
+										DESCONECTADO
+									</Text>
 
-					<CarouselProfile
-						titleProfile={'Perfis Personalidades'}
-						data={dataExample}
-					/>
+									<TouchableOpacity onPress={() => {}}>
+										<Text color="#2E9CCB" variant="bold">
+											Conectar
+										</Text>
+									</TouchableOpacity>
+								</>
+							)}
+						</ContainerConnections>
 
-					<Spacer h={16} />
+						<ContainerCarousel>
+							<Equalizer
+								handleScrollEnabled={handleScrollEnabled}
+							/>
 
-					<CarouselProfile
-						titleProfile={'Perfis Públicos '}
-						data={dataExample}
-						isPersonalities={false}
-					/>
-				</ContainerCarousel>
+							<CarouselProfile
+								titleProfile={'Perfis Personalidades'}
+								data={dataExample}
+							/>
+
+							<Spacer h={16} />
+
+							<CarouselProfile
+								titleProfile={'Perfis Públicos '}
+								data={dataExample}
+								isPersonalities={false}
+							/>
+						</ContainerCarousel>
+					</>
+				)}
 
 				<Spacer h={32} />
+
+				<View style={{ flex: 1 }} />
 
 				<BoxButtons
 					style={{
@@ -161,7 +192,11 @@ export function Device({ route }: any) {
 
 					<ButtonSquare
 						label="Tutorias de uso"
-						onPress={() => navigation.navigate('Tutorials')}>
+						onPress={() =>
+							navigation.navigate('Tutorials', {
+								deviceId: device?.id
+							})
+						}>
 						<Image
 							source={Info}
 							style={{
@@ -179,7 +214,6 @@ export function Device({ route }: any) {
 						onPress={() => navigation.goBack()}
 					/>
 				</Footer>
-				<Spacer h={32} />
 			</Container>
 		</>
 	);

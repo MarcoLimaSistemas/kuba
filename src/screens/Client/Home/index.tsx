@@ -1,46 +1,36 @@
 import React from 'react';
 
-import { Button } from '@components/Button';
 import { Carousel } from '@components/Carousel';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
-import { Modal, Pressable, Image, Alert, View } from 'react-native';
 
-import {
-	background,
-	backgroundSecondary,
-	FigureCompleted
-} from '@assets/images';
-
-import { Close } from '@assets/icons';
+import { background, backgroundSecondary } from '@assets/images';
 
 import {
 	Container,
 	ContainerHeader,
-	ContainerModal,
 	ContainerSchoolKuba,
-	IconClose,
 	ImageHeaderHome,
-	ImageModalContainer,
 	ImageSchoolKuba
 } from './styles';
 
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { DeviceProps } from '@models/device';
+import { Device } from '@models/device';
 import { Header } from '@components/Header';
 import Text from '@components/Text';
 import { scale } from 'react-native-size-matters';
 import { Spacer } from '@components/Spacer';
+import { View } from 'react-native';
+import { useQuery } from '@tanstack/react-query';
+import { getProducts } from '@services/product';
+import { useAuth } from '@hooks/auth';
 
 export function Home() {
-	const [devices, setDevices] = useState<DeviceProps[]>([
-		{
-			id: 1,
-			is_bluetooth: true,
-			nome: 'Kuba 01',
-			user_admin_id: 2
-		}
-	]);
+	const { user } = useAuth();
+
+	const { data: devices, isLoading } = useQuery({
+		queryKey: ['Devices'],
+		queryFn: () => getProducts(user?.id)
+	});
 
 	const navigation = useNavigation();
 
@@ -68,7 +58,7 @@ export function Home() {
 
 			<Spacer h={32} />
 
-			<Carousel data={devices} />
+			<Carousel devices={devices} isLoading={isLoading} />
 
 			<Container>
 				<ContainerSchoolKuba
@@ -110,44 +100,6 @@ export function Home() {
 
 				<Spacer h={16} />
 			</Container>
-
-			{/* <Modal
-				animationType="slide"
-				transparent={true}
-				visible={modalVisible}
-				onRequestClose={() => {
-					setModalVisible(!modalVisible);
-				}}>
-				<ContainerModal>
-					<KeyboardAwareScrollView
-						showsVerticalScrollIndicator={false}>
-						<Pressable onPress={() => setModalVisible(false)}>
-							<IconClose>
-								<Image source={Close} />
-							</IconClose>
-						</Pressable>
-
-						<ImageModalContainer>
-							<Image source={FigureCompleted} />
-						</ImageModalContainer>
-
-						<Text>Complete seu Perfil!</Text>
-						<Text>
-							Complete seu perfil para ter uma experiência Kuba
-							completa!
-						</Text>
-						<Button
-							title="Completar Perfil"
-							onPress={() => navigation.navigate('Profile')}
-						/>
-						<Button
-							title="Mais Tarde"
-							variant="secondary"
-							onPress={() => setModalVisible(false)}
-						/>
-					</KeyboardAwareScrollView>
-				</ContainerModal>
-			</Modal> */}
 		</>
 	);
 }

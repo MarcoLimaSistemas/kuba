@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import { CardDevice } from '@components/CardDevice';
-import { FlatList, View } from 'react-native';
-import { CarouselProps } from '@models/device';
+import { ActivityIndicator, FlatList, View } from 'react-native';
 import { Spacer } from '@components/Spacer';
 import { Icons } from '@assets/icons';
 import Text from '@components/Text';
@@ -11,8 +10,15 @@ import { scale } from 'react-native-size-matters';
 
 import { Modalize } from 'react-native-modalize';
 import { ModalDevices } from '@components/ModalDevices';
+import { Device } from '@models/device';
+import theme from '../../styles/theme';
 
-export function Carousel({ data }: CarouselProps) {
+interface ICarousselProps {
+	devices: Device[];
+	isLoading: boolean;
+}
+
+export function Carousel({ devices, isLoading }: ICarousselProps) {
 	const modalizeRef = useRef<Modalize>(null);
 
 	const onOpen = () => modalizeRef.current?.open();
@@ -31,14 +37,20 @@ export function Carousel({ data }: CarouselProps) {
 			<Spacer h={16} />
 
 			<FlatList
-				data={data}
+				data={devices}
 				showsHorizontalScrollIndicator={false}
 				contentContainerStyle={{
 					paddingLeft: scale(16)
 				}}
 				horizontal
 				renderItem={({ item }) => (
-					<CardDevice key={item.id} title={item.nome} id={item.id} />
+					<CardDevice
+						key={item.id}
+						id={item.id}
+						imgURL={item.img_url}
+						title={item.name}
+						isBluetooth={JSON.parse(item.is_bluetooth)}
+					/>
 				)}
 				ListFooterComponent={
 					<S.ButtonAdd
@@ -54,6 +66,19 @@ export function Carousel({ data }: CarouselProps) {
 							Adicionar novo dispositivo
 						</Text>
 					</S.ButtonAdd>
+				}
+				ListEmptyComponent={() =>
+					isLoading ? (
+						<View
+							style={{
+								marginRight: scale(40),
+								marginLeft: scale(16),
+								justifyContent: 'center',
+								alignItems: 'center'
+							}}>
+							<ActivityIndicator color={theme.COLORS.gold_100} />
+						</View>
+					) : null
 				}
 			/>
 
