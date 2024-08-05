@@ -1,10 +1,8 @@
-export interface CarouselProps {
-  data: DeviceProps[];
-}
-
-export interface DeviceProps {
-  nome: string
-  is_bluetooth: boolean
-  user_admin_id: number
-  id: number
+export interface Device {
+	id: number;
+	name: string;
+	is_bluetooth: string;
+	img_url: string;
+	created_at: string;
+	updated_at: string;
 }
