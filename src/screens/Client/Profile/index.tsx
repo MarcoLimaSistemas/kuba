@@ -34,10 +34,8 @@ export function Profile() {
 	const { logout } = useAuth();
 
 	const { data: user, isLoading } = userDetails({});
-	console.log('🚀 ~ Profile ~ user:', user);
 
 	const socialNetworks = user?.client.socialNetworks ?? [];
-	console.log('🚀 ~ Profile ~ socialNetworks:', socialNetworks);
 
 	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
