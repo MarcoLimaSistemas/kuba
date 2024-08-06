@@ -3,7 +3,10 @@ import { IPresets } from '@models/preset';
 
 import api from './api';
 
-async function createPreset(data: IPresets, userId: number): AxiosPromise<any> {
+async function createPreset(
+	data: IPresets,
+	userId: number | undefined
+): AxiosPromise<any> {
 	return api.post(`/user/${userId}/preset`, data);
 }
 

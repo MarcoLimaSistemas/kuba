@@ -1,30 +1,22 @@
 import { Button } from '@components/Button';
-import { useModal } from '@hooks/modal';
-import { useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { Modal, Platform, Pressable, ScrollView, View } from 'react-native';
+import React, { forwardRef } from 'react';
+import { Pressable, View } from 'react-native';
 
-import {
-	Container,
-	ContainerModal,
-	IconClose,
-	IconTrash,
-	TitleModal
-} from './styles';
+import { Container, ContainerModal, IconClose, IconTrash } from './styles';
 import Text from '@components/Text';
 import { Spacer } from '@components/Spacer';
 import { Icons } from '@assets/icons';
 import { scale } from 'react-native-size-matters';
 import Trash from '@assets/icons/trash-2.svg';
+import { Modalize } from 'react-native-modalize';
 
 interface ModalDeleteProps {
-	visible: boolean;
 	onClose(): void;
 }
 
-export function ModalDelete({ visible, onClose }: ModalDeleteProps) {
+export const ModalDelete = forwardRef(({ onClose }: ModalDeleteProps, ref) => {
 	return (
-		<Modal animationType="slide" transparent={true} visible={visible}>
+		<Modalize ref={ref} adjustToContentHeight withHandle={false}>
 			<Container>
 				<ContainerModal>
 					<Spacer h={16} />
@@ -63,6 +55,6 @@ export function ModalDelete({ visible, onClose }: ModalDeleteProps) {
 					/>
 				</ContainerModal>
 			</Container>
-		</Modal>
+		</Modalize>
 	);
-}
+});

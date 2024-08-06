@@ -11,7 +11,6 @@ import VerticalSlider from '@components/Slider';
 import { NativeModules } from 'react-native';
 import Slider from '@react-native-community/slider';
 
-import { ModalPreset } from '@components/ModalPreset';
 import * as S from './styles';
 import DropDownPicker, { ValueType } from 'react-native-dropdown-picker';
 import { typography } from '../../styles/typography';
@@ -20,14 +19,17 @@ const { AudioEqualizerModule } = NativeModules;
 
 interface EqualizerProps {
 	handleScrollEnabled: (enabled: boolean) => void;
+	handleModalEdit: (isEdit: boolean) => void;
+	onOpen(): void;
 }
 
-export const Equalizer = ({ handleScrollEnabled }: EqualizerProps) => {
+export const Equalizer = ({
+	handleScrollEnabled,
+	handleModalEdit,
+	onOpen
+}: EqualizerProps) => {
 	const [frequencies, setFrequencies] = useState(frequenciesList);
 	const [preAmpDB, setPreAmpDB] = useState(0);
-
-	const [showModal, setShowModal] = useState(false);
-	const [isEditing, setIsEditing] = useState(false);
 
 	const [openDropdown, setOpenDropdown] = useState(false);
 	const [presets, setPresets] = useState([
@@ -93,8 +95,8 @@ export const Equalizer = ({ handleScrollEnabled }: EqualizerProps) => {
 						}}>
 						<TouchableOpacity
 							onPress={() => {
-								setIsEditing(false);
-								setShowModal(true);
+								onOpen();
+								handleModalEdit(false);
 							}}>
 							<Icons.Plus width={scale(32)} height={scale(32)} />
 						</TouchableOpacity>
@@ -103,8 +105,8 @@ export const Equalizer = ({ handleScrollEnabled }: EqualizerProps) => {
 
 						<TouchableOpacity
 							onPress={() => {
-								setIsEditing(true);
-								setShowModal(true);
+								onOpen();
+								handleModalEdit(true);
 							}}>
 							<Icons.Pencil
 								width={scale(32)}
@@ -230,12 +232,6 @@ export const Equalizer = ({ handleScrollEnabled }: EqualizerProps) => {
 
 				<Spacer h={16} />
 			</S.Container>
-
-			<ModalPreset
-				isEdit={isEditing}
-				isOpen={showModal}
-				onClose={() => setShowModal(false)}
-			/>
 		</>
 	);
 };

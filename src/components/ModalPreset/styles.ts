@@ -3,23 +3,6 @@ import { scale } from 'react-native-size-matters';
 import styled from 'styled-components/native';
 import { typography } from '../../styles/typography';
 
-export const Container = styled.View`
-	position: relative;
-	top: 0;
-	left: 0;
-	flex: 1;
-	background: rgba(0, 0, 0, 0.5);
-	justify-content: flex-end;
-`;
-
-export const ContainerModal = styled.View`
-	background-color: ${({ theme }) => theme.COLORS.white_100};
-	padding-left: ${scale(16)}px;
-	padding-right: ${scale(16)}px;
-	border-top-right-radius: ${scale(16)}px;
-	border-top-left-radius: ${scale(16)}px;
-`;
-
 export const Header = styled.View`
 	flex-direction: row;
 	justify-content: space-between;

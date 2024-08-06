@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { KubaFone } from '@assets/images';
 import { Button } from '@components/Button';
@@ -26,6 +26,8 @@ import { useBluetooth } from '../../../context/BluetoothContext';
 import { Header } from '@components/Header';
 import Text from '@components/Text';
 import { scale } from 'react-native-size-matters';
+import { ModalPreset } from '@components/ModalPreset';
+import { Modalize } from 'react-native-modalize';
 
 const dataExample = [
 	{
@@ -48,6 +50,7 @@ export function Device() {
 	const device = route.params as any;
 
 	const [scrollEnabled, setScrollEnabled] = useState(true);
+	const [isEdit, setIsEdit] = useState(false);
 	const { top } = useSafeAreaInsets();
 
 	const navigation = useNavigation<any>();
@@ -57,6 +60,14 @@ export function Device() {
 	const handleScrollEnabled = (enabled: boolean) => {
 		setScrollEnabled(enabled);
 	};
+	const handleModalEdit = (isEdit: boolean) => {
+		setIsEdit(isEdit);
+	};
+
+	const modalizeRef = useRef<Modalize>(null);
+
+	const openModal = () => modalizeRef.current?.open();
+	const closeModal = () => modalizeRef.current?.close();
 
 	return (
 		<>
@@ -150,6 +161,8 @@ export function Device() {
 
 						<ContainerCarousel>
 							<Equalizer
+								onOpen={openModal}
+								handleModalEdit={handleModalEdit}
 								handleScrollEnabled={handleScrollEnabled}
 							/>
 
@@ -219,6 +232,12 @@ export function Device() {
 					/>
 				</Footer>
 			</Container>
+
+			<ModalPreset
+				ref={modalizeRef}
+				isEdit={isEdit}
+				onClose={() => closeModal()}
+			/>
 		</>
 	);
 }
