@@ -179,7 +179,11 @@ export function Device() {
 					}}>
 					<ButtonSquare
 						label="Suporte"
-						onPress={() => navigation.navigate('Support')}>
+						onPress={() =>
+							navigation.navigate('Support', {
+								deviceId: device?.id
+							})
+						}>
 						<Image
 							source={Headset}
 							style={{
