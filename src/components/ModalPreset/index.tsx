@@ -25,27 +25,33 @@ import Text from '@components/Text';
 import { Spacer } from '@components/Spacer';
 import theme from '../../styles/theme';
 import { typography } from '../../styles/typography';
-import { useMutation } from '@tanstack/react-query';
-import { createPreset } from '@services/preset';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { createPreset, getGenres } from '@services/preset';
 import { useAuth } from '@hooks/auth';
 import { Modalize } from 'react-native-modalize';
+import { queryClient } from '../../../App';
+
+export interface IPreset {
+	id: number;
+	name: string;
+	description: string;
+	settings: string;
+	genreId: string;
+	isPublic: boolean;
+}
 
 interface ModalPresetProps {
 	isEdit: boolean;
+	currentPreset: IPreset | null;
 	onOpen?(): void;
 	onClose(): void;
 }
 
 export const ModalPreset = forwardRef(
-	({ isEdit, onClose }: ModalPresetProps, ref) => {
-		const [showModalDelete, setShowModalDelete] = useState(false);
+	({ isEdit, onClose, currentPreset }: ModalPresetProps, ref) => {
 		const [open, setOpen] = useState(false);
 		const [value, setValue] = useState('');
 		const [isEnabled, setIsEnabled] = useState(false);
-		const [items, setItems] = useState([
-			{ label: 'Rock ', value: '1' },
-			{ label: 'sertanejo', value: '1' }
-		]);
 
 		const modalizeRef = useRef<Modalize>(null);
 
@@ -64,6 +70,9 @@ export const ModalPreset = forwardRef(
 		const { mutateAsync, isPending } = useMutation({
 			mutationFn: (data: IPresets) => createPreset(data, user?.id),
 			onSuccess: () => {
+				queryClient.invalidateQueries({
+					queryKey: ['MyPresets']
+				});
 				onClose();
 			},
 			onError(error) {
@@ -82,6 +91,35 @@ export const ModalPreset = forwardRef(
 			};
 			mutateAsync({ ...data, ...settings });
 		};
+		const editPreset = (data: IPresets) => {
+			console.log('🚀 ~ savePreset ~ data:', data);
+			//TODO: implement logic to settings
+			const settings = {
+				settings: '0,0,0,0,0,0,0,0,0'
+			};
+		};
+
+		const { data, isLoading } = useQuery({
+			queryKey: ['Genres'],
+			queryFn: () => getGenres(user?.id)
+		});
+
+		const genres = data?.map((genre: any) => ({
+			value: genre.id,
+			label: genre.name
+		}));
+
+		useEffect(() => {
+			if (isEdit) {
+				setValueForm('name', currentPreset?.name ?? '');
+				setValueForm('description', currentPreset?.description ?? '');
+				// setValueForm('genreId', currentPreset?.genreId ?? '');
+				// setValueForm('isPublic', currentPreset?.isPublic ?? false);
+				setValueForm('settings', currentPreset?.settings ?? '');
+				setValue(currentPreset?.genreId ?? '');
+				setIsEnabled(currentPreset?.isPublic ?? false);
+			}
+		}, [isEdit]);
 
 		useEffect(() => {
 			setValueForm('genreId', value);
@@ -159,10 +197,11 @@ export const ModalPreset = forwardRef(
 						<DropDownPicker
 							open={open}
 							value={value}
-							items={items}
+							items={genres}
 							setOpen={setOpen}
 							setValue={setValue}
-							setItems={setItems}
+							// setItems={setItems}
+							loading={isLoading}
 							placeholder={'Gênero'}
 							style={{
 								borderWidth: 2,
@@ -201,7 +240,9 @@ export const ModalPreset = forwardRef(
 						<Button
 							activeLoad={isPending}
 							title="Salvar"
-							onPress={handleSubmit(savePreset)}
+							onPress={handleSubmit(
+								isEdit ? editPreset : savePreset
+							)}
 						/>
 						<Button
 							title="Voltar"

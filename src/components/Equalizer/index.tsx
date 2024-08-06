@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Text from '@components/Text';
 
 import { frequencies as frequenciesList } from './data';
@@ -14,11 +14,17 @@ import Slider from '@react-native-community/slider';
 import * as S from './styles';
 import DropDownPicker, { ValueType } from 'react-native-dropdown-picker';
 import { typography } from '../../styles/typography';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { getPresets } from '@services/preset';
+import { useAuth } from '@hooks/auth';
+import { IPreset } from '@components/ModalPreset';
+import Toast from 'react-native-toast-message';
 
 const { AudioEqualizerModule } = NativeModules;
 
 interface EqualizerProps {
 	handleScrollEnabled: (enabled: boolean) => void;
+	handlePreset: (preset: IPreset) => void;
 	handleModalEdit: (isEdit: boolean) => void;
 	onOpen(): void;
 }
@@ -26,21 +32,40 @@ interface EqualizerProps {
 export const Equalizer = ({
 	handleScrollEnabled,
 	handleModalEdit,
+	handlePreset,
 	onOpen
 }: EqualizerProps) => {
 	const [frequencies, setFrequencies] = useState(frequenciesList);
 	const [preAmpDB, setPreAmpDB] = useState(0);
 
 	const [openDropdown, setOpenDropdown] = useState(false);
-	const [presets, setPresets] = useState([
-		{ label: 'Padrão', value: 'padrao' },
-		{ label: 'Preset01', value: 'preset01' },
-		{ label: 'sitemasked', value: 'preset02' },
-		{ label: 'molecularpioneer', value: 'preset03' }
-	]);
-	const [currentPreset, setCurrentPreset] = useState<ValueType | null>(
-		presets[0].value
-	);
+
+	const { user } = useAuth();
+
+	const { data, isLoading, isFetched } = useInfiniteQuery({
+		queryKey: ['MyPresets'],
+		queryFn: ({ pageParam }) =>
+			getPresets(user?.id, undefined, pageParam, true, 15),
+		initialPageParam: 1,
+		getNextPageParam: lastPage => lastPage.meta.next_page_url
+	});
+
+	const myPresets = useMemo(() => {
+		return (
+			data?.pages
+				.flatMap(page => page.data)
+				.map(preset => ({
+					label: preset.name,
+					value: preset.id,
+					isPublic: preset.is_public,
+					genreId: preset.genre_id,
+					description: preset.description,
+					settings: preset.settings
+				})) ?? []
+		);
+	}, [data]);
+
+	const [currentPreset, setCurrentPreset] = useState<ValueType | null>(null);
 
 	const handleBandGain = async (band: number, level: number) => {
 		try {
@@ -78,6 +103,21 @@ export const Equalizer = ({
 	};
 
 	useEffect(() => {
+		if (myPresets.length > 0) {
+			const item = myPresets[0];
+			setCurrentPreset(item.value);
+			handlePreset({
+				id: item.value,
+				name: item.label,
+				description: item.description,
+				genreId: item.genreId,
+				isPublic: item.isPublic,
+				settings: item.settings
+			});
+		}
+	}, [isFetched]);
+
+	useEffect(() => {
 		handlePreAmpGain(preAmpDB);
 	}, [preAmpDB]);
 
@@ -105,8 +145,15 @@ export const Equalizer = ({
 
 						<TouchableOpacity
 							onPress={() => {
-								onOpen();
-								handleModalEdit(true);
+								if (currentPreset) {
+									onOpen();
+									handleModalEdit(true);
+								} else {
+									Toast.show({
+										type: 'info',
+										text1: 'Selecione um preset!'
+									});
+								}
 							}}>
 							<Icons.Pencil
 								width={scale(32)}
@@ -120,10 +167,21 @@ export const Equalizer = ({
 					<DropDownPicker
 						open={openDropdown}
 						value={currentPreset}
-						items={presets}
+						items={myPresets}
+						loading={isLoading}
 						setOpen={setOpenDropdown}
 						setValue={setCurrentPreset}
-						setItems={setPresets}
+						onSelectItem={(item: any) =>
+							handlePreset({
+								id: item.value,
+								name: item.label,
+								description: item.description,
+								genreId: item.genreId,
+								settings: item.settings,
+								isPublic: item.isPublic
+							})
+						}
+						// setItems={setPresets}
 						selectedItemContainerStyle={{
 							backgroundColor: '#e4e1e1'
 						}}

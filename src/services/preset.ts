@@ -10,14 +10,20 @@ async function createPreset(
 	return api.post(`/user/${userId}/preset`, data);
 }
 
+async function editPreset(data: IPresets, userId: number | undefined) {
+	return undefined;
+}
+
 async function getPresets(
 	userId: number | undefined,
-	search: string,
+	search: string | undefined,
 	page: number,
+	isMyPreset = false,
 	perPage?: number | undefined
 ) {
 	const { data } = await api.get(`/user/${userId}/preset`, {
 		params: {
+			userId: isMyPreset ? userId : undefined,
 			search: search ?? undefined,
 			page: page ?? 1,
 			perPage: perPage ?? 10
@@ -44,4 +50,10 @@ async function getPresetsPublics(
 	return data;
 }
 
-export { createPreset, getPresets, getPresetsPublics };
+async function getGenres(userId: number | undefined) {
+	const { data } = await api.get(`/user/${userId}/genre`);
+
+	return data;
+}
+
+export { createPreset, getPresets, getPresetsPublics, getGenres };
