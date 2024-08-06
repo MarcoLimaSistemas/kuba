@@ -14,6 +14,13 @@ async function editPreset(data: IPresets, userId: number | undefined) {
 	return undefined;
 }
 
+async function deletePreset(
+	userId: number | undefined,
+	presetId: number | undefined
+) {
+	return api.delete(`/user/${userId}/preset/${presetId}`);
+}
+
 async function getPresets(
 	userId: number | undefined,
 	search: string | undefined,
@@ -56,4 +63,4 @@ async function getGenres(userId: number | undefined) {
 	return data;
 }
 
-export { createPreset, getPresets, getPresetsPublics, getGenres };
+export { createPreset, getPresets, getPresetsPublics, getGenres, deletePreset };

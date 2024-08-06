@@ -9,52 +9,82 @@ import { Icons } from '@assets/icons';
 import { scale } from 'react-native-size-matters';
 import Trash from '@assets/icons/trash-2.svg';
 import { Modalize } from 'react-native-modalize';
+import { IPreset } from '@components/ModalPreset';
+import { useMutation } from '@tanstack/react-query';
+import { deletePreset } from '@services/preset';
+import { useAuth } from '@hooks/auth';
+import { queryClient } from '../../../App';
 
 interface ModalDeleteProps {
+	currentPreset: IPreset | null;
 	onClose(): void;
 }
 
-export const ModalDelete = forwardRef(({ onClose }: ModalDeleteProps, ref) => {
-	return (
-		<Modalize ref={ref} adjustToContentHeight withHandle={false}>
-			<Container>
-				<ContainerModal>
-					<Spacer h={16} />
+export const ModalDelete = forwardRef(
+	({ onClose, currentPreset }: ModalDeleteProps, ref) => {
+		const { user } = useAuth();
 
-					<Pressable
-						onPress={() => {
-							onClose();
-						}}>
-						<IconClose>
-							<Icons.Close width={scale(12)} height={scale(12)} />
-						</IconClose>
-					</Pressable>
+		const { mutateAsync, isPending } = useMutation({
+			mutationKey: ['DeletePreset'],
+			mutationFn: () => deletePreset(user?.id, currentPreset?.id),
+			onSuccess() {
+				queryClient.invalidateQueries({ queryKey: ['MyPresets'] });
+				onClose();
+			}
+		});
 
-					<Spacer h={64} />
-					<View
-						style={{
-							justifyContent: 'center',
-							alignItems: 'center'
-						}}>
-						<Text
-							variant="bold"
-							style={{ textAlign: 'center', width: '70%' }}>
-							REALMENTE DESEJA EXCLUIR ESTE PRESET?
-						</Text>
-					</View>
+		const handleDelete = () => {
+			mutateAsync();
+		};
 
-					<IconTrash>
-						<Trash width={scale(96)} height={scale(96)} />
-					</IconTrash>
+		return (
+			<Modalize ref={ref} adjustToContentHeight withHandle={false}>
+				<Container>
+					<ContainerModal>
+						<Spacer h={16} />
 
-					<Button title="Excluir" />
-					<Button
-						title="Voltar"
-						variant="secondary"
-						onPress={() => onClose()}
-					/>
-				</ContainerModal>
-			</Container>
-		</Modalize>
-	);
-});
+						<Pressable
+							onPress={() => {
+								onClose();
+							}}>
+							<IconClose>
+								<Icons.Close
+									width={scale(12)}
+									height={scale(12)}
+								/>
+							</IconClose>
+						</Pressable>
+
+						<Spacer h={64} />
+						<View
+							style={{
+								justifyContent: 'center',
+								alignItems: 'center'
+							}}>
+							<Text
+								variant="bold"
+								style={{ textAlign: 'center', width: '70%' }}>
+								REALMENTE DESEJA EXCLUIR ESTE PRESET?
+							</Text>
+						</View>
+
+						<IconTrash>
+							<Trash width={scale(96)} height={scale(96)} />
+						</IconTrash>
+
+						<Button
+							title="Excluir"
+							activeLoad={isPending}
+							onPress={handleDelete}
+						/>
+						<Button
+							title="Voltar"
+							variant="secondary"
+							onPress={() => onClose()}
+						/>
+					</ContainerModal>
+				</Container>
+			</Modalize>
+		);
+	}
+);

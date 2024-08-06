@@ -69,8 +69,8 @@ export const ModalPreset = forwardRef(
 
 		const { mutateAsync, isPending } = useMutation({
 			mutationFn: (data: IPresets) => createPreset(data, user?.id),
-			onSuccess: () => {
-				queryClient.invalidateQueries({
+			onSuccess: async res => {
+				await queryClient.invalidateQueries({
 					queryKey: ['MyPresets']
 				});
 				onClose();
@@ -113,11 +113,15 @@ export const ModalPreset = forwardRef(
 			if (isEdit) {
 				setValueForm('name', currentPreset?.name ?? '');
 				setValueForm('description', currentPreset?.description ?? '');
-				// setValueForm('genreId', currentPreset?.genreId ?? '');
-				// setValueForm('isPublic', currentPreset?.isPublic ?? false);
 				setValueForm('settings', currentPreset?.settings ?? '');
 				setValue(currentPreset?.genreId ?? '');
 				setIsEnabled(currentPreset?.isPublic ?? false);
+			} else {
+				setValueForm('name', '');
+				setValueForm('description', '');
+				setValueForm('settings', '');
+				setValue('');
+				setIsEnabled(false);
 			}
 		}, [isEdit]);
 
@@ -240,8 +244,8 @@ export const ModalPreset = forwardRef(
 						<Button
 							activeLoad={isPending}
 							title="Salvar"
-							onPress={handleSubmit(
-								isEdit ? editPreset : savePreset
+							onPress={handleSubmit(data =>
+								isEdit ? editPreset(data) : savePreset(data)
 							)}
 						/>
 						<Button
@@ -276,7 +280,11 @@ export const ModalPreset = forwardRef(
 					</Footer>
 				</Modalize>
 
-				<ModalDelete ref={modalizeRef} onClose={closeModal} />
+				<ModalDelete
+					ref={modalizeRef}
+					onClose={closeModal}
+					currentPreset={currentPreset}
+				/>
 			</>
 		);
 	}
