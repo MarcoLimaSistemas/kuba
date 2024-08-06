@@ -4,7 +4,7 @@ import { Button } from '@components/Button';
 import { CarouselProfile } from '@components/CarouselProfile';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
-import { Headset, Info, Lighting } from '@assets/icons';
+import { Headset, Info, Lighting, Settings } from '@assets/icons';
 
 import {
 	BoxButtons,
@@ -194,7 +194,7 @@ export function Device() {
 
 				<BoxButtons
 					style={{
-						paddingHorizontal: 16
+						paddingHorizontal: scale(16)
 					}}>
 					<ButtonSquare
 						label="Suporte"
@@ -213,6 +213,8 @@ export function Device() {
 						/>
 					</ButtonSquare>
 
+					<Spacer w={16} />
+
 					<ButtonSquare
 						label="Tutorias de uso"
 						onPress={() =>
@@ -229,6 +231,26 @@ export function Device() {
 							resizeMode="contain"
 						/>
 					</ButtonSquare>
+
+					{device.isBluetooth && (
+						<>
+							<Spacer w={16} />
+							<ButtonSquare
+								label="Configurações"
+								onPress={() =>
+									navigation.navigate('SettingsEarphone')
+								}>
+								<Image
+									source={Settings}
+									style={{
+										width: 32,
+										height: 32
+									}}
+									resizeMode="contain"
+								/>
+							</ButtonSquare>
+						</>
+					)}
 				</BoxButtons>
 
 				<Footer>
