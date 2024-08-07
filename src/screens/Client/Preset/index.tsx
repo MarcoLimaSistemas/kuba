@@ -1,53 +1,75 @@
 import React from 'react';
 
-import { singerPreset } from '@assets/images';
 import { Button } from '@components/Button';
 
 import {
-	BoxImage,
 	Container,
 	ContainerBody,
 	ContainerEqualizer,
-	ImageProfile
+	ImageProfile,
+	ContainerImage
 } from './styles';
 import Text from '@components/Text';
 import { Equalizer } from '@components/Equalizer';
 import { IPreset } from '@components/ModalPreset';
 import { scale } from 'react-native-size-matters';
 import { Spacer } from '@components/Spacer';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { IFrequency } from '../Device';
+import LinearGradient from 'react-native-linear-gradient';
 
 export function Preset() {
 	const navigation = useNavigation();
 
+	const route = useRoute();
+
+	const { preset } = route.params as any;
+
 	return (
 		<Container>
-			<BoxImage>
-				<ImageProfile source={singerPreset} />
+			<ContainerImage>
+				<LinearGradient
+					colors={['transparent', '#f4f2f2']}
+					style={{
+						position: 'absolute',
+						left: 0,
+						right: 0,
+						bottom: 0,
+						height: scale(80),
+						zIndex: 101
+					}}
+				/>
+
+				<ImageProfile
+					source={{
+						uri: preset.imgURL
+					}}
+				/>
+
 				<Text
 					color="#656565"
 					variant="bold"
 					style={{
+						zIndex: 1111,
 						textAlign: 'center',
 						textTransform: 'uppercase',
 						letterSpacing: scale(8)
 					}}>
-					Crioulo
+					{preset.name}
 				</Text>
-			</BoxImage>
+			</ContainerImage>
 
-			<Spacer h={16} />
+			<Spacer h={32} />
 
 			<ContainerBody>
 				<ContainerEqualizer>
 					<Equalizer
 						disabled
-						handleScrollEnabled={function (
-							enabled: boolean
-						): void {}}
-						handlePreset={function (preset: IPreset): void {}}
-						handleModalEdit={function (isEdit: boolean): void {}}
-						onOpen={function (): void {}}
+						handleScrollEnabled={(enabled: boolean) => {}}
+						handlePreset={(preset: IPreset) => {}}
+						handleModalEdit={(isEdit: boolean) => {}}
+						onOpen={() => {}}
+						handleFrequencies={(frequencies: IFrequency[]) => {}}
 					/>
 				</ContainerEqualizer>
 

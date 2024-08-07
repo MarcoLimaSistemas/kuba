@@ -10,10 +10,18 @@ interface CardProfileProps {
 }
 
 export function CardProfile({ name, imgURL }: CardProfileProps) {
-	const navigation = useNavigation();
+	const navigation = useNavigation<any>();
 
 	return (
-		<Container onPress={() => navigation.navigate('Preset')}>
+		<Container
+			onPress={() =>
+				navigation.navigate('Preset', {
+					preset: {
+						name,
+						imgURL
+					}
+				})
+			}>
 			<ImageBackground
 				source={{
 					uri: imgURL

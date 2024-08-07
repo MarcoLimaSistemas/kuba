@@ -14,5 +14,17 @@ export const ContainerEqualizer = styled.View`
 	border-radius: ${scale(12)}px;
 `;
 
-export const BoxImage = styled.View``;
-export const ImageProfile = styled.Image``;
+export const ContainerImage = styled.View`
+	height: ${scale(200)}px;
+	justify-content: flex-end;
+`;
+
+export const ImageProfile = styled.Image`
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: -101;
+	height: ${scale(200)}px;
+`;
