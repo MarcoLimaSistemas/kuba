@@ -5,6 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import { Header } from '@components/Header';
 import { Button } from '@components/Button';
+import Text from '@components/Text';
 
 import { InputUnMasked } from '@components/InputUnMasked';
 
@@ -12,13 +13,13 @@ import {
 	Container,
 	ContainerButtons,
 	ScrollAwareView,
-	TextError,
-	Title
+	TextError
 } from './styles';
 
 import { ForgotPasswordProps } from '@models/ForgotPassword';
 import { ForgotPasswordSchema } from '@schemas/forgotPassword';
 import { useAuth } from '@hooks/auth';
+import { Spacer } from '@components/Spacer';
 
 export function ForgotPassword() {
 	const navigation = useNavigation();
@@ -52,10 +53,12 @@ export function ForgotPassword() {
 		<Container>
 			<Header title="Recuperação de senha" />
 			<ScrollAwareView>
-				<Title>
+				<Text fontSize={12} color="#656565">
 					Enviaremos um token para o email cadastrado para que possa
 					alterar sua senha. Por favor, insira seu email.
-				</Title>
+				</Text>
+
+				<Spacer h={16} />
 
 				<InputUnMasked
 					control={control}

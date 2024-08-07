@@ -52,20 +52,14 @@ export function AuthProvider({
 	};
 
 	async function signIn(credentials: ISignInCredentials) {
-		try {
-			const { data } = await Auth.signIn(credentials);
+		const { data } = await Auth.signIn(credentials);
 
-			await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+		await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 
-			api.defaults.headers.common['Authorization'] =
-				`Bearer ${data.token.token}`;
+		api.defaults.headers.common['Authorization'] =
+			`Bearer ${data.token.token}`;
 
-			setUser(data);
-
-			showToast();
-		} catch (err: any) {
-			throw new Error(err?.response.data.message);
-		}
+		setUser(data);
 	}
 
 	async function sendEmailResetPassword(data: ISendEmail) {
