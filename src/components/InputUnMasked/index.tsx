@@ -31,7 +31,9 @@ export function InputUnMasked({
 }: InputUnMaskedProps) {
 	return (
 		<InputGroup>
-			<Text variant="bold">{label}</Text>
+			<Text variant="bold" fontSize={14}>
+				{label}
+			</Text>
 			<Spacer h={8} />
 			<Controller
 				control={control}
