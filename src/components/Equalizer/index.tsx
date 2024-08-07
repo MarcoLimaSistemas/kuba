@@ -27,13 +27,15 @@ interface EqualizerProps {
 	handlePreset: (preset: IPreset) => void;
 	handleModalEdit: (isEdit: boolean) => void;
 	onOpen(): void;
+	disabled?: boolean;
 }
 
 export const Equalizer = ({
 	handleScrollEnabled,
 	handleModalEdit,
 	handlePreset,
-	onOpen
+	onOpen,
+	disabled = false
 }: EqualizerProps) => {
 	const [frequencies, setFrequencies] = useState(frequenciesList);
 	const [preAmpDB, setPreAmpDB] = useState(0);
@@ -134,16 +136,22 @@ export const Equalizer = ({
 							flexDirection: 'row'
 						}}>
 						<TouchableOpacity
+							disabled={disabled}
 							onPress={() => {
 								onOpen();
 								handleModalEdit(false);
 							}}>
-							<Icons.Plus width={scale(32)} height={scale(32)} />
+							<Icons.Plus
+								width={scale(32)}
+								height={scale(32)}
+								color={disabled ? '#d7d7d7' : '#6E6E6E'}
+							/>
 						</TouchableOpacity>
 
 						<Spacer w={16} />
 
 						<TouchableOpacity
+							disabled={disabled}
 							onPress={() => {
 								if (currentPreset) {
 									onOpen();
@@ -158,6 +166,7 @@ export const Equalizer = ({
 							<Icons.Pencil
 								width={scale(32)}
 								height={scale(32)}
+								color={disabled ? '#d7d7d7' : '#6E6E6E'}
 							/>
 						</TouchableOpacity>
 					</View>
@@ -224,6 +233,7 @@ export const Equalizer = ({
 							onTouchEnd={() => handleScrollEnabled(true)}
 							onTouchCancel={() => handleScrollEnabled(true)}>
 							<VerticalSlider
+								disabled={disabled}
 								min={-12}
 								max={12}
 								step={1}
@@ -234,21 +244,32 @@ export const Equalizer = ({
 							/>
 
 							<Spacer h={16} />
-							<Text fontSize={12}>{bar.frequency}</Text>
+							<Text
+								fontSize={12}
+								color={disabled ? '#d7d7d7' : '#242424'}>
+								{bar.frequency}
+							</Text>
 						</S.ContainerBar>
 					))}
 				</S.ContainerBars>
 
 				<Spacer h={16} />
 
-				<Text fontSize={12} style={{ textAlign: 'center' }}>
+				<Text
+					fontSize={12}
+					style={{ textAlign: 'center' }}
+					color={disabled ? '#d7d7d7' : '#242424'}>
 					PREAMP/dB
 				</Text>
 
 				<Spacer h={16} />
 
 				<S.ContainerSlider>
-					<Text fontSize={12}>-12</Text>
+					<Text
+						fontSize={12}
+						color={disabled ? '#d7d7d7' : '#242424'}>
+						-12
+					</Text>
 
 					<View
 						style={{
@@ -261,6 +282,7 @@ export const Equalizer = ({
 						onTouchEnd={() => handleScrollEnabled(true)}
 						onTouchCancel={() => handleScrollEnabled(true)}>
 						<Slider
+							disabled={disabled}
 							minimumValue={-12}
 							maximumValue={12}
 							step={1}
@@ -268,7 +290,7 @@ export const Equalizer = ({
 							onValueChange={value => handlePreAmpDB(value)}
 							minimumTrackTintColor="transparent"
 							maximumTrackTintColor="transparent"
-							thumbTintColor="#242424"
+							thumbTintColor={disabled ? '#d7d7d7' : '#242424'}
 							style={{
 								width: '100%',
 								height: 2
@@ -279,13 +301,19 @@ export const Equalizer = ({
 								position: 'absolute',
 								width: '90%',
 								height: 2,
-								backgroundColor: '#242424',
+								backgroundColor: disabled
+									? '#d7d7d7'
+									: '#242424',
 								zIndex: -10
 							}}
 						/>
 					</View>
 
-					<Text fontSize={12}>+12</Text>
+					<Text
+						fontSize={12}
+						color={disabled ? '#d7d7d7' : '#242424'}>
+						+12
+					</Text>
 				</S.ContainerSlider>
 
 				<Spacer h={16} />

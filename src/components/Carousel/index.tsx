@@ -60,7 +60,7 @@ export function Carousel({ devices, isLoading }: ICarousselProps) {
 							marginVertical: scale(4),
 							marginRight: scale(8)
 						}}>
-						<Icons.Plus />
+						<Icons.Plus color={'#6E6E6E'} />
 
 						<Text style={{ textAlign: 'center' }} fontSize={14}>
 							Adicionar novo dispositivo

@@ -14,7 +14,6 @@ import {
 	ImageSchoolKuba
 } from './styles';
 
-import { Device } from '@models/device';
 import { Header } from '@components/Header';
 import Text from '@components/Text';
 import { scale } from 'react-native-size-matters';
