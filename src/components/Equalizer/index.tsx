@@ -19,12 +19,14 @@ import { getPresets } from '@services/preset';
 import { useAuth } from '@hooks/auth';
 import { IPreset } from '@components/ModalPreset';
 import Toast from 'react-native-toast-message';
+import { IFrequency } from '@screens/Client/Device';
 
 const { AudioEqualizerModule } = NativeModules;
 
 interface EqualizerProps {
 	handleScrollEnabled: (enabled: boolean) => void;
 	handlePreset: (preset: IPreset) => void;
+	handleFrequencies: (frequencies: IFrequency[]) => void;
 	handleModalEdit: (isEdit: boolean) => void;
 	onOpen(): void;
 	disabled?: boolean;
@@ -34,11 +36,14 @@ export const Equalizer = ({
 	handleScrollEnabled,
 	handleModalEdit,
 	handlePreset,
+	handleFrequencies,
 	onOpen,
 	disabled = false
 }: EqualizerProps) => {
-	const [frequencies, setFrequencies] = useState(frequenciesList);
+	const [currentPreset, setCurrentPreset] = useState<ValueType | null>(null);
+
 	const [preAmpDB, setPreAmpDB] = useState(0);
+	const [frequencies, setFrequencies] = useState(frequenciesList);
 
 	const [openDropdown, setOpenDropdown] = useState(false);
 
@@ -66,8 +71,6 @@ export const Equalizer = ({
 				})) ?? []
 		);
 	}, [data]);
-
-	const [currentPreset, setCurrentPreset] = useState<ValueType | null>(null);
 
 	const handleBandGain = async (band: number, level: number) => {
 		try {
@@ -103,6 +106,10 @@ export const Equalizer = ({
 			`Ajustando frequência ${frequencies[index].frequency} para ${value} dB`
 		);
 	};
+
+	useEffect(() => {
+		handleFrequencies(frequenciesList);
+	}, [frequenciesList]);
 
 	useEffect(() => {
 		if (myPresets.length > 0) {

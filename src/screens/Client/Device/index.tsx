@@ -30,6 +30,11 @@ import { useQuery } from '@tanstack/react-query';
 import { getPresets, getPresetsPublics } from '@services/preset';
 import { useAuth } from '@hooks/auth';
 
+export interface IFrequency {
+	frequency: string;
+	decibelQuantity: number;
+}
+
 export function Device() {
 	const route = useRoute();
 
@@ -37,6 +42,10 @@ export function Device() {
 
 	const [scrollEnabled, setScrollEnabled] = useState(true);
 	const [currentPreset, setCurrentPreset] = useState<IPreset | null>(null);
+	const [currentFrequencies, setCurrentFrequencies] = useState<IFrequency[]>(
+		[]
+	);
+
 	const [isEdit, setIsEdit] = useState(false);
 
 	const navigation = useNavigation<any>();
@@ -70,6 +79,10 @@ export function Device() {
 
 	const handlePreset = (preset: IPreset) => {
 		setCurrentPreset(preset);
+	};
+
+	const handleFrequencies = (frequencies: IFrequency[]) => {
+		setCurrentFrequencies(frequencies);
 	};
 
 	const handleModalEdit = (isEdit: boolean) => {
@@ -174,6 +187,7 @@ export function Device() {
 						<ContainerCarousel>
 							<Equalizer
 								onOpen={openModal}
+								handleFrequencies={handleFrequencies}
 								handlePreset={handlePreset}
 								handleModalEdit={handleModalEdit}
 								handleScrollEnabled={handleScrollEnabled}
@@ -271,6 +285,7 @@ export function Device() {
 			<ModalPreset
 				ref={modalizeRef}
 				currentPreset={currentPreset}
+				currentFrequencies={currentFrequencies}
 				isEdit={isEdit}
 				onClose={() => closeModal()}
 			/>

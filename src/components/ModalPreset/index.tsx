@@ -30,6 +30,7 @@ import { createPreset, getGenres } from '@services/preset';
 import { useAuth } from '@hooks/auth';
 import { Modalize } from 'react-native-modalize';
 import { queryClient } from '../../../App';
+import { IFrequency } from '@screens/Client/Device';
 
 export interface IPreset {
 	id: number;
@@ -43,12 +44,21 @@ export interface IPreset {
 interface ModalPresetProps {
 	isEdit: boolean;
 	currentPreset: IPreset | null;
+	currentFrequencies: IFrequency[];
 	onOpen?(): void;
 	onClose(): void;
 }
 
 export const ModalPreset = forwardRef(
-	({ isEdit, onClose, currentPreset }: ModalPresetProps, ref) => {
+	(
+		{
+			isEdit,
+			onClose,
+			currentPreset,
+			currentFrequencies
+		}: ModalPresetProps,
+		ref
+	) => {
 		const [open, setOpen] = useState(false);
 		const [value, setValue] = useState('');
 		const [isEnabled, setIsEnabled] = useState(false);
@@ -87,8 +97,9 @@ export const ModalPreset = forwardRef(
 		const savePreset = (data: IPresets) => {
 			//TODO: implement logic to settings
 			const settings = {
-				settings: '0,0,0,0,0,0,0,0,0'
+				settings: '1,2,3,45'
 			};
+
 			mutateAsync({ ...data, ...settings });
 		};
 		const editPreset = (data: IPresets) => {
