@@ -127,7 +127,6 @@ export function Profiles() {
 			getNextPageParam: lastPage => lastPage.meta.next_page_url
 		});
 
-	console.log('🚀 ~ Profiles ~ hasNextPage:', hasNextPage);
 	const handleNextPage = () => {
 		if (hasNextPage) {
 			return fetchNextPage();

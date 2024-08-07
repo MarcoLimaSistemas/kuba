@@ -42,7 +42,7 @@ async function getPresets(
 
 async function getPresetsPublics(
 	userId: number | undefined,
-	search: string,
+	search: string | undefined,
 	page: number,
 	perPage?: number | undefined
 ) {

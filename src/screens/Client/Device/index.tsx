@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 
 import { Button } from '@components/Button';
 import { CarouselProfile } from '@components/CarouselProfile';
@@ -20,28 +20,15 @@ import { ButtonSquare } from '@components/ButtonSquare';
 
 import { Spacer } from '@components/Spacer';
 import { Equalizer } from '@components/Equalizer';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useBluetooth } from '../../../context/BluetoothContext';
 import { Header } from '@components/Header';
 import Text from '@components/Text';
 import { scale } from 'react-native-size-matters';
 import { IPreset, ModalPreset } from '@components/ModalPreset';
 import { Modalize } from 'react-native-modalize';
-
-const dataExample = [
-	{
-		id: 1,
-		name: 'Cliolo'
-	},
-	{
-		id: 2,
-		name: 'Cliolo'
-	},
-	{
-		id: 3,
-		name: 'Cliolo'
-	}
-];
+import { useQuery } from '@tanstack/react-query';
+import { getPresets, getPresetsPublics } from '@services/preset';
+import { useAuth } from '@hooks/auth';
 
 export function Device() {
 	const route = useRoute();
@@ -51,11 +38,31 @@ export function Device() {
 	const [scrollEnabled, setScrollEnabled] = useState(true);
 	const [currentPreset, setCurrentPreset] = useState<IPreset | null>(null);
 	const [isEdit, setIsEdit] = useState(false);
-	const { top } = useSafeAreaInsets();
 
 	const navigation = useNavigation<any>();
 
 	const { connectedDevice, connectToDevice } = useBluetooth();
+
+	const { user } = useAuth();
+
+	const { data: personalitiesData, isFetched } = useQuery({
+		queryKey: ['PersonalitiesOnDeviceScreen'],
+		queryFn: () => getPresets(user?.id, undefined, 1, false, 5)
+	});
+
+	const personalities = useMemo(() => {
+		return personalitiesData?.data ?? [];
+	}, [personalitiesData]);
+
+	const { data: profilesData } = useQuery({
+		queryKey: ['PresetsPublicsOnDeviceScreen'],
+		queryFn: () => getPresetsPublics(user?.id, undefined, 1, 5),
+		enabled: isFetched
+	});
+
+	const profiles = useMemo(() => {
+		return profilesData?.data ?? [];
+	}, [profilesData]);
 
 	const handleScrollEnabled = (enabled: boolean) => {
 		setScrollEnabled(enabled);
@@ -77,10 +84,10 @@ export function Device() {
 	return (
 		<>
 			<Header />
+
+			<Spacer h={8} />
+
 			<Container
-				style={{
-					paddingTop: top
-				}}
 				contentContainerStyle={{ flexGrow: 1 }}
 				showsVerticalScrollIndicator={false}
 				scrollEnabled={scrollEnabled}>
@@ -174,14 +181,14 @@ export function Device() {
 
 							<CarouselProfile
 								titleProfile={'Perfis Personalidades'}
-								data={dataExample}
+								data={personalities}
 							/>
 
 							<Spacer h={16} />
 
 							<CarouselProfile
 								titleProfile={'Perfis Públicos '}
-								data={dataExample}
+								data={profiles}
 								isPersonalities={false}
 							/>
 						</ContainerCarousel>
