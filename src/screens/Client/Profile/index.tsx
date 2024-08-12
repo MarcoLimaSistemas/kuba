@@ -1,164 +1,194 @@
-import React, { useState } from 'react';
-import { ScrollView, Switch, View } from 'react-native';
+import React, {useState} from 'react';
+import {ScrollView, Switch, View} from 'react-native';
 
-import { Button } from '@components/Button';
-import { Header } from '@components/Header';
+import {Button} from '@components/Button';
+import {Header} from '@components/Header';
 
 import {
-	FacebookLogo,
-	InstagramLogo,
-	QobuzzLogo,
-	SpotifyLogo
+  FacebookLogo,
+  InstagramLogo,
+  QobuzzLogo,
+  SpotifyLogo,
 } from '@assets/sociais';
 
-import { useAuth } from '@hooks/auth';
-import { useNavigation } from '@react-navigation/native';
-import { timestampToDate } from '@utils/date';
+import {useAuth} from '@hooks/auth';
+import {useNavigation} from '@react-navigation/native';
+import {timestampToDate} from '@utils/date';
 import {
-	Container,
-	ContainerSocial,
-	ContainerSwitch,
-	ImageProfile,
-	LogoSocial
+  Container,
+  ContainerSocial,
+  ContainerSwitch,
+  ImageProfile,
+  LogoSocial,
 } from './styles';
-import { userDetails } from '../../../react-query/userDetails';
-import { Spacer } from '@components/Spacer';
-import { Loading } from '@components/Loading';
+import {userDetails} from '../../../react-query/userDetails';
+import {Spacer} from '@components/Spacer';
+import {Loading} from '@components/Loading';
 import Text from '@components/Text';
-import { scale } from 'react-native-size-matters';
+import {scale} from 'react-native-size-matters';
+import {useEditUser} from '@react-query/mutateEditUser';
+import {useMutation} from '@tanstack/react-query';
+import User, {IEditInfoProps} from '@services/user';
+import Toast from 'react-native-toast-message';
+import {queryClient} from '../../../../App';
 
 export function Profile() {
-	const [isEnabled, setIsEnabled] = useState(false);
-	const navigation = useNavigation();
+  const navigation = useNavigation();
 
-	const { logout } = useAuth();
+  const {logout} = useAuth();
 
-	const { data: user, isLoading } = userDetails({});
+  const {data: user, isLoading} = userDetails({});
 
-	const socialNetworks = user?.client.socialNetworks ?? [];
+  const socialNetworks = user?.client.socialNetworks ?? [];
 
-	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+  const hasProduct = user?.client?.has_kuba_product ?? false;
 
-	if (isLoading) {
-		return <Loading />;
-	}
+  const {mutateAsync, isPending} = useMutation({
+    mutationFn: ({userId, data}: IEditInfoProps) =>
+      User.editInfo({
+        userId,
+        data,
+      }),
+    onSuccess: () => {
+      queryClient.setQueryData(['userDetails'], {
+        ...user,
+        client: {...user?.client, has_kuba_product: !hasProduct},
+      });
+    },
+    onError: error => {
+      console.error('error :', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Erro ao atualizar perfil!',
+      });
+    },
+  });
 
-	return (
-		<>
-			<Header title="Perfil" />
-			<Spacer h={16} />
-			<ScrollView
-				showsVerticalScrollIndicator={false}
-				contentContainerStyle={{ flexGrow: 1 }}>
-				<Spacer h={16} />
-				<ImageProfile
-					source={
-						user?.client.profile_url
-							? { uri: user.client.profile_url }
-							: require('@assets/images/avatar.png')
-					}
-				/>
+  const toggleSwitch = () => {
+    if (!user) return;
 
-				<Spacer h={16} />
-				<Container>
-					<Text
-						fontSize={24}
-						variant="bold"
-						style={{ textAlign: 'center' }}>
-						{user?.name}
-					</Text>
+    const formData = new FormData();
 
-					<Spacer h={16} />
+    formData.append('hasKubaProduct', !hasProduct);
 
-					<Text>{user?.client?.description ?? 'Sem descrição.'}</Text>
+    mutateAsync({
+      userId: user.id,
+      data: formData,
+    });
+  };
 
-					<Spacer h={16} />
+  if (isLoading) {
+    return <Loading />;
+  }
 
-					<ContainerSwitch>
-						<Switch
-							trackColor={{ false: '#656565', true: '#D4BD85' }}
-							thumbColor={isEnabled ? '#656565' : '#f4f3f4'}
-							ios_backgroundColor="#3e3e3e"
-							onValueChange={toggleSwitch}
-							value={isEnabled}
-						/>
-						<Spacer w={8} />
-						<Text>
-							{isEnabled ? 'Tenho' : 'Não tenho'} um produto Kuba
-						</Text>
-					</ContainerSwitch>
+  return (
+    <>
+      <Header title="Perfil" />
+      <Spacer h={16} />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{flexGrow: 1}}>
+        <Spacer h={16} />
+        <ImageProfile
+          source={
+            user?.client.profile_url
+              ? {uri: user.client.profile_url}
+              : require('@assets/images/avatar.png')
+          }
+        />
 
-					<Spacer h={32} />
+        <Spacer h={16} />
+        <Container>
+          <Text fontSize={24} variant="bold" style={{textAlign: 'center'}}>
+            {user?.name}
+          </Text>
 
-					<ContainerSocial>
-						{socialNetworks.map(e => {
-							const name = e.name;
-							switch (name) {
-								case 'Facebook':
-									return <LogoSocial source={FacebookLogo} />;
-								case 'Instagram':
-									return (
-										<>
-											<Spacer w={16} />
-											<LogoSocial
-												source={InstagramLogo}
-											/>
-										</>
-									);
-								case 'Spotify':
-									return (
-										<>
-											<Spacer w={16} />
-											<LogoSocial source={SpotifyLogo} />
-										</>
-									);
-								case 'Qobuzz':
-									return (
-										<>
-											<Spacer w={16} />
-											<LogoSocial source={QobuzzLogo} />
-										</>
-									);
+          <Spacer h={16} />
 
-								default:
-									return null;
-							}
-						})}
-					</ContainerSocial>
+          <Text>{user?.client?.description ?? 'Sem descrição.'}</Text>
 
-					<Spacer h={32} />
+          <Spacer h={16} />
 
-					<Text style={{ lineHeight: scale(24) }}>
-						<Text variant="bold">Data de nascimento</Text>
-						<Text>
-							{'\n' +
-								timestampToDate(user?.client?.birth_date ?? '')}
-						</Text>
-					</Text>
+          <ContainerSwitch>
+            <Switch
+              trackColor={{false: '#656565', true: '#D4BD85'}}
+              thumbColor={hasProduct ? '#656565' : '#f4f3f4'}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleSwitch}
+              value={hasProduct}
+            />
+            <Spacer w={8} />
+            <Text>{hasProduct ? 'Tenho' : 'Não tenho'} um produto Kuba</Text>
+          </ContainerSwitch>
 
-					<Spacer h={16} />
-					<Text style={{ lineHeight: scale(24) }}>
-						<Text variant="bold">Email</Text>
-						<Text>{'\n' + user?.email}</Text>
-					</Text>
-					<Spacer h={32} />
-				</Container>
+          <Spacer h={32} />
 
-				<View style={{ flex: 1 }} />
+          <ContainerSocial>
+            {socialNetworks.map(e => {
+              const name = e.name;
+              switch (name) {
+                case 'Facebook':
+                  return <LogoSocial source={FacebookLogo} />;
+                case 'Instagram':
+                  return (
+                    <>
+                      <Spacer w={16} />
+                      <LogoSocial source={InstagramLogo} />
+                    </>
+                  );
+                case 'Spotify':
+                  return (
+                    <>
+                      <Spacer w={16} />
+                      <LogoSocial source={SpotifyLogo} />
+                    </>
+                  );
+                case 'Qobuzz':
+                  return (
+                    <>
+                      <Spacer w={16} />
+                      <LogoSocial source={QobuzzLogo} />
+                    </>
+                  );
 
-				<Container>
-					<Button title="Sair" onPress={logout} />
-					<Button
-						title="Editar Perfil"
-						onPress={() => navigation.navigate('EditProfile')}
-					/>
-					<Button
-						title="Alterar Senha"
-						variant="secondary"
-						onPress={() => navigation.navigate('ChangePassword')}
-					/>
-				</Container>
-			</ScrollView>
-		</>
-	);
+                default:
+                  return null;
+              }
+            })}
+          </ContainerSocial>
+
+          <Spacer h={32} />
+
+          <Text style={{lineHeight: scale(24)}}>
+            <Text variant="bold">Data de nascimento</Text>
+            <Text>
+              {'\n' + timestampToDate(user?.client?.birth_date ?? '')}
+            </Text>
+          </Text>
+
+          <Spacer h={16} />
+          <Text style={{lineHeight: scale(24)}}>
+            <Text variant="bold">Email</Text>
+            <Text>{'\n' + user?.email}</Text>
+          </Text>
+          <Spacer h={32} />
+        </Container>
+
+        <View style={{flex: 1}} />
+
+        <Container>
+          <Button title="Sair" onPress={logout} />
+          <Button
+            title="Editar Perfil"
+            onPress={() => navigation.navigate('EditProfile')}
+          />
+          <Button
+            title="Alterar Senha"
+            variant="secondary"
+            onPress={() => navigation.navigate('ChangePassword')}
+          />
+        </Container>
+      </ScrollView>
+    </>
+  );
 }
