@@ -1,17 +1,32 @@
-import { singer } from '@assets/images';
 import React from 'react';
 
 import { Container, ImageBackground, ContainerText } from './styles';
 import Text from '@components/Text';
+import { useNavigation } from '@react-navigation/native';
 
 interface CardProfileProps {
 	name: string;
+	imgURL: string;
 }
 
-export function CardProfile({ name }: CardProfileProps) {
+export function CardProfile({ name, imgURL }: CardProfileProps) {
+	const navigation = useNavigation<any>();
+
 	return (
-		<Container>
-			<ImageBackground source={singer} />
+		<Container
+			onPress={() =>
+				navigation.navigate('Preset', {
+					preset: {
+						name,
+						imgURL
+					}
+				})
+			}>
+			<ImageBackground
+				source={{
+					uri: imgURL
+				}}
+			/>
 			<ContainerText>
 				<Text
 					variant="bold"

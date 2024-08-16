@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Search } from '@components/Search';
 import { useState } from 'react';
 
@@ -9,7 +9,6 @@ import { Header } from '@components/Header';
 import { Button } from '@components/Button';
 
 import {
-	StatusBar,
 	View,
 	Dimensions,
 	ScrollView,
@@ -20,25 +19,29 @@ import {
 import theme from '../../../styles/theme';
 import { scale } from 'react-native-size-matters';
 import { Spacer } from '@components/Spacer';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { getPresetsPublics } from '@services/preset';
+import { useAuth } from '@hooks/auth';
+import { Loading } from '@components/Loading';
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 const paddingHorizontal = scale(16);
 const margin = scale(8);
 const numColumns = 3;
-const data = Array.from({ length: 10 }).map((_, i) => i); // Dados de exemplo
 
 const getRandomSpan = () => {
 	const spans = [1, 2, 3];
 	return spans[Math.floor(Math.random() * spans.length)];
 };
 
-const getGridLayout = (data: number[]) => {
+const getGridLayout = (data: any[]) => {
 	let grid = [];
 	let currentRow: any[] = [];
 	let columnCount = 0;
 	const itemContainerWidth = width - paddingHorizontal * 2 - margin * 2;
 
-	data.forEach((item, index) => {
+	data.forEach(item => {
 		let span = getRandomSpan();
 
 		if (columnCount + span > numColumns) {
@@ -51,7 +54,7 @@ const getGridLayout = (data: number[]) => {
 
 		currentRow.push(
 			<TouchableOpacity
-				key={item.toString()}
+				key={item?.id}
 				style={{
 					borderRadius: scale(8),
 					width: itemWidth,
@@ -60,7 +63,12 @@ const getGridLayout = (data: number[]) => {
 					marginBottom: margin
 				}}>
 				<Image
-					source={require('@assets/images/profile_cover.jpeg')}
+					source={
+						item?.client.profile_url
+							? { uri: item?.client?.profile_url }
+							: require('@assets/images/avatar.png')
+					}
+					resizeMode="cover"
 					style={{
 						width: '100%',
 						height: '100%',
@@ -104,7 +112,30 @@ const getGridLayout = (data: number[]) => {
 };
 
 export function Profiles() {
+	const navigation = useNavigation();
+
 	const [search, setSearch] = useState('');
+
+	const { user } = useAuth();
+
+	const { data, isLoading, refetch, hasNextPage, fetchNextPage } =
+		useInfiniteQuery({
+			queryKey: ['PresetsPublics'],
+			queryFn: ({ pageParam }) =>
+				getPresetsPublics(user?.id, search, pageParam),
+			initialPageParam: 1,
+			getNextPageParam: lastPage => lastPage.meta.next_page_url
+		});
+
+	const handleNextPage = () => {
+		if (hasNextPage) {
+			return fetchNextPage();
+		}
+	};
+
+	const profiles = useMemo(() => {
+		return data?.pages.flatMap(page => page.data) ?? [];
+	}, [data]);
 
 	return (
 		<>
@@ -125,8 +156,10 @@ export function Profiles() {
 				</Text>
 				<Spacer h={16} />
 				<Search
-					searchCallback={() => {}}
-					search={setSearch}
+					searchCallback={() => {
+						refetch();
+					}}
+					onChangeText={text => setSearch(text)}
 					loading={false}
 					placeholder="Procurar perfil"
 					placeholderTextColor={'#A0A0A0'}
@@ -139,13 +172,25 @@ export function Profiles() {
 				<ScrollView
 					showsVerticalScrollIndicator={false}
 					contentContainerStyle={{
-						paddingHorizontal: paddingHorizontal
+						paddingHorizontal: paddingHorizontal,
+						flexGrow: 1
 					}}>
-					{getGridLayout(data)}
+					{isLoading && <Loading />}
+					{getGridLayout(profiles)}
 
 					<Spacer h={16} />
-					<Button title={'CARREGAR MAIS'} variant="secondary" />
-					<Button title={'Voltar'} />
+
+					<View style={{ flex: 1 }} />
+
+					<Button
+						title={'CARREGAR MAIS'}
+						variant="secondary"
+						onPress={handleNextPage}
+					/>
+					<Button
+						title={'Voltar'}
+						onPress={() => navigation.goBack()}
+					/>
 				</ScrollView>
 			</Container>
 		</>

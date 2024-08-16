@@ -1,107 +1,148 @@
-import React, { useCallback, useState } from 'react';
-import { Alert, FlatList, Image, RefreshControl } from 'react-native';
-import { NavigationProp, useFocusEffect, useNavigation } from '@react-navigation/native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import React from 'react';
+import { FlatList, Image, View, Linking } from 'react-native';
+import {
+	NavigationProp,
+	useNavigation,
+	useRoute
+} from '@react-navigation/native';
 
-import api from '../../../services/api';
-
-import { Navbar } from '@components/Navbar';
 import { Button } from '@components/Button';
-import { FoneExample, Link } from '@assets/images'
+import { Link } from '@assets/images';
+import Text from '@components/Text';
 
 import {
-  Box,
-  Container,
-  ContainerItemTutorial,
-  ContainerTutorial,
-  Icon,
-  Label,
-  MessageText,
-  Subtitle,
-  Title,
-  TitleTutorial
+	CardTutorial,
+	CardTutorialText,
+	Container,
+	ContainerImage,
+	Icon
 } from './styles';
-
-interface TutorialProps {
-  id: number
-  user_admin_id: number
-  nome: string
-  is_bluetooth: boolean
-  componentTutorials: []
-}
+import { useQuery } from '@tanstack/react-query';
+import { getProductDetails } from '@services/product';
+import { useAuth } from '@hooks/auth';
+import { Header } from '@components/Header';
+import { Spacer } from '@components/Spacer';
+import { Loading } from '@components/Loading';
+import Toast from 'react-native-toast-message';
 
 export function Tutorials() {
-  const navigation = useNavigation() as NavigationProp<ReactNavigation.RootParamList> | any
+	const navigation = useNavigation() as
+		| NavigationProp<ReactNavigation.RootParamList>
+		| any;
 
-  const [tutorials, setTutorials] = useState<TutorialProps[]>([])
-  const [refreshing, setRefreshing] = useState(false)
+	const { user } = useAuth();
 
-  async function getTutorials() {
-    try {
-      const { data } = await api.get('user/tutorials/1')
-      console.log(data)
-      setTutorials(data)
-      setRefreshing(false)
-    } catch (err: any) {
-      Alert.alert(err.response.data.message)
-    }
-  }
+	const route = useRoute();
 
-  function onRefresh() {
-    setRefreshing(true)
-    setTutorials([])
-    getTutorials()
-  }
+	const { deviceId } = route.params as any;
 
-  useFocusEffect(
-    useCallback(() => {
-      getTutorials()
-    }, [])
-  )
+	const { data, isLoading } = useQuery({
+		queryKey: ['DeviceDetails'],
+		queryFn: () => getProductDetails(user?.id, deviceId)
+	});
 
-  return (
-    <Container>
-      <KeyboardAwareScrollView>
-        <Navbar />
+	const handlePress = async (link: string) => {
+		try {
+			await Linking.openURL(link);
+		} catch (error) {
+			Toast.show({
+				type: 'error',
+				text1: 'Erro ao abrir o vídeo! :('
+			});
+		}
+	};
 
-        <Box mt={32}>
-          <Title>{'Kuba Disco'}</Title>
-          <Subtitle>
-            {'Para aprender a usar seu Kuba Disco, basta clicar nos pontos de seleção da imagem'}
-          </Subtitle>
-        </Box>
+	const tutorials = data?.tutorialVideos ?? [];
 
-        <Box mt={24}>
-          <Image source={FoneExample} />
-        </Box>
+	if (isLoading) {
+		return <Loading />;
+	}
 
-        <ContainerTutorial >
-          <Label>Tutoriais</Label>
+	return (
+		<>
+			<Header />
 
-          {tutorials.length === 0 ?
-            <MessageText>No momento não temos nenhum video!</MessageText>
-            :
-            tutorials.map((tutorial) => (
-              <ContainerItemTutorial key={tutorial.id}>
-                <TitleTutorial>
-                  {tutorial.nome}
-                </TitleTutorial>
+			<Container
+				contentContainerStyle={{
+					flexGrow: 1
+				}}
+				showsVerticalScrollIndicator={false}>
+				<Text
+					variant="bold"
+					color="#656565"
+					style={{
+						textAlign: 'center',
+						letterSpacing: 8
+					}}>
+					{data?.name}
+				</Text>
 
-                <Icon
-                // onPress={() => navigation
-                //   .navigate('SettingsEarphone', { TutorialID: tutorial.id })}
-                >
-                  <Image source={Link} />
-                </Icon>
-              </ContainerItemTutorial>
-            ))
-          }
-        </ContainerTutorial>
+				<Spacer h={16} />
 
-        <Box mt={16}>
-          <Button title='Voltar' onPress={() => navigation.goBack()} />
-        </Box>
-      </KeyboardAwareScrollView>
-    </Container>
-  );
-};
+				<Text
+					fontSize={12}
+					variant="lightItalic"
+					style={{ textAlign: 'center' }}>
+					{
+						'Para aprender a usar seu Kuba Disco, basta\n clicar nos pontos de seleção da imagem'
+					}
+				</Text>
+
+				<Spacer h={16} />
+
+				<ContainerImage>
+					<Image
+						style={{
+							width: '90%',
+							height: '90%'
+						}}
+						resizeMode="contain"
+						source={{
+							uri: data?.img_url
+						}}
+					/>
+				</ContainerImage>
+
+				<Text variant="bold" color="#656565">
+					Tutoriais
+				</Text>
+
+				<Spacer h={16} />
+
+				{tutorials.length === 0 ? (
+					<Text fontSize={14} color="#8b8a8a">
+						No momento não temos nenhum video!
+					</Text>
+				) : (
+					<FlatList
+						scrollEnabled={false}
+						data={tutorials}
+						ItemSeparatorComponent={() => <Spacer h={16} />}
+						renderItem={({ item }) => (
+							<CardTutorial key={item.id}>
+								<CardTutorialText>
+									<Text
+										color="#656565"
+										fontSize={14}
+										numberOfLines={2}>
+										{item.name}
+									</Text>
+								</CardTutorialText>
+
+								<Icon onPress={() => handlePress(item.link)}>
+									<Image source={Link} />
+								</Icon>
+							</CardTutorial>
+						)}
+					/>
+				)}
+
+				<Spacer h={16} />
+
+				<View style={{ flex: 1 }} />
+
+				<Button title="Voltar" onPress={() => navigation.goBack()} />
+			</Container>
+		</>
+	);
+}

@@ -1,19 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { forwardRef, useEffect, useRef } from 'react';
 import { Button } from '@components/Button';
 import { ModalDelete } from '@components/ModalDelete';
 
-import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Modal, Pressable, Switch, TouchableOpacity, View } from 'react-native';
+import { Pressable, Switch, TouchableOpacity } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 import { IPresets } from '../../models/preset';
 
 import {
-	Container,
 	ContainerButtonDelete,
-	ContainerModal,
 	ContainerSwitch,
 	Footer,
 	Header,
@@ -28,229 +25,278 @@ import Text from '@components/Text';
 import { Spacer } from '@components/Spacer';
 import theme from '../../styles/theme';
 import { typography } from '../../styles/typography';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useMutation } from '@tanstack/react-query';
-import { createPreset } from '@services/preset';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { createPreset, getGenres } from '@services/preset';
 import { useAuth } from '@hooks/auth';
+import { Modalize } from 'react-native-modalize';
+import { queryClient } from '../../../App';
+import { IFrequency } from '@screens/Client/Device';
+
+export interface IPreset {
+	id: number;
+	name: string;
+	description: string;
+	settings: string;
+	genreId: string;
+	isPublic: boolean;
+}
 
 interface ModalPresetProps {
 	isEdit: boolean;
-	isOpen: boolean;
+	currentPreset: IPreset | null;
+	currentFrequencies: IFrequency[];
 	onOpen?(): void;
 	onClose(): void;
 }
 
-export function ModalPreset({ isOpen, isEdit, onClose }: ModalPresetProps) {
-	const [showModalDelete, setShowModalDelete] = useState(false);
-	const [open, setOpen] = useState(false);
-	const [value, setValue] = useState('');
-	const [isEnabled, setIsEnabled] = useState(false);
-	const [items, setItems] = useState([
-		{ label: 'Rock ', value: '1' },
-		{ label: 'sertanejo', value: '1' }
-	]);
+export const ModalPreset = forwardRef(
+	(
+		{
+			isEdit,
+			onClose,
+			currentPreset,
+			currentFrequencies
+		}: ModalPresetProps,
+		ref
+	) => {
+		const [open, setOpen] = useState(false);
+		const [value, setValue] = useState('');
+		const [isEnabled, setIsEnabled] = useState(false);
 
-	const {
-		setValue: setValueForm,
-		handleSubmit,
-		control,
-		formState: { errors }
-	} = useForm<IPresets>();
+		const modalizeRef = useRef<Modalize>(null);
 
-	const { user } = useAuth();
+		const openModal = () => modalizeRef.current?.open();
+		const closeModal = () => modalizeRef.current?.close();
 
-	const { mutateAsync, isPending } = useMutation({
-		mutationFn: (data: IPresets) => createPreset(data, user.id),
-		onSuccess: () => {
-			onClose();
-		},
-		onError(error) {
-			console.log(error);
-		}
-	});
+		const {
+			setValue: setValueForm,
+			handleSubmit,
+			control,
+			formState: { errors }
+		} = useForm<IPresets>();
 
-	const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+		const { user } = useAuth();
 
-	const navigation = useNavigation();
+		const { mutateAsync, isPending } = useMutation({
+			mutationFn: (data: IPresets) => createPreset(data, user?.id),
+			onSuccess: async res => {
+				await queryClient.invalidateQueries({
+					queryKey: ['MyPresets']
+				});
+				onClose();
+			},
+			onError(error) {
+				console.log(error);
+			}
+		});
 
-	const savePreset = (data: IPresets) => {
-		//TODO: implement logic to settings
-		const settings = {
-			settings: '0,0,0,0,0,0,0,0,0'
+		const toggleSwitch = () => {
+			setIsEnabled(previousState => !previousState);
 		};
-		mutateAsync({ ...data, ...settings });
-	};
 
-	useEffect(() => {
-		setValueForm('genreId', value);
-	}, [value]);
+		const savePreset = (data: IPresets) => {
+			//TODO: implement logic to settings
+			const settings = {
+				settings: '1,2,3,45'
+			};
 
-	useEffect(() => {
-		setValueForm('isPublic', isEnabled);
-	}, [isEnabled]);
+			mutateAsync({ ...data, ...settings });
+		};
+		const editPreset = (data: IPresets) => {
+			console.log('🚀 ~ savePreset ~ data:', data);
+			//TODO: implement logic to settings
+			const settings = {
+				settings: '0,0,0,0,0,0,0,0,0'
+			};
+		};
 
-	return (
-		<>
-			<Modal animationType="slide" transparent={true} visible={isOpen}>
-				<Container>
-					<KeyboardAwareScrollView
-						contentContainerStyle={{ flexGrow: 1 }}
-						showsVerticalScrollIndicator={false}>
-						<View style={{ flex: 1 }} />
-						<ContainerModal>
-							<Spacer h={16} />
-							<Header>
-								<Text variant="bold">
-									{isEdit ? 'Editar Preset' : 'Salvar Preset'}
-								</Text>
-								<Pressable
-									onPress={() => {
-										onClose();
-									}}>
-									<IconClose>
-										<Icons.Close
-											width={scale(12)}
-											height={scale(12)}
-										/>
-									</IconClose>
-								</Pressable>
-							</Header>
+		const { data, isLoading } = useQuery({
+			queryKey: ['Genres'],
+			queryFn: () => getGenres(user?.id)
+		});
 
-							<Spacer h={32} />
+		const genres = data?.map((genre: any) => ({
+			value: genre.id,
+			label: genre.name
+		}));
 
-							<InputContainer>
-								<Controller
-									name="name"
-									control={control}
-									render={({
-										field: { onChange, value }
-									}) => (
-										<Input
-											placeholder={'Nome do preset'}
-											placeholderTextColor={
-												theme.COLORS.gray_200
-											}
-											onChangeText={onChange}
-											value={value}
-										/>
-									)}
+		useEffect(() => {
+			if (isEdit) {
+				setValueForm('name', currentPreset?.name ?? '');
+				setValueForm('description', currentPreset?.description ?? '');
+				setValueForm('settings', currentPreset?.settings ?? '');
+				setValue(currentPreset?.genreId ?? '');
+				setIsEnabled(currentPreset?.isPublic ?? false);
+			} else {
+				setValueForm('name', '');
+				setValueForm('description', '');
+				setValueForm('settings', '');
+				setValue('');
+				setIsEnabled(false);
+			}
+		}, [isEdit]);
+
+		useEffect(() => {
+			setValueForm('genreId', value);
+		}, [value]);
+
+		useEffect(() => {
+			setValueForm('isPublic', isEnabled);
+		}, [isEnabled]);
+
+		return (
+			<>
+				<Modalize
+					ref={ref}
+					adjustToContentHeight
+					withHandle={false}
+					scrollViewProps={{
+						showsVerticalScrollIndicator: false
+					}}
+					modalStyle={{
+						paddingHorizontal: scale(16)
+					}}>
+					<Spacer h={16} />
+					<Header>
+						<Text variant="bold">
+							{isEdit ? 'Editar Preset' : 'Salvar Preset'}
+						</Text>
+						<Pressable
+							onPress={() => {
+								onClose();
+							}}>
+							<IconClose>
+								<Icons.Close
+									width={scale(12)}
+									height={scale(12)}
 								/>
+							</IconClose>
+						</Pressable>
+					</Header>
 
-								<Spacer h={16} />
+					<Spacer h={32} />
 
-								<Controller
-									name="description"
-									control={control}
-									render={({
-										field: { onChange, value }
-									}) => (
-										<Input
-											onChangeText={text =>
-												onChange(text)
-											}
-											value={value}
-											placeholder="Descrição (opcional)"
-											placeholderTextColor={
-												theme.COLORS.gray_200
-											}
-											multiline
-											keyboardType="default"
-										/>
-									)}
-								/>
-
-								<Spacer h={16} />
-
-								<DropDownPicker
-									open={open}
+					<InputContainer>
+						<Controller
+							name="name"
+							control={control}
+							render={({ field: { onChange, value } }) => (
+								<Input
+									placeholder={'Nome do preset'}
+									placeholderTextColor={theme.COLORS.gray_200}
+									onChangeText={onChange}
 									value={value}
-									items={items}
-									setOpen={setOpen}
-									setValue={setValue}
-									setItems={setItems}
-									placeholder={'Gênero'}
-									style={{
-										borderWidth: 2,
-										borderColor: theme.COLORS.black,
-										height: scale(48)
-									}}
-									textStyle={{
-										fontFamily:
-											typography['Lato-Regular']
-												.fontFamily,
-										color: theme.COLORS.gray_200,
-										fontSize: scale(14)
-									}}
 								/>
-							</InputContainer>
+							)}
+						/>
 
-							<Spacer h={16} />
+						<Spacer h={16} />
 
-							<ContainerSwitch>
-								<Switch
-									trackColor={{
-										false: '#656565',
-										true: '#D4BD85'
-									}}
-									thumbColor={
-										isEnabled ? '#656565' : '#f4f3f4'
-									}
-									ios_backgroundColor="#3e3e3e"
-									onValueChange={toggleSwitch}
-									value={isEnabled}
+						<Controller
+							name="description"
+							control={control}
+							render={({ field: { onChange, value } }) => (
+								<Input
+									onChangeText={text => onChange(text)}
+									value={value}
+									placeholder="Descrição (opcional)"
+									placeholderTextColor={theme.COLORS.gray_200}
+									multiline
+									keyboardType="default"
 								/>
-								<Text variant="bold" fontSize={12}>
-									Tornar Público
-								</Text>
-							</ContainerSwitch>
-							<Spacer h={32} />
+							)}
+						/>
 
-							<Footer>
-								<Button
-									activeLoad={isPending}
-									title="Salvar"
-									onPress={handleSubmit(savePreset)}
-								/>
-								<Button
-									title="Voltar"
-									variant="secondary"
-									onPress={() => navigation.goBack()}
-								/>
-								{isEdit && (
-									<TouchableOpacity
-										onPress={() => {
-											setShowModalDelete(true);
-											onClose();
+						<Spacer h={16} />
+
+						<DropDownPicker
+							open={open}
+							value={value}
+							items={genres}
+							setOpen={setOpen}
+							setValue={setValue}
+							// setItems={setItems}
+							loading={isLoading}
+							placeholder={'Gênero'}
+							style={{
+								borderWidth: 2,
+								borderColor: theme.COLORS.black,
+								height: scale(48)
+							}}
+							textStyle={{
+								fontFamily:
+									typography['Lato-Regular'].fontFamily,
+								color: theme.COLORS.gray_200,
+								fontSize: scale(14)
+							}}
+						/>
+					</InputContainer>
+
+					<Spacer h={16} />
+
+					<ContainerSwitch>
+						<Switch
+							trackColor={{
+								false: '#656565',
+								true: '#D4BD85'
+							}}
+							thumbColor={isEnabled ? '#656565' : '#f4f3f4'}
+							ios_backgroundColor="#3e3e3e"
+							onValueChange={toggleSwitch}
+							value={isEnabled}
+						/>
+						<Text variant="bold" fontSize={12}>
+							Tornar Público
+						</Text>
+					</ContainerSwitch>
+					<Spacer h={32} />
+
+					<Footer>
+						<Button
+							activeLoad={isPending}
+							title="Salvar"
+							onPress={handleSubmit(data =>
+								isEdit ? editPreset(data) : savePreset(data)
+							)}
+						/>
+						<Button
+							title="Voltar"
+							variant="secondary"
+							onPress={onClose}
+						/>
+						{isEdit && (
+							<TouchableOpacity
+								onPress={() => {
+									openModal();
+									onClose();
+								}}>
+								<ContainerButtonDelete>
+									<Text
+										variant="bold"
+										fontSize={12}
+										style={{
+											textDecorationLine: 'underline'
 										}}>
-										<ContainerButtonDelete>
-											<Text
-												variant="bold"
-												fontSize={12}
-												style={{
-													textDecorationLine:
-														'underline'
-												}}>
-												Excluir preset
-											</Text>
-											<Spacer w={8} />
-											<Icons.Trash
-												width={scale(20)}
-												height={scale(20)}
-											/>
-										</ContainerButtonDelete>
-										<Spacer h={16} />
-									</TouchableOpacity>
-								)}
-							</Footer>
-						</ContainerModal>
-					</KeyboardAwareScrollView>
-				</Container>
-			</Modal>
+										Excluir preset
+									</Text>
+									<Spacer w={8} />
+									<Icons.Trash
+										width={scale(20)}
+										height={scale(20)}
+									/>
+								</ContainerButtonDelete>
+								<Spacer h={16} />
+							</TouchableOpacity>
+						)}
+					</Footer>
+				</Modalize>
 
-			<ModalDelete
-				visible={showModalDelete}
-				onClose={() => setShowModalDelete(false)}
-			/>
-		</>
-	);
-}
+				<ModalDelete
+					ref={modalizeRef}
+					onClose={closeModal}
+					currentPreset={currentPreset}
+				/>
+			</>
+		);
+	}
+);

@@ -1,18 +1,25 @@
 import React from 'react';
 
-import { KubaFone } from '@assets/images';
 import { useNavigation } from '@react-navigation/native';
-import { Box, Container, ContainerImage, Image } from './styles';
+import { Image } from 'react-native';
+import { Container, ContainerImage } from './styles';
 import { Spacer } from '@components/Spacer';
 import Text from '@components/Text';
 import { scale } from 'react-native-size-matters';
 
 interface CardDeviceProps {
-	title: string;
 	id: number;
+	imgURL: string;
+	title: string;
+	isBluetooth: boolean;
 }
 
-export function CardDevice({ title, id }: CardDeviceProps) {
+export function CardDevice({
+	id,
+	imgURL,
+	title,
+	isBluetooth
+}: CardDeviceProps) {
 	const { navigate } = useNavigation<any>();
 
 	return (
@@ -22,14 +29,25 @@ export function CardDevice({ title, id }: CardDeviceProps) {
 				marginVertical: scale(4),
 				marginRight: scale(8)
 			}}
-			onPress={() => navigate('Device', { deviceID: id })}>
+			onPress={() =>
+				navigate('Device', { id, name: title, imgURL, isBluetooth })
+			}>
 			<ContainerImage>
-				<Image source={KubaFone} />
+				<Image
+					style={{
+						width: '80%',
+						height: '80%'
+					}}
+					resizeMode="contain"
+					source={{
+						uri: imgURL
+					}}
+				/>
 			</ContainerImage>
 
 			<Spacer h={4} />
 
-			<Text style={{ textAlign: 'center' }} fontSize={14}>
+			<Text color="#6E6E6E" style={{ textAlign: 'center' }} fontSize={14}>
 				{title}
 			</Text>
 			<Spacer h={16} />

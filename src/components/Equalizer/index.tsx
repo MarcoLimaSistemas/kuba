@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Text from '@components/Text';
 
 import { frequencies as frequenciesList } from './data';
@@ -11,34 +11,66 @@ import VerticalSlider from '@components/Slider';
 import { NativeModules } from 'react-native';
 import Slider from '@react-native-community/slider';
 
-import { ModalPreset } from '@components/ModalPreset';
 import * as S from './styles';
 import DropDownPicker, { ValueType } from 'react-native-dropdown-picker';
 import { typography } from '../../styles/typography';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { getPresets } from '@services/preset';
+import { useAuth } from '@hooks/auth';
+import { IPreset } from '@components/ModalPreset';
+import Toast from 'react-native-toast-message';
+import { IFrequency } from '@screens/Client/Device';
 
 const { AudioEqualizerModule } = NativeModules;
 
 interface EqualizerProps {
 	handleScrollEnabled: (enabled: boolean) => void;
+	handlePreset: (preset: IPreset) => void;
+	handleFrequencies: (frequencies: IFrequency[]) => void;
+	handleModalEdit: (isEdit: boolean) => void;
+	onOpen(): void;
+	disabled?: boolean;
 }
 
-export const Equalizer = ({ handleScrollEnabled }: EqualizerProps) => {
-	const [frequencies, setFrequencies] = useState(frequenciesList);
-	const [preAmpDB, setPreAmpDB] = useState(0);
+export const Equalizer = ({
+	handleScrollEnabled,
+	handleModalEdit,
+	handlePreset,
+	handleFrequencies,
+	onOpen,
+	disabled = false
+}: EqualizerProps) => {
+	const [currentPreset, setCurrentPreset] = useState<ValueType | null>(null);
 
-	const [showModal, setShowModal] = useState(false);
-	const [isEditing, setIsEditing] = useState(false);
+	const [preAmpDB, setPreAmpDB] = useState(0);
+	const [frequencies, setFrequencies] = useState(frequenciesList);
 
 	const [openDropdown, setOpenDropdown] = useState(false);
-	const [presets, setPresets] = useState([
-		{ label: 'Padrão', value: 'padrao' },
-		{ label: 'Preset01', value: 'preset01' },
-		{ label: 'sitemasked', value: 'preset02' },
-		{ label: 'molecularpioneer', value: 'preset03' }
-	]);
-	const [currentPreset, setCurrentPreset] = useState<ValueType | null>(
-		presets[0].value
-	);
+
+	const { user } = useAuth();
+
+	const { data, isLoading, isFetched } = useInfiniteQuery({
+		queryKey: ['MyPresets'],
+		queryFn: ({ pageParam }) =>
+			getPresets(user?.id, undefined, pageParam, true, 15),
+		initialPageParam: 1,
+		getNextPageParam: lastPage => lastPage.meta.next_page_url
+	});
+
+	const myPresets = useMemo(() => {
+		return (
+			data?.pages
+				.flatMap(page => page.data)
+				.map(preset => ({
+					label: preset.name,
+					value: preset.id,
+					isPublic: preset.is_public,
+					genreId: preset.genre_id,
+					description: preset.description,
+					settings: preset.settings
+				})) ?? []
+		);
+	}, [data]);
 
 	const handleBandGain = async (band: number, level: number) => {
 		try {
@@ -76,6 +108,25 @@ export const Equalizer = ({ handleScrollEnabled }: EqualizerProps) => {
 	};
 
 	useEffect(() => {
+		handleFrequencies(frequenciesList);
+	}, [frequenciesList]);
+
+	useEffect(() => {
+		if (myPresets.length > 0) {
+			const item = myPresets[0];
+			setCurrentPreset(item.value);
+			handlePreset({
+				id: item.value,
+				name: item.label,
+				description: item.description,
+				genreId: item.genreId,
+				isPublic: item.isPublic,
+				settings: item.settings
+			});
+		}
+	}, [isFetched]);
+
+	useEffect(() => {
 		handlePreAmpGain(preAmpDB);
 	}, [preAmpDB]);
 
@@ -92,23 +143,37 @@ export const Equalizer = ({ handleScrollEnabled }: EqualizerProps) => {
 							flexDirection: 'row'
 						}}>
 						<TouchableOpacity
+							disabled={disabled}
 							onPress={() => {
-								setIsEditing(false);
-								setShowModal(true);
+								onOpen();
+								handleModalEdit(false);
 							}}>
-							<Icons.Plus width={scale(32)} height={scale(32)} />
+							<Icons.Plus
+								width={scale(32)}
+								height={scale(32)}
+								color={disabled ? '#d7d7d7' : '#6E6E6E'}
+							/>
 						</TouchableOpacity>
 
 						<Spacer w={16} />
 
 						<TouchableOpacity
+							disabled={disabled}
 							onPress={() => {
-								setIsEditing(true);
-								setShowModal(true);
+								if (currentPreset) {
+									onOpen();
+									handleModalEdit(true);
+								} else {
+									Toast.show({
+										type: 'info',
+										text1: 'Selecione um preset!'
+									});
+								}
 							}}>
 							<Icons.Pencil
 								width={scale(32)}
 								height={scale(32)}
+								color={disabled ? '#d7d7d7' : '#6E6E6E'}
 							/>
 						</TouchableOpacity>
 					</View>
@@ -118,10 +183,21 @@ export const Equalizer = ({ handleScrollEnabled }: EqualizerProps) => {
 					<DropDownPicker
 						open={openDropdown}
 						value={currentPreset}
-						items={presets}
+						items={myPresets}
+						loading={isLoading}
 						setOpen={setOpenDropdown}
 						setValue={setCurrentPreset}
-						setItems={setPresets}
+						onSelectItem={(item: any) =>
+							handlePreset({
+								id: item.value,
+								name: item.label,
+								description: item.description,
+								genreId: item.genreId,
+								settings: item.settings,
+								isPublic: item.isPublic
+							})
+						}
+						// setItems={setPresets}
 						selectedItemContainerStyle={{
 							backgroundColor: '#e4e1e1'
 						}}
@@ -164,6 +240,7 @@ export const Equalizer = ({ handleScrollEnabled }: EqualizerProps) => {
 							onTouchEnd={() => handleScrollEnabled(true)}
 							onTouchCancel={() => handleScrollEnabled(true)}>
 							<VerticalSlider
+								disabled={disabled}
 								min={-12}
 								max={12}
 								step={1}
@@ -174,21 +251,32 @@ export const Equalizer = ({ handleScrollEnabled }: EqualizerProps) => {
 							/>
 
 							<Spacer h={16} />
-							<Text fontSize={12}>{bar.frequency}</Text>
+							<Text
+								fontSize={12}
+								color={disabled ? '#d7d7d7' : '#242424'}>
+								{bar.frequency}
+							</Text>
 						</S.ContainerBar>
 					))}
 				</S.ContainerBars>
 
 				<Spacer h={16} />
 
-				<Text fontSize={12} style={{ textAlign: 'center' }}>
+				<Text
+					fontSize={12}
+					style={{ textAlign: 'center' }}
+					color={disabled ? '#d7d7d7' : '#242424'}>
 					PREAMP/dB
 				</Text>
 
 				<Spacer h={16} />
 
 				<S.ContainerSlider>
-					<Text fontSize={12}>-12</Text>
+					<Text
+						fontSize={12}
+						color={disabled ? '#d7d7d7' : '#242424'}>
+						-12
+					</Text>
 
 					<View
 						style={{
@@ -201,6 +289,7 @@ export const Equalizer = ({ handleScrollEnabled }: EqualizerProps) => {
 						onTouchEnd={() => handleScrollEnabled(true)}
 						onTouchCancel={() => handleScrollEnabled(true)}>
 						<Slider
+							disabled={disabled}
 							minimumValue={-12}
 							maximumValue={12}
 							step={1}
@@ -208,7 +297,7 @@ export const Equalizer = ({ handleScrollEnabled }: EqualizerProps) => {
 							onValueChange={value => handlePreAmpDB(value)}
 							minimumTrackTintColor="transparent"
 							maximumTrackTintColor="transparent"
-							thumbTintColor="#242424"
+							thumbTintColor={disabled ? '#d7d7d7' : '#242424'}
 							style={{
 								width: '100%',
 								height: 2
@@ -219,23 +308,23 @@ export const Equalizer = ({ handleScrollEnabled }: EqualizerProps) => {
 								position: 'absolute',
 								width: '90%',
 								height: 2,
-								backgroundColor: '#242424',
+								backgroundColor: disabled
+									? '#d7d7d7'
+									: '#242424',
 								zIndex: -10
 							}}
 						/>
 					</View>
 
-					<Text fontSize={12}>+12</Text>
+					<Text
+						fontSize={12}
+						color={disabled ? '#d7d7d7' : '#242424'}>
+						+12
+					</Text>
 				</S.ContainerSlider>
 
 				<Spacer h={16} />
 			</S.Container>
-
-			<ModalPreset
-				isEdit={isEditing}
-				isOpen={showModal}
-				onClose={() => setShowModal(false)}
-			/>
 		</>
 	);
 };

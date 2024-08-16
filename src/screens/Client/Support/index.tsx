@@ -5,7 +5,7 @@ import { InputUnMasked } from '@components/InputUnMasked';
 import { useForm } from 'react-hook-form';
 import { Button } from '@components/Button';
 import { View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { Header } from '@components/Header';
 import Text from '@components/Text';
 import { scale } from 'react-native-size-matters';
@@ -19,7 +19,12 @@ import Toast from 'react-native-toast-message';
 
 export function Support() {
 	const { user } = useAuth();
+
 	const navigation = useNavigation();
+
+	const route = useRoute();
+
+	const { deviceId } = route.params as any;
 
 	const { control, handleSubmit, watch } = useForm<TSupportSchema>({
 		resolver: yupResolver(SupportSchema),
@@ -124,7 +129,9 @@ export function Support() {
 					<Button
 						title="DÚVIDAS FREQUENTES"
 						onPress={() => {
-							navigation.navigate('FrequentlyQuestions');
+							navigation.navigate('FrequentlyQuestions', {
+								deviceId
+							});
 						}}
 						variant="secondary"
 					/>

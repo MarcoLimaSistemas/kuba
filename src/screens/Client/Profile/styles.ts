@@ -14,8 +14,8 @@ export const ContainerSwitch = styled.View`
 export const ContainerSocial = styled.View`
 	padding-left: ${scale(16)}px;
 	padding-right: ${scale(16)}px;
-	justify-content: space-between;
 	align-items: center;
+	justify-content: center;
 	flex-direction: row;
 `;
 

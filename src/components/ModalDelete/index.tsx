@@ -1,68 +1,90 @@
 import { Button } from '@components/Button';
-import { useModal } from '@hooks/modal';
-import { useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { Modal, Platform, Pressable, ScrollView, View } from 'react-native';
+import React, { forwardRef } from 'react';
+import { Pressable, View } from 'react-native';
 
-import {
-	Container,
-	ContainerModal,
-	IconClose,
-	IconTrash,
-	TitleModal
-} from './styles';
+import { Container, ContainerModal, IconClose, IconTrash } from './styles';
 import Text from '@components/Text';
 import { Spacer } from '@components/Spacer';
 import { Icons } from '@assets/icons';
 import { scale } from 'react-native-size-matters';
 import Trash from '@assets/icons/trash-2.svg';
+import { Modalize } from 'react-native-modalize';
+import { IPreset } from '@components/ModalPreset';
+import { useMutation } from '@tanstack/react-query';
+import { deletePreset } from '@services/preset';
+import { useAuth } from '@hooks/auth';
+import { queryClient } from '../../../App';
 
 interface ModalDeleteProps {
-	visible: boolean;
+	currentPreset: IPreset | null;
 	onClose(): void;
 }
 
-export function ModalDelete({ visible, onClose }: ModalDeleteProps) {
-	return (
-		<Modal animationType="slide" transparent={true} visible={visible}>
-			<Container>
-				<ContainerModal>
-					<Spacer h={16} />
+export const ModalDelete = forwardRef(
+	({ onClose, currentPreset }: ModalDeleteProps, ref) => {
+		const { user } = useAuth();
 
-					<Pressable
-						onPress={() => {
-							onClose();
-						}}>
-						<IconClose>
-							<Icons.Close width={scale(12)} height={scale(12)} />
-						</IconClose>
-					</Pressable>
+		const { mutateAsync, isPending } = useMutation({
+			mutationKey: ['DeletePreset'],
+			mutationFn: () => deletePreset(user?.id, currentPreset?.id),
+			onSuccess() {
+				queryClient.invalidateQueries({ queryKey: ['MyPresets'] });
+				onClose();
+			}
+		});
 
-					<Spacer h={64} />
-					<View
-						style={{
-							justifyContent: 'center',
-							alignItems: 'center'
-						}}>
-						<Text
-							variant="bold"
-							style={{ textAlign: 'center', width: '70%' }}>
-							REALMENTE DESEJA EXCLUIR ESTE PRESET?
-						</Text>
-					</View>
+		const handleDelete = () => {
+			mutateAsync();
+		};
 
-					<IconTrash>
-						<Trash width={scale(96)} height={scale(96)} />
-					</IconTrash>
+		return (
+			<Modalize ref={ref} adjustToContentHeight withHandle={false}>
+				<Container>
+					<ContainerModal>
+						<Spacer h={16} />
 
-					<Button title="Excluir" />
-					<Button
-						title="Voltar"
-						variant="secondary"
-						onPress={() => onClose()}
-					/>
-				</ContainerModal>
-			</Container>
-		</Modal>
-	);
-}
+						<Pressable
+							onPress={() => {
+								onClose();
+							}}>
+							<IconClose>
+								<Icons.Close
+									width={scale(12)}
+									height={scale(12)}
+								/>
+							</IconClose>
+						</Pressable>
+
+						<Spacer h={64} />
+						<View
+							style={{
+								justifyContent: 'center',
+								alignItems: 'center'
+							}}>
+							<Text
+								variant="bold"
+								style={{ textAlign: 'center', width: '70%' }}>
+								REALMENTE DESEJA EXCLUIR ESTE PRESET?
+							</Text>
+						</View>
+
+						<IconTrash>
+							<Trash width={scale(96)} height={scale(96)} />
+						</IconTrash>
+
+						<Button
+							title="Excluir"
+							activeLoad={isPending}
+							onPress={handleDelete}
+						/>
+						<Button
+							title="Voltar"
+							variant="secondary"
+							onPress={() => onClose()}
+						/>
+					</ContainerModal>
+				</Container>
+			</Modalize>
+		);
+	}
+);

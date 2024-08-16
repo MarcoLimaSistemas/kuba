@@ -1,33 +1,30 @@
-import { RFValue } from 'react-native-responsive-fontsize';
+import { scale } from 'react-native-size-matters';
 import styled from 'styled-components/native';
 
-export const Container = styled.ScrollView`
-display: flex;
-flex: 1;
+export const Container = styled.ScrollView``;
+
+export const ContainerBody = styled.View`
+	padding-left: ${scale(16)}px;
+	padding-right: ${scale(16)}px;
 `;
 
-export const ContainerCarousel = styled.View`
+export const ContainerEqualizer = styled.View`
+	background: #fff;
+	padding-top: ${scale(16)}px;
+	border-radius: ${scale(12)}px;
+`;
 
+export const ContainerImage = styled.View`
+	height: ${scale(200)}px;
+	justify-content: flex-end;
 `;
-export const BoxImage = styled.View`
-`;
+
 export const ImageProfile = styled.Image`
-`;
-export const NamePreset = styled.Text`
-font-size: ${RFValue(16)}px;
-text-align: center;
-color: ${({ theme }) => theme.COLORS.black};
-letter-spacing:${RFValue(8)}px;
-text-transform: uppercase;
-margin-bottom: ${RFValue(42)}px;
-`;
-
-export const Footer = styled.View`
-padding:${RFValue(16)}px;
-`;
-
-export const EqualizerContainer = styled.View`
-  border: 1px solid red;
-  width: 100%;
-  height: 200px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: -101;
+	height: ${scale(200)}px;
 `;

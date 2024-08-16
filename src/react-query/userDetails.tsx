@@ -8,17 +8,6 @@ export const userDetails = ({ isEnabled = true }: { isEnabled?: boolean }) => {
 	return useQuery({
 		queryKey: ['userDetails'],
 		queryFn: () => User.getInfo(user?.id),
-		enabled: isEnabled,
-		select(data) {
-			return {
-				...data,
-				client: {
-					...data.client,
-					profile_url: data.client.profile_url
-						? `${data?.client.profile_url}?timestamp=${new Date().getTime()}`
-						: null
-				}
-			};
-		}
+		enabled: isEnabled
 	});
 };

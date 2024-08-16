@@ -12,6 +12,7 @@ export interface ITextProps {
 	variant?: TTextVariant;
 	color?: string;
 	fontSize?: number;
+	numberOfLines?: number;
 	style?: StyleProp<TextStyle>;
 	children: React.ReactNode;
 }

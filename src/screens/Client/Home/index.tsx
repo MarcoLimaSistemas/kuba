@@ -1,153 +1,100 @@
 import React from 'react';
 
-import { Button } from '@components/Button';
-import { Carousel } from '@components/Carousel';
-import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
-import { Modal, Pressable, Image, Alert, View } from 'react-native';
+import {Carousel} from '@components/Carousel';
+import {useNavigation} from '@react-navigation/native';
+
+import {background, backgroundSecondary} from '@assets/images';
 
 import {
-	background,
-	backgroundSecondary,
-	FigureCompleted
-} from '@assets/images';
-
-import { Close } from '@assets/icons';
-
-import {
-	Container,
-	ContainerHeader,
-	ContainerModal,
-	ContainerSchoolKuba,
-	IconClose,
-	ImageHeaderHome,
-	ImageModalContainer,
-	ImageSchoolKuba
+  Container,
+  ContainerHeader,
+  ContainerSchoolKuba,
+  ImageHeaderHome,
+  ImageSchoolKuba,
 } from './styles';
 
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { DeviceProps } from '@models/device';
-import { Header } from '@components/Header';
+import {Header} from '@components/Header';
 import Text from '@components/Text';
-import { scale } from 'react-native-size-matters';
-import { Spacer } from '@components/Spacer';
+import {scale} from 'react-native-size-matters';
+import {Spacer} from '@components/Spacer';
+import {View} from 'react-native';
+import {useQuery} from '@tanstack/react-query';
+import {getProducts} from '@services/product';
+import {useAuth} from '@hooks/auth';
 
 export function Home() {
-	const [devices, setDevices] = useState<DeviceProps[]>([
-		{
-			id: 1,
-			is_bluetooth: true,
-			nome: 'Kuba 01',
-			user_admin_id: 2
-		}
-	]);
+  const {user} = useAuth();
 
-	const navigation = useNavigation();
+  const {data: devices, isLoading} = useQuery({
+    queryKey: ['Devices'],
+    queryFn: () => getProducts(user?.id),
+  });
 
-	return (
-		<>
-			<ContainerHeader>
-				<Header typeLogo="white" />
-				<ImageHeaderHome source={background} />
+  const navigation = useNavigation();
 
-				<View
-					style={{
-						paddingHorizontal: scale(16),
-						marginTop: 'auto'
-					}}>
-					<Text color="#FFF" variant="light">
-						Escola Kuba
-					</Text>
-					<Spacer h={4} />
-					<Text variant="bold" color="#FFF">
-						Como tirar o melhor som de um fone?
-					</Text>
-				</View>
-				<Spacer h={16} />
-			</ContainerHeader>
+  return (
+    <>
+      <ContainerHeader>
+        <Header typeLogo="white" />
+        <ImageHeaderHome source={background} />
 
-			<Spacer h={32} />
+        <View
+          style={{
+            paddingHorizontal: scale(16),
+            marginTop: 'auto',
+          }}>
+          <Text color="#FFF" variant="light">
+            Escola Kuba
+          </Text>
+          <Spacer h={4} />
+          <Text variant="bold" color="#FFF">
+            Como tirar o melhor som de um fone?
+          </Text>
+        </View>
+        <Spacer h={16} />
+      </ContainerHeader>
 
-			<Carousel data={devices} />
+      <Spacer h={32} />
 
-			<Container>
-				<ContainerSchoolKuba
-					onPress={() => navigation.navigate('School')}>
-					<ImageSchoolKuba source={backgroundSecondary} />
+      <Carousel devices={devices} isLoading={isLoading} />
 
-					<View
-						style={{
-							position: 'absolute',
-							justifyContent: 'center',
-							alignItems: 'center',
-							top: 0,
-							left: 0,
-							bottom: 0,
-							right: 0,
-							flex: 1,
-							paddingHorizontal: scale(16)
-						}}>
-						<View>
-							<Text
-								color="#FFF"
-								variant="bold"
-								style={{
-									textAlign: 'center',
-									letterSpacing: scale(6)
-								}}>
-								ESCOLA KUBA
-							</Text>
-							<Spacer h={8} />
-							<Text
-								fontSize={12}
-								color="#FFF"
-								style={{ textAlign: 'center' }}>
-								Aprenda mais sobre o mundo do áudio
-							</Text>
-						</View>
-					</View>
-				</ContainerSchoolKuba>
+      <Container>
+        <Spacer h={16} />
+        <ContainerSchoolKuba onPress={() => navigation.navigate('School')}>
+          <ImageSchoolKuba source={backgroundSecondary} />
 
-				<Spacer h={16} />
-			</Container>
+          <View
+            style={{
+              position: 'absolute',
+              justifyContent: 'center',
+              alignItems: 'center',
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+              flex: 1,
+              paddingHorizontal: scale(16),
+            }}>
+            <View>
+              <Text
+                color="#FFF"
+                variant="bold"
+                style={{
+                  textAlign: 'center',
+                  letterSpacing: scale(6),
+                }}>
+                ESCOLA KUBA
+              </Text>
+              <Spacer h={8} />
+              <Text fontSize={12} color="#FFF" style={{textAlign: 'center'}}>
+                Aprenda mais sobre o mundo do áudio
+              </Text>
+            </View>
+          </View>
+        </ContainerSchoolKuba>
 
-			{/* <Modal
-				animationType="slide"
-				transparent={true}
-				visible={modalVisible}
-				onRequestClose={() => {
-					setModalVisible(!modalVisible);
-				}}>
-				<ContainerModal>
-					<KeyboardAwareScrollView
-						showsVerticalScrollIndicator={false}>
-						<Pressable onPress={() => setModalVisible(false)}>
-							<IconClose>
-								<Image source={Close} />
-							</IconClose>
-						</Pressable>
-
-						<ImageModalContainer>
-							<Image source={FigureCompleted} />
-						</ImageModalContainer>
-
-						<Text>Complete seu Perfil!</Text>
-						<Text>
-							Complete seu perfil para ter uma experiência Kuba
-							completa!
-						</Text>
-						<Button
-							title="Completar Perfil"
-							onPress={() => navigation.navigate('Profile')}
-						/>
-						<Button
-							title="Mais Tarde"
-							variant="secondary"
-							onPress={() => setModalVisible(false)}
-						/>
-					</KeyboardAwareScrollView>
-				</ContainerModal>
-			</Modal> */}
-		</>
-	);
+        <Spacer h={16} />
+      </Container>
+    </>
+  );
 }

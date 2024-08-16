@@ -1,20 +1,29 @@
-import singerPng from '@assets/images/SingerProfile.png';
 import React from 'react';
 import { Container, ImageCover } from './styles';
 import { ContainerText } from '../styles';
 import Text from '@components/Text';
 
-export function CardPersonality() {
+interface ICardPersonality {
+	imgURL: string;
+	name: string;
+}
+
+export function CardPersonality({ imgURL, name }: ICardPersonality) {
 	return (
 		<Container>
-			<ImageCover source={singerPng} />
+			<ImageCover
+				source={{
+					uri: imgURL
+				}}
+				resizeMode="cover"
+			/>
 
 			<ContainerText>
 				<Text
 					variant="bold"
 					color="#FFF"
 					style={{ textTransform: 'uppercase' }}>
-					Crioulo
+					{name}
 				</Text>
 			</ContainerText>
 		</Container>

@@ -1,6 +1,7 @@
 import styled from 'styled-components/native';
 import { TextInputMask } from 'react-native-masked-text';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { scale } from 'react-native-size-matters';
 
 export const InputGroup = styled.View`
 	margin-bottom: ${RFValue(16)}px;
@@ -18,7 +19,7 @@ export const InputArea = styled.View`
 
 export const InputLabel = styled.Text`
 	font-weight: 600;
-	font-size: ${RFValue(16)}px;
+	font-size: ${scale(16)}px;
 	color: ${({ theme }) => theme.COLORS.black};
 	margin-bottom: ${RFValue(8)}px;
 `;

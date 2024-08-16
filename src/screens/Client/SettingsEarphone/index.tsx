@@ -1,52 +1,39 @@
 import React from 'react';
-import { Image, TouchableOpacity, View } from 'react-native';
-import { Box, Container, Content, Label, Option, Title } from './styles';
+import * as S from './styles';
 
-import { ArrowBack } from '@assets/icons'
 import { Button } from '@components/Button';
 import { useNavigation } from '@react-navigation/native';
+import { Header } from '@components/Header';
+import { Spacer } from '@components/Spacer';
+import { View } from 'react-native';
+import { Option } from './components/Option';
 
-export function SettingsEarphone({ route }: any) {
-  const navigation = useNavigation()
+export function SettingsEarphone() {
+	const navigation = useNavigation();
 
-  console.log(route.params.TutorialID)
+	return (
+		<>
+			<Header title="Configurações do fone" />
+			<S.Container style={{ flexGrow: 1 }}>
+				<Spacer h={16} />
 
-  return (
-    <Container>
-      <Content>
-        <View>
-          <Box alignItems='center' justifyContent='flex-start' mt={32}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Image source={ArrowBack} />
-            </TouchableOpacity>
-            <Title>Configurações do fone</Title>
-          </Box>
+				<Option option="Duplo clique direito" zIndex={100} />
 
-          <Box alignItems='center' justifyContent='space-between' mt={40}>
-            <Label>{'Duplo clique direito'}</Label>
-            <Option>{'Passar música'}</Option>
-          </Box>
+				<Spacer h={16} />
 
-          <Box alignItems='center' justifyContent='space-between' mt={40}>
-            <Label>{'Duplo clique esquerdo'}</Label>
-            <Option>{'Voltar música'}</Option>
-          </Box>
+				<Option option="Duplo clique esquerdo" zIndex={80} />
 
-          <Box alignItems='center' justifyContent='space-between' mt={40}>
-            <Label>{'Triplo clique direito'}</Label>
-            <Option>{'Passar música'}</Option>
-          </Box>
+				<Spacer h={16} />
 
-          <Box alignItems='center' justifyContent='space-between' mt={40}>
-            <Label>{'Triplo clique esquerdo'}</Label>
-            <Option>{'Diminuir música'}</Option>
-          </Box>
-        </View>
+				<Option option="Triplo clique direito" zIndex={60} />
 
-        <Box mt={16}>
-          <Button title="Voltar" onPress={() => navigation.goBack()} />
-        </Box>
-      </Content>
-    </Container>
-  );
-};
+				<Spacer h={16} />
+
+				<Option option="Triplo clique esquerdo" zIndex={40} />
+
+				<View style={{ flex: 1 }} />
+				<Button title="Voltar" onPress={() => navigation.goBack()} />
+			</S.Container>
+		</>
+	);
+}

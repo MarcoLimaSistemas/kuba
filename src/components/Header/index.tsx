@@ -43,7 +43,7 @@ export const Header = ({ title, typeLogo = 'black' }: IHeaderProps) => {
 
 					<Spacer w={16} />
 
-					<Text variant="bold" fontSize={24}>
+					<Text variant="bold" fontSize={20}>
 						{title}
 					</Text>
 				</S.ContainerWithoutAvatar>

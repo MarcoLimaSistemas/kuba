@@ -7,14 +7,12 @@ import theme from '../../styles/theme';
 
 interface Props extends TextInputProps {
 	searchCallback: () => void;
-	search: (e: string) => void;
 	loading: boolean;
 	typeButton?: 'black' | 'white';
 }
 
 export function Search({
 	searchCallback,
-	search,
 	loading,
 	typeButton = 'white',
 	...rest

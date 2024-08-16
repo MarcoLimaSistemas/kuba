@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Button } from '@components/Button';
 import { Search } from '@components/Search';
 import { useState } from 'react';
@@ -12,10 +12,32 @@ import { scale } from 'react-native-size-matters';
 import { Spacer } from '@components/Spacer';
 import { CardPersonality } from '@components/CardProfile/CardPersonality';
 import { useNavigation } from '@react-navigation/native';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { getPresets } from '@services/preset';
+import { useAuth } from '@hooks/auth';
+import { Loading } from '@components/Loading';
 
 export function Personalities() {
 	const navigation = useNavigation();
+
+	const { user } = useAuth();
+
 	const [search, setSearch] = useState('');
+
+	const { data, isLoading, refetch } = useInfiniteQuery({
+		queryKey: ['Personalities'],
+		queryFn: ({ pageParam }) => getPresets(user?.id, search, pageParam),
+		initialPageParam: 1,
+		getNextPageParam: lastPage => lastPage.meta.next_page_url
+	});
+
+	const handleSearch = () => {
+		refetch();
+	};
+
+	const personalities = useMemo(() => {
+		return data?.pages.flatMap(page => page.data) ?? [];
+	}, [data]);
 
 	return (
 		<>
@@ -38,16 +60,32 @@ export function Personalities() {
 				</Text>
 				<Spacer h={16} />
 				<Search
-					searchCallback={() => {}}
-					search={setSearch}
+					searchCallback={handleSearch}
+					value={search}
+					onChangeText={text => setSearch(text)}
 					loading={false}
 					placeholder="Procurar personalidades"
 				/>
 
 				<FlatList
 					contentContainerStyle={{ paddingHorizontal: scale(16) }}
-					data={Array.from({ length: 5 }).map((_, i) => i)}
-					renderItem={({ item }) => <CardPersonality key={item} />}
+					data={personalities}
+					renderItem={({ item }) => (
+						<CardPersonality
+							key={item}
+							imgURL={item.img_url}
+							name={item.name}
+						/>
+					)}
+					ListEmptyComponent={() =>
+						isLoading ? (
+							<Loading />
+						) : (
+							<Text color="#FFF" fontSize={14}>
+								Nenhuma personalidade encontrada!
+							</Text>
+						)
+					}
 					ItemSeparatorComponent={() => <Spacer h={16} />}
 					ListFooterComponent={() => (
 						<Button

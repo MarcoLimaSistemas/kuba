@@ -5,6 +5,7 @@ import Text from '@components/Text';
 import { Spacer } from '@components/Spacer';
 import { scale } from 'react-native-size-matters';
 import { Alert, Linking } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 interface CardVideoProps {
 	title: string;
@@ -23,15 +24,16 @@ export function CardVideo({ title, link }: CardVideoProps) {
 	const videoId = getYouTubeVideoId(link);
 	const [imageBroken, setImageBroken] = useState(false);
 
-	const handlePress = useCallback(async () => {
-		const supported = await Linking.canOpenURL(link);
-
-		if (supported) {
+	const handlePress = async () => {
+		try {
 			await Linking.openURL(link);
-		} else {
-			Alert.alert(`Don't know how to open this URL: ${link}`);
+		} catch (error) {
+			Toast.show({
+				type: 'error',
+				text1: 'Erro ao abrir o vídeo! :('
+			});
 		}
-	}, [link]);
+	};
 
 	return (
 		<Container onPress={handlePress}>

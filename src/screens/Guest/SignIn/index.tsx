@@ -28,6 +28,8 @@ import {
 import { SignInSchema } from '../../../schemas/auth';
 import { InputUnMasked } from '@components/InputUnMasked';
 import Text from '@components/Text';
+import { AxiosError } from 'axios';
+import Toast from 'react-native-toast-message';
 
 export function SignIn() {
 	const [loading, setLoading] = useState(false);
@@ -50,7 +52,19 @@ export function SignIn() {
 			setLoading(true);
 			await signIn(data);
 		} catch (err: any) {
-			alert(err?.message);
+			if (err instanceof AxiosError) {
+				if (err.response?.status < 500) {
+					Toast.show({
+						type: 'error',
+						text1: 'Email ou senha inválidos!'
+					});
+				}
+				return;
+			}
+			Toast.show({
+				type: 'error',
+				text1: 'Erro no servidor interno!'
+			});
 		} finally {
 			setLoading(false);
 		}

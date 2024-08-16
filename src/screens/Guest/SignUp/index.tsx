@@ -9,7 +9,7 @@ import { Header } from '@components/Header';
 import { InputUnMasked } from '@components/InputUnMasked';
 
 import { Container, ContainerButton, Content, InputsContainer } from './styles';
-import { useNavigation } from '@react-navigation/native';
+import { CommonActions, useNavigation } from '@react-navigation/native';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { ISignUpCredentials } from '../../../models/signUp';
@@ -55,18 +55,17 @@ export function SignUp() {
 		};
 
 		try {
-			console.log(payload);
-			const { data } = await api.post('/signup', payload);
 			setLoading(true);
-			console.log(data.message);
-			Toast.show({
-				type: 'error',
-				text2: data.message
-			});
-			navigation.navigate('ScreenSuccessful');
+			await api.post('/signup', payload);
+
+			navigation.dispatch(
+				CommonActions.reset({
+					index: 1,
+					routes: [{ name: 'SignIn' }, { name: 'ScreenSuccessful' }]
+				})
+			);
 		} catch (err: any) {
-			console.log(err.response.data.message);
-			Alert.alert('Error ao cadastrar', err.response.data.message);
+			Toast.show({ type: 'error', text1: 'Error ao cadastrar!' });
 		} finally {
 			setLoading(false);
 		}
@@ -112,7 +111,7 @@ export function SignUp() {
 						control={control}
 						label="Data de nascimento"
 						name="birthDate"
-						placeholder="Digite sua data de nascimento"
+						placeholder="00/00/0000"
 						error={
 							errors.birthDate && (
 								<Error>{errors.birthDate.message}</Error>
