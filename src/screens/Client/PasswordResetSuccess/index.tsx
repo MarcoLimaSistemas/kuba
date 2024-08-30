@@ -10,8 +10,14 @@ export function PasswordResetSuccess() {
   const navigation = useNavigation()
   return (
     <Container>
-      <Image source={passwordResetSuccess} />
-      <TextSuccess>Senha Alterada com sucesso!</TextSuccess>
+      <Image source={passwordResetSuccess} 
+      style={{
+              marginTop:36,
+              width:365,
+              height:362
+            }}
+          />
+      <TextSuccess>{`Senha Alterada \n com sucesso!`}</TextSuccess>
       <Button title="Finalizar" onPress={() => navigation.navigate('Home')} />
     </Container>
   )
