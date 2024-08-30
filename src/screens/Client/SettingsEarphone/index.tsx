@@ -12,7 +12,7 @@ export function SettingsEarphone() {
 	const navigation = useNavigation();
 
 	return (
-		<>
+		<S.Wrapper>
 			<Header title="Configurações do fone" />
 			<S.Container style={{ flexGrow: 1 }}>
 				<Spacer h={16} />
@@ -34,6 +34,6 @@ export function SettingsEarphone() {
 				<View style={{ flex: 1 }} />
 				<Button title="Voltar" onPress={() => navigation.goBack()} />
 			</S.Container>
-		</>
+		</S.Wrapper>
 	);
 }
