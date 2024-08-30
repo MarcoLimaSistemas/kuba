@@ -25,6 +25,7 @@ const AppRoutes = () => {
 				)}
 			/>
 			<Stack.Screen name="Profile" component={Client.Profile} />
+			<Stack.Screen name="ProfileView" component={Client.ProfileView} />
 			<Stack.Screen name="EditProfile" component={Client.EditProfile} />
 
 			<Stack.Screen
