@@ -1,6 +1,6 @@
 import React, {useMemo, useState} from 'react';
 
-import {FlatList, RefreshControl, StatusBar, View} from 'react-native';
+import {FlatList, Image, RefreshControl, StatusBar, View} from 'react-native';
 
 import {Button} from '@components/Button';
 import {CardVideo} from '@components/CardVideo';
@@ -13,6 +13,7 @@ import {
   ContainerBody,
   Wrapper,
   TextNotVideos,
+  ContainerFilter,
 } from './styles';
 
 import {useNavigation} from '@react-navigation/native';
@@ -22,21 +23,25 @@ import {getClasses} from '@services/kubaSchool';
 import {useAuth} from '@hooks/auth';
 import {Spacer} from '@components/Spacer';
 import Text from '@components/Text';
-import theme from '../../../styles/theme';
+
+import { Icons } from '@assets/icons';
+
 
 export function School() {
   const [search, setSearch] = useState<string>();
+  const [order, setOrder] = useState<"asc" | "desc">('asc');
   const {user} = useAuth();
   const navigation = useNavigation();
 
   const {data, refetch, isLoading} = useInfiniteQuery({
-    queryKey: ['kubaSchool'],
+    queryKey: ['kubaSchool',order],
     queryFn: ({pageParam}) =>
       getClasses({
         userId: user?.id,
         page: pageParam,
         perPage: undefined,
         search,
+        orderType:order
       }),
     initialPageParam: 1,
     getNextPageParam: (lastPage, pages) => lastPage.data.last_page,
@@ -47,7 +52,9 @@ export function School() {
     data?.pages.forEach(e => classes.push(...e.data.data));
     return classes;
   }, [data]);
-
+   const handleFilter = () =>{
+        setOrder((prev)=> prev === 'asc'?'desc':'asc')
+  }
   return (
       <Container
         contentContainerStyle={{
@@ -82,6 +89,26 @@ export function School() {
                   value={search}
                   onChangeText={text => setSearch(text)}
                 />
+                <ContainerFilter onPress={handleFilter}>
+        
+                  <Text
+                   variant='regular' 
+                  fontSize={13} 
+                  color='#fff'
+                  style={{
+                    marginRight:10
+                  }}
+                  >Mais Recentes</Text>
+
+                  {order === 'asc' &&(
+                    <Icons.ArrowDown width={10} height={10} />
+                  )}
+
+                  {order === 'desc' &&(
+                    <Icons.ArrowUp width={10} height={10} />
+                  )}
+                   
+                </ContainerFilter>
                 </Wrapper>
                 }
                 renderItem={({item}) => (

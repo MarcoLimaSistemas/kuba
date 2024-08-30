@@ -6,13 +6,18 @@ export const Wrapper = styled.View`
 	width: 100%;
 	padding-top: ${scale(24)}px; 
 	background-color: ${({ theme }) => theme.COLORS.black};
-
 `;
 
 export const Container = styled.ScrollView`
 	background-color: ${({ theme }) => theme.COLORS.black};
 `;
 
+export const ContainerFilter = styled.TouchableOpacity`
+flex-direction: row;
+align-items: center;
+
+padding-left: ${scale(24)}px;
+`;
 export const ContainerBody = styled.View``;
 
 export const ContainerButton = styled.View`
