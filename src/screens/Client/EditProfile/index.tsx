@@ -284,7 +284,7 @@ export function EditProfile() {
 
           <BoxButtons>
             <Button
-              title="Enviar"
+              title="Salvar"
               activeLoad={isPendingEditUser}
               onPress={handleSubmit(onSubmit)}
             />
