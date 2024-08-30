@@ -28,3 +28,11 @@ export const ImageProfile = styled.Image`
 	z-index: -101;
 	height: ${scale(200)}px;
 `;
+
+export const ContainerCarousel = styled.View`
+	background: #fff;
+	margin-left: ${scale(16)}px;
+	margin-right: ${scale(16)}px;
+	padding: ${scale(8)}px;
+	border-radius: 8px;
+`;

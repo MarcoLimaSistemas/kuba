@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { Button } from '@components/Button';
 
@@ -7,7 +7,8 @@ import {
 	ContainerBody,
 	ContainerEqualizer,
 	ImageProfile,
-	ContainerImage
+	ContainerImage,
+	ContainerCarousel
 } from './styles';
 import Text from '@components/Text';
 import { Equalizer } from '@components/Equalizer';
@@ -17,13 +18,35 @@ import { Spacer } from '@components/Spacer';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { IFrequency } from '../Device';
 import LinearGradient from 'react-native-linear-gradient';
+import { CarouselProfile } from '@components/CarouselProfile';
+import { useQuery } from '@tanstack/react-query';
+import { getPresets, getPresetsPublics } from '@services/preset';
+import { useAuth } from '@hooks/auth';
 
 export function Preset() {
 	const navigation = useNavigation();
 
 	const route = useRoute();
+	const { user } = useAuth();
+	const { data: personalitiesData, isFetched } = useQuery({
+		queryKey: ['PersonalitiesOnDeviceScreen'],
+		queryFn: () => getPresets(user?.id, undefined, 1, false, 5)
+	});
+
+	const personalities = useMemo(() => {
+		return personalitiesData?.data ?? [];
+	}, [personalitiesData]);
 
 	const { preset } = route.params as any;
+	const { data: profilesData } = useQuery({
+		queryKey: ['PresetsPublicsOnDeviceScreen'],
+		queryFn: () => getPresetsPublics(user?.id, undefined, 1, 5),
+		enabled: isFetched
+	});
+
+	const profiles = useMemo(() => {
+		return profilesData?.data ?? [];
+	}, [profilesData]);
 
 	return (
 		<Container>
@@ -71,6 +94,20 @@ export function Preset() {
 						onOpen={() => {}}
 						handleFrequencies={(frequencies: IFrequency[]) => {}}
 					/>
+						<ContainerCarousel>
+						<CarouselProfile
+								titleProfile={'Perfis Personalidades'}
+								data={personalities}
+							/>
+
+							<Spacer h={16} />
+
+							<CarouselProfile
+								titleProfile={'Perfis Públicos '}
+								data={profiles}
+								isPersonalities={false}
+							/>
+							</ContainerCarousel>
 				</ContainerEqualizer>
 
 				<Spacer h={16} />
