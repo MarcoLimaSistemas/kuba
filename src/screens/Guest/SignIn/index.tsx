@@ -81,6 +81,7 @@ export function SignIn() {
 					control={control}
 					label="E-mail"
 					name="email"
+          autoCapitalize="none"
 					placeholder="Digite seu e-mail"
 					keyboardType="email-address"
 					error={
@@ -93,6 +94,7 @@ export function SignIn() {
 					label="Senha"
 					name="password"
 					eye={true}
+					autoCapitalize="none"
 					showPassword={showPassword}
 					setShowPassword={setShowPassword}
 					secureTextEntry={showPassword}

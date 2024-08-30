@@ -12,3 +12,4 @@ export { ChangePassword } from './ChangePassword';
 export { PasswordResetSuccess } from './PasswordResetSuccess';
 export { Support } from './Support';
 export { Profiles } from './Profiles';
+export {ProfileView} from './ProfileView'

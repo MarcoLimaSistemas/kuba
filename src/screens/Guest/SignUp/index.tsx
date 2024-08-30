@@ -46,12 +46,10 @@ export function SignUp() {
 
 	async function onSubmitSignUp(data: ISignUpCredentials) {
 		const payload = {
-			user_type: 'USER',
 			name: data.name,
 			email: data.email,
 			birthDate: adjustBirthDate(data.birthDate),
 			password: data.passwordConfirmation,
-			password_confirm: data.passwordConfirmation
 		};
 
 		try {
@@ -65,7 +63,12 @@ export function SignUp() {
 				})
 			);
 		} catch (err: any) {
-			Toast.show({ type: 'error', text1: 'Error ao cadastrar!' });
+			console.error("err",err.response)
+			Toast.show({ 
+				type: 'error', text1: 'Erro ao cadastrar!',
+				text2:`${err.response.data.message}`
+			});
+
 		} finally {
 			setLoading(false);
 		}
@@ -93,6 +96,7 @@ export function SignUp() {
 						control={control}
 						label="E-mail"
 						name="email"
+						autoCapitalize="none"
 						placeholder="Digite seu e-mail"
 						keyboardType="email-address"
 						error={
@@ -124,6 +128,7 @@ export function SignUp() {
 						label="Senha"
 						name="password"
 						eye={true}
+						autoCapitalize="none"
 						showPassword={showPassword}
 						setShowPassword={setShowPassword}
 						secureTextEntry={showPassword}

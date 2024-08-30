@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Search } from '@components/Search';
 import { useState } from 'react';
 
-import { Container } from './styles';
+import { Container, Wrapper } from './styles';
 import Text from '@components/Text';
 import { Header } from '@components/Header';
 
@@ -36,6 +36,8 @@ const getRandomSpan = () => {
 };
 
 const getGridLayout = (data: any[]) => {
+	const navigation = useNavigation();
+	
 	let grid = [];
 	let currentRow: any[] = [];
 	let columnCount = 0;
@@ -51,7 +53,7 @@ const getGridLayout = (data: any[]) => {
 		const itemWidth =
 			(itemContainerWidth / numColumns) * span + margin * (span - 1);
 		const itemHeight = scale(120);
-
+console.log("currentRow",currentRow)
 		currentRow.push(
 			<TouchableOpacity
 				key={item?.id}
@@ -61,7 +63,13 @@ const getGridLayout = (data: any[]) => {
 					height: itemHeight,
 					marginRight: margin,
 					marginBottom: margin
-				}}>
+				}}
+				onPress={()=>
+				 	navigation.navigate('ProfileView',{
+				 	userId:item?.client?.id
+				 })
+			}
+				>
 				<Image
 					source={
 						item?.client.profile_url
@@ -138,7 +146,7 @@ export function Profiles() {
 	}, [data]);
 
 	return (
-		<>
+		<Wrapper>
 			<View style={{ backgroundColor: theme.COLORS.white_100 }}>
 				<Header />
 			</View>
@@ -193,6 +201,6 @@ export function Profiles() {
 					/>
 				</ScrollView>
 			</Container>
-		</>
+		</Wrapper>
 	);
 }

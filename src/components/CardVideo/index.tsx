@@ -4,7 +4,7 @@ import { Container, Thumbnail } from './styles';
 import Text from '@components/Text';
 import { Spacer } from '@components/Spacer';
 import { scale } from 'react-native-size-matters';
-import { Alert, Linking } from 'react-native';
+import { Linking } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 interface CardVideoProps {
@@ -46,7 +46,7 @@ export function CardVideo({ title, link }: CardVideoProps) {
 							}
 				}
 				onError={() => setImageBroken(true)}
-				resizeMode="contain"
+				resizeMode="cover"
 			/>
 			<Spacer h={16} />
 			<Text variant="bold" color="#FFF" style={{ marginLeft: scale(8) }}>

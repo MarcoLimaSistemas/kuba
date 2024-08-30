@@ -12,7 +12,8 @@ import {
 	ContainerCarousel,
 	ContainerConnections,
 	ContainerImg,
-	Footer
+	Footer,
+	Wrapper
 } from './styles';
 
 import { Image, TouchableOpacity, View } from 'react-native';
@@ -95,7 +96,7 @@ export function Device() {
 	const closeModal = () => modalizeRef.current?.close();
 
 	return (
-		<>
+		<Wrapper>
 			<Header />
 
 			<Spacer h={8} />
@@ -289,6 +290,6 @@ export function Device() {
 				isEdit={isEdit}
 				onClose={() => closeModal()}
 			/>
-		</>
+		</Wrapper >
 	);
 }

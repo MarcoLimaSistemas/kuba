@@ -21,13 +21,21 @@ export const Option = ({ option, zIndex }: IOptionProps) => {
 		{
 			label: 'Diminuir volume',
 			value: 1
+		},
+		{
+			label: 'Aumentar volume',
+			value: 2
+		},
+		{
+			label: 'Passar uma música',
+			value: 3
 		}
 	]);
 	const [value, setValue] = useState<ValueType | null>(items[0].value);
 
 	return (
 		<S.Container>
-			<Text variant="bold">{option}</Text>
+			<Text variant="bold" fontSize={14}>{option}</Text>
 
 			<S.ContainerDropdown>
 				<DropDownPicker

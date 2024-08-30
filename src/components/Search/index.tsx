@@ -25,7 +25,11 @@ export function Search({
 						? rest.placeholderTextColor
 						: '#FFF'
 				}
+				returnKeyType='search'
+				onSubmitEditing={searchCallback}
+				keyboardType="default"
 				{...rest}
+				
 			/>
 			<ButtonSearch
 				disabled={loading}

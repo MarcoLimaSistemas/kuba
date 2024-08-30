@@ -9,7 +9,7 @@ export function ScreenSuccessful() {
   return (
     <Container>
       <Image source={Puppet} />
-      <TextConfirmed>CADASTRO REALIZADO COM SUCESSO!</TextConfirmed>
+      <TextConfirmed>{"CADASTRO REALIZADO\n COM SUCESSO!"}</TextConfirmed>
       <Button title="Finalizar" onPress={()=>navigation.navigate('SignIn')} />
     </Container>
   );

@@ -21,6 +21,7 @@ export declare global {
 			ChangePassword: undefined;
 			Support: undefined;
 			Profiles: undefined;
+			ProfileView:{userId:number};
 		}
 	}
 }

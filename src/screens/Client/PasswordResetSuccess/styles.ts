@@ -5,8 +5,10 @@ export const Container = styled.SafeAreaView`
 flex: 1;
 background-color: ${({ theme }) => theme.COLORS.white_100};
 align-items: center;
+justify-content: center;
 padding: ${RFValue(16)}px;
-`
+`;
+
 export const TextSuccess = styled.Text`
 font-weight: 600;
 font-size: 24px;
@@ -17,3 +19,4 @@ text-transform: uppercase;
 margin-top: ${RFValue(56)}px;
 margin-bottom: ${RFValue(38)}px;
 `
+;

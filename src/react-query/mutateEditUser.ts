@@ -22,8 +22,8 @@ export const useEditUser = () => {
 			await queryClient.invalidateQueries({ queryKey: ['userDetails'] });
 			navigation.goBack();
 		},
-		onError: error => {
-			console.error('error :', error);
+		onError: (error:any )=> {
+			console.error('error :', error.response.data.message);
 			Toast.show({
 				type: 'error',
 				text1: 'Erro ao atualizar perfil!'
