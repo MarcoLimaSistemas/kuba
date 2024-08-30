@@ -13,6 +13,10 @@
 			"@utils/*": ["utils/*"],
 			"@config/*": ["config/*"],
 			"@react-query/*": ["react-query/*"]
-		}
-	}
+		},
+		"types": [
+      "@types/styled-components-react-native"
+    ]
+	},
+	"exclude": ["node_modules", "babel.config.js", "metro.config.js"]
 }
