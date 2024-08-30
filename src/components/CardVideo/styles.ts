@@ -7,7 +7,7 @@ export const Container = styled.TouchableOpacity`
 	border-radius: ${scale(16)}px;
 `;
 export const Thumbnail = styled.Image`
-	height: ${scale(176)}px;
+	height: ${scale(170)}px;
 	border-radius: ${scale(8)}px;
 	width: 100%;
 `;
