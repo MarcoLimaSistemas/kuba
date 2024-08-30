@@ -11,6 +11,8 @@ import {
   ContainerButton,
   ContainerVideos,
   ContainerBody,
+  Wrapper,
+  TextNotVideos,
 } from './styles';
 
 import {useNavigation} from '@react-navigation/native';
@@ -47,24 +49,6 @@ export function School() {
   }, [data]);
 
   return (
-    <>
-      <StatusBar barStyle="light-content" />
-      <View
-        style={{
-          backgroundColor: theme.COLORS.black,
-        }}>
-        <Header typeLogo="white" />
-        <Search
-          searchCallback={() => {
-            refetch();
-          }}
-          loading={false}
-          placeholder="Procurar vídeos"
-          value={search}
-          onChangeText={text => setSearch(text)}
-        />
-      </View>
-
       <Container
         contentContainerStyle={{
           flexGrow: 1,
@@ -72,10 +56,11 @@ export function School() {
         refreshControl={
           <RefreshControl refreshing={isLoading} onRefresh={refetch} />
         }>
-        <ContainerBody>
-          <ContainerVideos>
+            <StatusBar barStyle="light-content" />
+            <ContainerBody>
+              
             {classes.length === 0 ? (
-              <Text>No momento não temos nenhum video!</Text>
+              <TextNotVideos>No momento não temos nenhum video!</TextNotVideos>
             ) : (
               <FlatList
                 data={classes}
@@ -85,16 +70,32 @@ export function School() {
                 showsHorizontalScrollIndicator={false}
                 snapToAlignment={'start'}
                 scrollEventThrottle={14}
+                ListHeaderComponent={
+                <Wrapper>
+                <Header typeLogo="white" />
+                <Search
+                  searchCallback={() => {
+                    refetch();
+                  }}
+                  loading={false}
+                  placeholder="Procurar vídeos"
+                  value={search}
+                  onChangeText={text => setSearch(text)}
+                />
+                </Wrapper>
+                }
                 renderItem={({item}) => (
+                  <ContainerVideos>
                   <CardVideo
                     title={item.title}
                     thumbnail={item.thumbnail}
                     link={item.link}
                   />
+                  </ContainerVideos>
                 )}
               />
             )}
-          </ContainerVideos>
+     
         </ContainerBody>
 
         <View style={{flex: 1}} />
@@ -107,6 +108,6 @@ export function School() {
           />
         </ContainerButton>
       </Container>
-    </>
+  
   );
 }
