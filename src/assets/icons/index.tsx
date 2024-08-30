@@ -16,6 +16,8 @@ import Trash from './trash.svg';
 import Logo from './logo.svg';
 import LogoWhite from './logo_white.svg';
 import ArrowLeft from './arrow_left.svg';
+import ArrowDown from './arrow_down.svg';
+import ArrowUp from './arrow_up.svg';
 import Camera from './camera.svg';
 import Gallery from './gallery.svg';
 import Search from './search.svg';
@@ -28,6 +30,8 @@ export const Icons = {
 	Logo,
 	LogoWhite,
 	ArrowLeft,
+	ArrowDown,
+	ArrowUp,
 	Camera,
 	Gallery,
 	Search
