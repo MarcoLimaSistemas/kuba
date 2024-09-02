@@ -11,5 +11,6 @@ export { FrequentlyQuestions } from './FrequentlyQuestions';
 export { ChangePassword } from './ChangePassword';
 export { PasswordResetSuccess } from './PasswordResetSuccess';
 export { Support } from './Support';
+export { SupportSuccess } from './SupportSuccess';
 export { Profiles } from './Profiles';
 export {ProfileView} from './ProfileView'

@@ -13,3 +13,4 @@ export { default as singerPreset } from './SingerProfile.png';
 export { default as ThumbnailImage } from './videoImage.png';
 export { default as Link } from './link.png';
 export { default as passwordResetSuccess } from './passwordResetSuccess.png';
+export { default as supportSuccess } from './supportSuccess.png';

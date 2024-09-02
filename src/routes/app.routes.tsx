@@ -61,7 +61,12 @@ const AppRoutes = () => {
 				name="PasswordResetSuccess"
 				component={Client.PasswordResetSuccess}
 			/>
+
 			<Stack.Screen name="Support" component={Client.Support} />
+			<Stack.Screen
+				name="SupportSuccess"
+				component={Client.SupportSuccess}
+			/>
 		</Stack.Navigator>
 	);
 };

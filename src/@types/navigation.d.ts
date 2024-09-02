@@ -20,6 +20,7 @@ export declare global {
 			ForgotPassword: undefined;
 			ChangePassword: undefined;
 			Support: undefined;
+			SupportSuccess:undefined;
 			Profiles: undefined;
 			ProfileView:{userId:number};
 		}

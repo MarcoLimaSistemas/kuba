@@ -4,7 +4,7 @@ import * as S from './styles';
 import { InputUnMasked } from '@components/InputUnMasked';
 import { useForm } from 'react-hook-form';
 import { Button } from '@components/Button';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Header } from '@components/Header';
 import Text from '@components/Text';
@@ -42,7 +42,7 @@ export function Support() {
 				type: 'success',
 				text1: 'Suporte enviado!'
 			});
-			navigation.goBack();
+			navigation.navigate("SupportSuccess");
 		},
 		onError: () => {
 			Toast.show({
@@ -59,12 +59,14 @@ export function Support() {
 	};
 
 	return (
-		<>
+		<S.Wrapper>
+			<ScrollView 
+			contentContainerStyle={{ flexGrow: 1 }}
+			showsVerticalScrollIndicator={false}>
+				
 			<Header />
 			<S.Container>
-				<S.ContainerBody
-					contentContainerStyle={{ flexGrow: 1 }}
-					showsVerticalScrollIndicator={false}>
+				<S.ContainerBody>
 					<Text
 						color="#656565"
 						variant="bold"
@@ -141,6 +143,7 @@ export function Support() {
 					/>
 				</S.ContainerBody>
 			</S.Container>
-		</>
+			</ScrollView>
+		</S.Wrapper>
 	);
 }
