@@ -13,10 +13,9 @@ export const Container = styled.ScrollView`
 `;
 
 export const ContainerFilter = styled.TouchableOpacity`
-flex-direction: row;
-align-items: center;
-
-padding-left: ${scale(24)}px;
+	flex-direction: row;
+	align-items: center;
+	padding-left: ${scale(24)}px;
 `;
 export const ContainerBody = styled.View``;
 

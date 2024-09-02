@@ -101,11 +101,11 @@ export function School() {
                   >Mais Recentes</Text>
 
                   {order === 'asc' &&(
-                    <Icons.ArrowDown width={10} height={10} />
+                    <Icons.ArrowDown width={10} height={10} style={{marginTop:1}} />
                   )}
 
                   {order === 'desc' &&(
-                    <Icons.ArrowUp width={10} height={10} />
+                    <Icons.ArrowUp width={10} height={10} style={{marginTop:1}} />
                   )}
                    
                 </ContainerFilter>
