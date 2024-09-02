@@ -18,7 +18,7 @@ import { useAuth } from '@hooks/auth';
 import { Loading } from '@components/Loading';
 
 export function Personalities() {
-	const navigation = useNavigation();
+	const navigation = useNavigation<any>();
 
 	const { user } = useAuth();
 
@@ -28,7 +28,12 @@ export function Personalities() {
 		queryKey: ['Personalities'],
 		queryFn: ({ pageParam }) => getPresets(user?.id, search, pageParam),
 		initialPageParam: 1,
-		getNextPageParam: lastPage => lastPage.meta.next_page_url
+		getNextPageParam: (lastPage, allPages, lastPageParam) => {
+      if (lastPage.data.length === 0) {
+        return undefined;
+      }
+      return lastPageParam + 1;
+    }
 	});
 
 	const handleSearch = () => {
@@ -38,6 +43,15 @@ export function Personalities() {
 	const personalities = useMemo(() => {
 		return data?.pages.flatMap(page => page.data) ?? [];
 	}, [data]);
+
+	const handleOpenPreset = (name:string, imgURL:string)=>{
+		navigation.navigate('Preset', {
+			preset: {
+				name,
+				imgURL
+			}
+		})
+	}
 
 	return (
 		<>
@@ -56,7 +70,7 @@ export function Personalities() {
 						textAlign: 'center',
 						letterSpacing: scale(8)
 					}}>
-					Personaliades
+					Personalidades
 				</Text>
 				<Spacer h={16} />
 				<Search
@@ -72,9 +86,10 @@ export function Personalities() {
 					data={personalities}
 					renderItem={({ item }) => (
 						<CardPersonality
-							key={item}
+							key={item.id}
 							imgURL={item.img_url}
 							name={item.name}
+							onPress={()=> handleOpenPreset(item.name, item.img_url)}
 						/>
 					)}
 					ListEmptyComponent={() =>
