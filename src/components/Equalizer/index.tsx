@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Text from '@components/Text';
 
-import { frequencies as frequenciesList } from './data';
+import { frequenciesListEmpty } from './data';
 import { Spacer } from '@components/Spacer';
 import { TouchableOpacity, View } from 'react-native';
 import { Icons } from '@assets/icons';
@@ -23,6 +23,10 @@ import { IFrequency } from '@screens/Client/Device';
 
 const { AudioEqualizerModule } = NativeModules;
 
+export interface IFrequenciesListProps{
+  frequency: string;
+	decibelQuantity: number;
+}
 interface EqualizerProps {
 	handleScrollEnabled: (enabled: boolean) => void;
 	handlePreset: (preset: IPreset) => void;
@@ -30,6 +34,7 @@ interface EqualizerProps {
 	handleModalEdit: (isEdit: boolean) => void;
 	onOpen(): void;
 	disabled?: boolean;
+	frequenciesList?: IFrequenciesListProps[];
 }
 
 export const Equalizer = ({
@@ -38,12 +43,13 @@ export const Equalizer = ({
 	handlePreset,
 	handleFrequencies,
 	onOpen,
-	disabled = false
+	disabled = false,
+	frequenciesList,
 }: EqualizerProps) => {
 	const [currentPreset, setCurrentPreset] = useState<ValueType | null>(null);
 
 	const [preAmpDB, setPreAmpDB] = useState(0);
-	const [frequencies, setFrequencies] = useState(frequenciesList);
+	const [frequencies, setFrequencies] = useState(frequenciesList ?? frequenciesListEmpty);
 
 	const [openDropdown, setOpenDropdown] = useState(false);
 
@@ -54,7 +60,12 @@ export const Equalizer = ({
 		queryFn: ({ pageParam }) =>
 			getPresets(user?.id, undefined, pageParam, true, 15),
 		initialPageParam: 1,
-		getNextPageParam: lastPage => lastPage.meta.next_page_url
+		getNextPageParam: (lastPage, allPages, lastPageParam) => {
+      if (lastPage.data.length === 0) {
+        return undefined;
+      }
+      return lastPageParam + 1;
+    }
 	});
 
 	const myPresets = useMemo(() => {
@@ -108,8 +119,12 @@ export const Equalizer = ({
 	};
 
 	useEffect(() => {
-		handleFrequencies(frequenciesList);
-	}, [frequenciesList]);
+		handleFrequencies(frequenciesListEmpty);
+	}, [frequenciesListEmpty]);
+	
+	useEffect(()=>{
+		setFrequencies(frequenciesList ?? frequenciesListEmpty)
+	},[frequenciesList])
 
 	useEffect(() => {
 		if (myPresets.length > 0) {
@@ -119,7 +134,7 @@ export const Equalizer = ({
 				id: item.value,
 				name: item.label,
 				description: item.description,
-				genreId: item.genreId,
+			  genreId: String(item.genreId),
 				isPublic: item.isPublic,
 				settings: item.settings
 			});
@@ -129,7 +144,7 @@ export const Equalizer = ({
 	useEffect(() => {
 		handlePreAmpGain(preAmpDB);
 	}, [preAmpDB]);
-
+console.log("frequenciesList",frequenciesList)
 	return (
 		<>
 			<S.Container>
@@ -241,8 +256,8 @@ export const Equalizer = ({
 							onTouchCancel={() => handleScrollEnabled(true)}>
 							<VerticalSlider
 								disabled={disabled}
-								min={-12}
-								max={12}
+								min={-10}
+								max={100}
 								step={1}
 								value={bar.decibelQuantity}
 								onValueChange={value =>

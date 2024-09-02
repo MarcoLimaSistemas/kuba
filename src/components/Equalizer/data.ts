@@ -1,4 +1,4 @@
-export const frequencies = [
+export const frequenciesListEmpty = [
 	{
 		frequency: '32',
 		decibelQuantity: 0
