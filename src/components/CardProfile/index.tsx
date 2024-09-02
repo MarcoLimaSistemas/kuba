@@ -5,11 +5,12 @@ import Text from '@components/Text';
 import { useNavigation } from '@react-navigation/native';
 
 interface CardProfileProps {
+	id: number;
 	name: string;
 	imgURL: string;
 }
 
-export function CardProfile({ name, imgURL }: CardProfileProps) {
+export function CardProfile({ id,name, imgURL }: CardProfileProps) {
 	const navigation = useNavigation<any>();
 
 	return (
@@ -17,6 +18,7 @@ export function CardProfile({ name, imgURL }: CardProfileProps) {
 			onPress={() =>
 				navigation.navigate('Preset', {
 					preset: {
+						id,
 						name,
 						imgURL
 					}
