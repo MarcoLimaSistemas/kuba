@@ -30,6 +30,7 @@ import { Modalize } from 'react-native-modalize';
 import { useQuery } from '@tanstack/react-query';
 import { getPresets, getPresetsPublics } from '@services/preset';
 import { useAuth } from '@hooks/auth';
+import { ElementConnectedDevice } from '@components/ElementConnectedDevice';
 
 export interface IFrequency {
 	frequency: string;
@@ -135,55 +136,9 @@ export function Device() {
 
 				{device?.isBluetooth && (
 					<>
-						<ContainerConnections>
-							{connectedDevice !== null ? (
-								<>
-									<Text
-										fontSize={12}
-										variant="bold"
-										color="#777777">
-										CONECTADO
-									</Text>
-
-									<View
-										style={{
-											flexDirection: 'row',
-											alignItems: 'center'
-										}}>
-										<Image source={Lighting} />
-										<Spacer w={8} />
-										<Text>{'100%'}</Text>
-
-										<Spacer w={16} />
-										<TouchableOpacity
-											onPress={() => {
-												// connectToDevice()
-											}}>
-											<Text
-												color="#2E9CCB"
-												variant="bold">
-												Desconectar
-											</Text>
-										</TouchableOpacity>
-									</View>
-								</>
-							) : (
-								<>
-									<Text
-										fontSize={12}
-										variant="bold"
-										color="#777777">
-										DESCONECTADO
-									</Text>
-
-									<TouchableOpacity onPress={() => {}}>
-										<Text color="#2E9CCB" variant="bold">
-											Conectar
-										</Text>
-									</TouchableOpacity>
-								</>
-							)}
-						</ContainerConnections>
+				   <ElementConnectedDevice 
+					 connectedDevice={connectedDevice} 
+					 />
 
 						<ContainerCarousel>
 							<Equalizer
@@ -290,6 +245,6 @@ export function Device() {
 				isEdit={isEdit}
 				onClose={() => closeModal()}
 			/>
-		</Wrapper >
+		</Wrapper>
 	);
 }
