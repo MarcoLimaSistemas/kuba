@@ -12,7 +12,7 @@ export declare global {
 			Device: undefined;
 			Tutorials: undefined;
 			SettingsEarphone: undefined;
-			Preset: undefined;
+			Preset: {preset:{id:number, name:string, imgURL:string}};
 			Personalities: undefined;
 			FrequentlyQuestions: undefined;
 			ChangePassword: undefined;
