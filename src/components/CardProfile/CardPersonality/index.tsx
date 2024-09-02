@@ -6,11 +6,12 @@ import Text from '@components/Text';
 interface ICardPersonality {
 	imgURL: string;
 	name: string;
+	onPress:()=>void;
 }
 
-export function CardPersonality({ imgURL, name }: ICardPersonality) {
+export function CardPersonality({ imgURL, name,onPress }: ICardPersonality) {
 	return (
-		<Container>
+		<Container onPress={onPress}>
 			<ImageCover
 				source={{
 					uri: imgURL
