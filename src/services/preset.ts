@@ -1,5 +1,5 @@
 import { AxiosPromise } from 'axios';
-import { IPresets } from '@models/preset';
+import { IPresetResponse, IPresets } from '@models/preset';
 
 import api from './api';
 
@@ -28,7 +28,7 @@ async function getPresets(
 	isMyPreset = false,
 	perPage?: number | undefined
 ) {
-	const { data } = await api.get(`/user/${userId}/preset`, {
+	const { data } = await api.get<IPresetResponse>(`/user/${userId}/preset`, {
 		params: {
 			userId: isMyPreset ? userId : undefined,
 			search: search ?? undefined,
