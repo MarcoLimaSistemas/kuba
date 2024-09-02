@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 
 import { Button } from '@components/Button';
 
@@ -11,7 +11,7 @@ import {
 	ContainerCarousel
 } from './styles';
 import Text from '@components/Text';
-import { Equalizer } from '@components/Equalizer';
+import { Equalizer, IFrequenciesListProps } from '@components/Equalizer';
 import { IPreset } from '@components/ModalPreset';
 import { scale } from 'react-native-size-matters';
 import { Spacer } from '@components/Spacer';
@@ -22,14 +22,30 @@ import { CarouselProfile } from '@components/CarouselProfile';
 import { useQuery } from '@tanstack/react-query';
 import { getPresets, getPresetsPublics } from '@services/preset';
 import { useAuth } from '@hooks/auth';
+import { Modalize } from 'react-native-modalize';
+import { ElementConnectedDevice } from '@components/ElementConnectedDevice';
+
 
 export function Preset() {
 	const navigation = useNavigation();
-
 	const route = useRoute();
 	const { user } = useAuth();
+	const { preset } = route.params as any;
+
+	const modalizeRef = useRef<Modalize>(null);
+
+	const [scrollEnabled, setScrollEnabled] = useState(true);
+	const [currentPreset, setCurrentPreset] = useState<IPreset | null>(null);
+	const [currentFrequencies, setCurrentFrequencies] = useState<IFrequency[]>(
+		[]
+	);
+
+
+	const openModal = () => modalizeRef.current?.open();
+
+
 	const { data: personalitiesData, isFetched } = useQuery({
-		queryKey: ['PersonalitiesOnDeviceScreen'],
+		queryKey: ['PersonalitiesOnDeviceScreen',preset.id],
 		queryFn: () => getPresets(user?.id, undefined, 1, false, 5)
 	});
 
@@ -37,7 +53,6 @@ export function Preset() {
 		return personalitiesData?.data ?? [];
 	}, [personalitiesData]);
 
-	const { preset } = route.params as any;
 	const { data: profilesData } = useQuery({
 		queryKey: ['PresetsPublicsOnDeviceScreen'],
 		queryFn: () => getPresetsPublics(user?.id, undefined, 1, 5),
@@ -47,6 +62,29 @@ export function Preset() {
 	const profiles = useMemo(() => {
 		return profilesData?.data ?? [];
 	}, [profilesData]);
+
+	const handleScrollEnabled = (enabled: boolean) => {
+		setScrollEnabled(enabled);
+	};
+
+	const handlePreset = (preset: IPreset) => {
+		setCurrentPreset(preset);
+	};
+
+	const handleFrequencies = (frequencies: IFrequency[]) => {
+		setCurrentFrequencies(frequencies);
+	};
+
+
+  const filtered = personalities.filter((item) => item.id === preset.id)
+  const listFrequencies = filtered[0]?.equalizerConfigs.map((item)=> {
+		return{
+      decibelQuantity:item.decibel_quantity,
+      frequency:item.frequency
+		} as IFrequenciesListProps
+  })
+	console.log()
+	console.log( "preset.id", preset.id,"listFrequencies",listFrequencies )
 
 	return (
 		<Container>
@@ -82,17 +120,24 @@ export function Preset() {
 				</Text>
 			</ContainerImage>
 
-			<Spacer h={32} />
+			<Spacer h={14} />
+
+			<ElementConnectedDevice
+			 connectedDevice={null} 
+			 />
+
+			<Spacer h={16} />
 
 			<ContainerBody>
 				<ContainerEqualizer>
 					<Equalizer
 						disabled
-						handleScrollEnabled={(enabled: boolean) => {}}
-						handlePreset={(preset: IPreset) => {}}
+						onOpen={openModal}
 						handleModalEdit={(isEdit: boolean) => {}}
-						onOpen={() => {}}
-						handleFrequencies={(frequencies: IFrequency[]) => {}}
+						handleFrequencies={handleFrequencies}
+						handlePreset={handlePreset}
+						handleScrollEnabled={handleScrollEnabled}
+						frequenciesList={listFrequencies}
 					/>
 						<ContainerCarousel>
 						<CarouselProfile

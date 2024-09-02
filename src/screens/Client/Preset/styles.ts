@@ -1,7 +1,9 @@
 import { scale } from 'react-native-size-matters';
 import styled from 'styled-components/native';
 
-export const Container = styled.ScrollView``;
+export const Container = styled.ScrollView`
+  margin-top:  ${scale(24)}px;
+`;
 
 export const ContainerBody = styled.View`
 	padding-left: ${scale(16)}px;
