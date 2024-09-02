@@ -1,11 +1,18 @@
 import styled from 'styled-components/native';
 import { scale } from 'react-native-size-matters';
 
-export const Container = styled.ScrollView`
+
+export const Wrapper = styled.ScrollView`
+	padding-top: ${scale(16)}px;
+`;
+
+export const Container = styled.View`
 	flex: 1;
 	padding-left: ${scale(16)}px;
 	padding-right: ${scale(16)}px;
+	margin-top: ${scale(24)}px;
 `;
+
 
 export const ContainerImage = styled.View`
 	height: ${scale(256)}px;

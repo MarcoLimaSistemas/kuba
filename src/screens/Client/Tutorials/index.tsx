@@ -15,7 +15,8 @@ import {
 	CardTutorialText,
 	Container,
 	ContainerImage,
-	Icon
+	Icon,
+	Wrapper
 } from './styles';
 import { useQuery } from '@tanstack/react-query';
 import { getProductDetails } from '@services/product';
@@ -59,14 +60,15 @@ export function Tutorials() {
 	}
 
 	return (
-		<>
+		<Wrapper
+		contentContainerStyle={{
+			flexGrow: 1
+		}}
+		showsVerticalScrollIndicator={false}
+		>
 			<Header />
 
-			<Container
-				contentContainerStyle={{
-					flexGrow: 1
-				}}
-				showsVerticalScrollIndicator={false}>
+			<Container>
 				<Text
 					variant="bold"
 					color="#656565"
@@ -143,6 +145,6 @@ export function Tutorials() {
 
 				<Button title="Voltar" onPress={() => navigation.goBack()} />
 			</Container>
-		</>
+		</Wrapper>
 	);
 }
