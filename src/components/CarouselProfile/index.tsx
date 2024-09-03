@@ -20,7 +20,6 @@ export function CarouselProfile({
 	isPersonalities = true
 }: CarouselProfileProps) {
 	const navigation = useNavigation();
-
 	return (
 		<>
 			<Text color="#777777" variant="bold" fontSize={14}>
@@ -38,11 +37,13 @@ export function CarouselProfile({
 				ItemSeparatorComponent={() => <Spacer w={16} />}
 				renderItem={({ item }) => (
 					<CardProfile
+					  id={item.id}
 						name={item.name}
 						imgURL={
 							isPersonalities
 								? item.img_url
-								: item.client.profile_url
+								: item.client.profile_url 
+							
 						}
 					/>
 				)}
