@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import {Header} from '@components/Header';
 import {
@@ -6,6 +6,7 @@ import {
   BoxPhoto,
   Container,
   ContainerIconModal,
+  ContainerSwitch,
   InputsContainer,
   Photo,
   TextError,
@@ -22,7 +23,7 @@ import {timestampToDate} from '@utils/date';
 import {useEditUser} from '@react-query/mutateEditUser';
 import {userDetails} from '@react-query/userDetails';
 import {Spacer} from '@components/Spacer';
-import {TouchableOpacity, View} from 'react-native';
+import {Switch, TouchableOpacity, View} from 'react-native';
 import Text from '@components/Text';
 import theme from '../../../styles/theme';
 import {Modalize} from 'react-native-modalize';
@@ -43,7 +44,9 @@ export type UserInfoFormData = {
 };
 
 export function EditProfile() {
-  const [avatar, setAvatar] = React.useState<any>(null);
+  const [avatar, setAvatar] = useState<any>(null);
+
+
   const navigation = useNavigation();
 
   const {data: userDetailsData} = userDetails({});
@@ -51,6 +54,9 @@ export function EditProfile() {
   const {mutateEditUser, isPendingEditUser} = useEditUser();
 
   const socialNetworks = userDetailsData?.client.socialNetworks ?? [];
+  const hasProduct = userDetailsData?.client?.has_kuba_product ?? false;
+
+  const [toggle, setToggle] = useState(hasProduct);
 
   const {
     control,
@@ -77,12 +83,20 @@ export function EditProfile() {
   const onOpen = () => {
     modalizeRef.current?.open();
   };
+console.log("toggle",toggle)
+  const toggleSwitch = () => {
+    if (!userDetailsData) return;
+    setToggle((prev)=>!prev)
+    // const formData = new FormData();
+
+  };
 
   const onSubmit = async (data: UserInfoFormData) => {
     if (!userDetailsData) return;
 
     const formData = new FormData();
 
+    formData.append('hasKubaProduct', toggle);
     formData.append('name', data.name);
     formData.append('description', data.description);
     formData.append('birthDate', data.birthDate.split('/').reverse().join('-'));
@@ -180,6 +194,18 @@ export function EditProfile() {
             </Text>
           </TouchableOpacity>
         </BoxPhoto>
+
+        <ContainerSwitch>
+            <Switch
+              trackColor={{false: '#656565', true: '#D4BD85'}}
+              thumbColor={toggle ? '#656565' : '#f4f3f4'}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleSwitch}
+              value={toggle}
+            />
+            <Spacer w={8} />
+            <Text>{toggle ? 'Tenho' : 'Não tenho'} um produto Kuba</Text>
+          </ContainerSwitch>
 
         <InputsContainer>
           <InputUnMasked

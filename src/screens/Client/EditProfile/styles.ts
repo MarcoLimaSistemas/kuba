@@ -47,3 +47,9 @@ export const ContainerIconModal = styled.TouchableOpacity`
 	align-items: center;
 	justify-content: center;
 `;
+
+export const ContainerSwitch = styled.View`
+	flex-direction: row;
+	padding-left:${scale(18)}px;
+	margin-top:  ${scale(16)}px;
+`;

@@ -7,15 +7,13 @@ export const Container = styled.View`
 	padding-right: ${scale(16)}px;
 `;
 
-export const ContainerSwitch = styled.View`
-	flex-direction: row;
-`;
+
 
 export const ContainerSocial = styled.View`
 	padding-left: ${scale(16)}px;
 	padding-right: ${scale(16)}px;
 	align-items: center;
-	justify-content: center;
+	justify-content: space-around;
 	flex-direction: row;
 `;
 
@@ -26,5 +24,6 @@ export const ImageProfile = styled(Image)`
 	margin-left: auto;
 	margin-right: auto;
 `;
+export const ButtonExternalLink = styled.TouchableOpacity``;
 
 export const LogoSocial = styled(Image)``;

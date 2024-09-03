@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {ScrollView, Switch, View} from 'react-native';
+import {Linking, ScrollView, Switch, View} from 'react-native';
 
 import {Button} from '@components/Button';
 import {Header} from '@components/Header';
@@ -15,9 +15,9 @@ import {useAuth} from '@hooks/auth';
 import {useNavigation} from '@react-navigation/native';
 import {timestampToDate} from '@utils/date';
 import {
+  ButtonExternalLink,
   Container,
   ContainerSocial,
-  ContainerSwitch,
   ImageProfile,
   LogoSocial,
 } from './styles';
@@ -64,18 +64,11 @@ export function Profile() {
     },
   });
 
-  const toggleSwitch = () => {
-    if (!user) return;
+  function handleOpenBrowser(url:string) {
+    Linking.openURL(`${url}`);
+  }
 
-    const formData = new FormData();
 
-    formData.append('hasKubaProduct', !hasProduct);
-
-    mutateAsync({
-      userId: user.id,
-      data: formData,
-    });
-  };
 
   if (isLoading) {
     return <Loading />;
@@ -107,48 +100,39 @@ export function Profile() {
 
           <Text>{user?.client?.description ?? 'Sem descrição.'}</Text>
 
-          <Spacer h={16} />
-
-          <ContainerSwitch>
-            <Switch
-              trackColor={{false: '#656565', true: '#D4BD85'}}
-              thumbColor={hasProduct ? '#656565' : '#f4f3f4'}
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={toggleSwitch}
-              value={hasProduct}
-            />
-            <Spacer w={8} />
-            <Text>{hasProduct ? 'Tenho' : 'Não tenho'} um produto Kuba</Text>
-          </ContainerSwitch>
-
-          <Spacer h={32} />
+  
+          <Spacer h={48} />
 
           <ContainerSocial>
             {socialNetworks.map(e => {
               const name = e.name;
               switch (name) {
                 case 'Facebook':
-                  return <LogoSocial source={FacebookLogo} />;
+                  return (
+                  <ButtonExternalLink onPress={()=> handleOpenBrowser(e.link)}>
+                    <LogoSocial source={FacebookLogo} />
+                  </ButtonExternalLink> 
+                  )
                 case 'Instagram':
                   return (
-                    <>
+                    <ButtonExternalLink onPress={()=> handleOpenBrowser(e.link)}>
                       <Spacer w={16} />
                       <LogoSocial source={InstagramLogo} />
-                    </>
+                    </ButtonExternalLink>
                   );
                 case 'Spotify':
                   return (
-                    <>
+                    <ButtonExternalLink onPress={()=> handleOpenBrowser(e.link)}>
                       <Spacer w={16} />
                       <LogoSocial source={SpotifyLogo} />
-                    </>
+                    </ButtonExternalLink>
                   );
                 case 'Qobuzz':
                   return (
-                    <>
+                    <ButtonExternalLink onPress={()=> handleOpenBrowser(e.link)}>
                       <Spacer w={16} />
                       <LogoSocial source={QobuzzLogo} />
-                    </>
+                    </ButtonExternalLink>
                   );
 
                 default:
