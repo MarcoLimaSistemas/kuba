@@ -161,7 +161,7 @@ export function Profile() {
         <View style={{flex: 1}} />
 
         <Container>
-          <Button title="Sair" onPress={logout} />
+        
           <Button
             title="Editar Perfil"
             onPress={() => navigation.navigate('EditProfile')}
@@ -171,6 +171,7 @@ export function Profile() {
             variant="secondary"
             onPress={() => navigation.navigate('ChangePassword')}
           />
+          <Button title="Sair" onPress={logout} />
         </Container>
       </ScrollView>
     </>
