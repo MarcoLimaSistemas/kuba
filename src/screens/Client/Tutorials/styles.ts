@@ -26,21 +26,21 @@ export const CardTutorial = styled.View`
 `;
 
 export const CardTutorialText = styled.View`
-	width: 78%;
+	width: 80%;
 	background-color: #fff;
 	border-radius: ${scale(8)}px;
 	justify-content: center;
 	align-items: center;
 	padding-left: ${scale(16)}px;
 	padding-right: ${scale(16)}px;
-	height: ${scale(56)}px;
+	height: ${scale(46)}px;
 `;
 
 export const Icon = styled.TouchableOpacity`
 	background-color: ${({ theme }) => theme.COLORS.black};
 
-	width: ${scale(56)}px;
-	height: ${scale(56)}px;
+	width: ${scale(46)}px;
+	height: ${scale(46)}px;
 	border-radius: ${scale(8)}px;
 
 	align-items: center;
