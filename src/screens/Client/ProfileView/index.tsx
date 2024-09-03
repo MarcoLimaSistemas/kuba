@@ -70,7 +70,12 @@ export function ProfileView() {
 		queryKey: ['presets',userId],
 		queryFn: ({ pageParam }) => getPresets(userId, '', pageParam),
 		initialPageParam: 1,
-		getNextPageParam: lastPage => lastPage.meta.next_page_url
+		getNextPageParam: (lastPage, allPages, lastPageParam) => {
+      if (lastPage.data.length === 0) {
+        return undefined;
+      }
+      return lastPageParam + 1;
+    }
 	});
   const presets = useMemo(() => {
 		return data?.pages.flatMap(page => page.data) ?? [];
@@ -78,6 +83,7 @@ export function ProfileView() {
 
 
   const socialNetworks = user?.client?.socialNetworks ?? [];
+  
   function handleOpenBrowser(url:string) {
     Linking.openURL(`${url}`);
   }
