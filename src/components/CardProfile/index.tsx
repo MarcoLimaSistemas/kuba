@@ -25,9 +25,10 @@ export function CardProfile({ id,name, imgURL }: CardProfileProps) {
 				})
 			}>
 			<ImageBackground
-				source={{
+				source={
+					imgURL ? {
 					uri: imgURL
-				}}
+				}: require('@assets/images/avatar.png')}
 			/>
 			<ContainerText>
 				<Text
