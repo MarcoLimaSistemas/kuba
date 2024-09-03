@@ -3,9 +3,9 @@ export declare global {
 		interface RootParamList {
 			SignIn: undefined;
 			SignUp: undefined;
-			ScreenSuccessful: undefined;
+			ScreenSuccessful: {dataUser:{email:string, password: string}} |undefined;
 			ScreenSuccessfulResetPassword: undefined;
-			Home: undefined;
+			Home: {modalActive: boolean};
 			Profile: undefined;
 			EditProfile: undefined;
 			School: undefined;

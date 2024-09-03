@@ -56,7 +56,7 @@ export function SupportSuccess() {
       style={{
         marginTop:57
       }}
-      onPress={() => navigation.navigate('Home')} />
+      onPress={() => navigation.navigate('Home',{modalActive:false})} />
       <Text 
       variant="light"
       fontSize={14}

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import {Carousel} from '@components/Carousel';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 
 import {background, backgroundSecondary} from '@assets/images';
 
@@ -21,16 +21,38 @@ import {View} from 'react-native';
 import {useQuery} from '@tanstack/react-query';
 import {getProducts} from '@services/product';
 import {useAuth} from '@hooks/auth';
+import { ModalCompletedProfile } from '@components/ModalCompletedProfile';
+import { Modalize } from 'react-native-modalize';
 
 export function Home() {
   const {user} = useAuth();
+	const modalizeRef = useRef<Modalize>(null);
+
+
+	const route = useRoute();
+	const modal = route.params as any;
+  const hasModalActive = modal !== undefined && modal.modalActive === true
+  const [modaVisible, setModalVisible] = useState(false)
+
+  const onOpen = () => modalizeRef.current?.open();
+  const closeModal = () => {
+    setModalVisible(false);
+    modalizeRef.current?.close()
+  };
 
   const {data: devices, isLoading} = useQuery({
     queryKey: ['Devices'],
     queryFn: () => getProducts(user?.id),
   });
 
-  const navigation = useNavigation();
+    const navigation = useNavigation();
+
+    useEffect(() => {
+      if (hasModalActive) {
+        setModalVisible(true);
+        onOpen();
+      }
+    }, [route.params]);
 
   return (
     <>
@@ -95,6 +117,10 @@ export function Home() {
 
         <Spacer h={16} />
       </Container>
+      <ModalCompletedProfile
+				ref={modalizeRef}
+				onClose={() => closeModal()}
+			/>
     </>
   );
 }

@@ -18,7 +18,7 @@ export function PasswordResetSuccess() {
             }}
           />
       <TextSuccess>{`Senha Alterada \n com sucesso!`}</TextSuccess>
-      <Button title="Finalizar" onPress={() => navigation.navigate('Home')} />
+      <Button title="Finalizar" onPress={() => navigation.navigate('Home',{modalActive:false})} />
     </Container>
   )
 }
