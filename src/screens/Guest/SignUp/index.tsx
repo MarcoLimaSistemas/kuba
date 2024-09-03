@@ -20,6 +20,7 @@ import { InputMasked } from '@components/InputMasked';
 import Toast from 'react-native-toast-message';
 import { Spacer } from '@components/Spacer';
 
+
 export function SignUp() {
 	const navigation = useNavigation();
 
@@ -56,14 +57,15 @@ export function SignUp() {
 			setLoading(true);
 			await api.post('/signup', payload);
 
-			navigation.dispatch(
-				CommonActions.reset({
-					index: 1,
-					routes: [{ name: 'SignIn' }, { name: 'ScreenSuccessful' }]
-				})
-			);
+
+			await navigation.navigate("ScreenSuccessful",{
+				dataUser:{
+				 	email: payload.email,
+					password: payload.password
+			}})
+
 		} catch (err: any) {
-			console.error("err",err.response)
+			console.error("err",err.response);
 			Toast.show({ 
 				type: 'error', text1: 'Erro ao cadastrar!',
 				text2:`${err.response.data.message}`
