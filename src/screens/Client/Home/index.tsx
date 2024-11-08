@@ -23,6 +23,7 @@ import {getProducts} from '@services/product';
 import {useAuth} from '@hooks/auth';
 import { ModalCompletedProfile } from '@components/ModalCompletedProfile';
 import { Modalize } from 'react-native-modalize';
+import { Button } from '@components/Button';
 
 export function Home() {
   const {user} = useAuth();
@@ -45,7 +46,7 @@ export function Home() {
     queryFn: () => getProducts(user?.id),
   });
 
-    const navigation = useNavigation();
+    const navigation = useNavigation<any>();
 
     useEffect(() => {
       if (hasModalActive) {
@@ -79,7 +80,7 @@ export function Home() {
       <Spacer h={32} />
 
       <Carousel devices={devices} isLoading={isLoading} />
-
+<Button onPress={()=>navigation.navigate("Device",{ id:123, name: "teste", imgURL:"", isBluetooth:true })} title='teste'/>
       <Container>
         <Spacer h={16} />
         <ContainerSchoolKuba onPress={() => navigation.navigate('School')}>

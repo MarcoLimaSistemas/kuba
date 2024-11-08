@@ -23,6 +23,7 @@ export const ContainerCarousel = styled.View`
 	margin-right: ${scale(16)}px;
 	padding: ${scale(8)}px;
 	border-radius: 8px;
+
 `;
 
 export const BoxButtons = styled.View`

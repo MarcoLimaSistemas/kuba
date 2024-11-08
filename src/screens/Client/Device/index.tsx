@@ -1,8 +1,9 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import { Button } from '@components/Button';
 import { CarouselProfile } from '@components/CarouselProfile';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import RNBluetoothClassic, { BluetoothDevice } from 'react-native-bluetooth-classic';
 
 import { Headset, Info, Lighting, Settings } from '@assets/icons';
 
@@ -31,10 +32,19 @@ import { useQuery } from '@tanstack/react-query';
 import { getPresets, getPresetsPublics } from '@services/preset';
 import { useAuth } from '@hooks/auth';
 import { ElementConnectedDevice } from '@components/ElementConnectedDevice';
+import ConnectionScreen from '@components/Equalizer/connectionScreen';
+
+import DeviceListScreen from '@components/Equalizer/deviceList';
+import { StateChangeEvent } from 'react-native-bluetooth-classic/lib/BluetoothEvent';
 
 export interface IFrequency {
 	frequency: string;
 	decibelQuantity: number;
+}
+
+interface AppState {
+  device?: BluetoothDevice;
+  bluetoothEnabled: boolean;
 }
 
 export function Device() {
@@ -55,6 +65,8 @@ export function Device() {
 	const { connectedDevice, connectToDevice } = useBluetooth();
 
 	const { user } = useAuth();
+
+
 
 	const { data: personalitiesData, isFetched } = useQuery({
 		queryKey: ['PersonalitiesOnDeviceScreen'],
@@ -95,6 +107,58 @@ export function Device() {
 
 	const openModal = () => modalizeRef.current?.open();
 	const closeModal = () => modalizeRef.current?.close();
+
+	const [state, setState] = useState<AppState>({
+    device: undefined,
+    bluetoothEnabled: true,
+  });
+
+  let enabledSubscription: any;
+  let disabledSubscription: any;
+
+  const selectDevice = (device: BluetoothDevice) => {
+    console.log('App::selectDevice() called with: ', device);
+    setState((prevState) => ({ ...prevState, device }));
+  };
+
+  const checkBluetoothEnabled = async () => {
+    try {
+      console.log('App::componentDidMount Checking bluetooth status');
+      const enabled = await RNBluetoothClassic.isBluetoothEnabled();
+
+      console.log(`App::componentDidMount Status: ${enabled}`);
+      setState((prevState) => ({ ...prevState, bluetoothEnabled: enabled }));
+    } catch (error) {
+      console.log('App::componentDidMount Status Error: ', error);
+      setState((prevState) => ({ ...prevState, bluetoothEnabled: false }));
+    }
+  };
+
+  const onStateChanged = (stateChangedEvent: StateChangeEvent) => {
+    console.log('App::onStateChanged event used for onBluetoothEnabled and onBluetoothDisabled');
+
+    setState((prevState) => ({
+      ...prevState,
+      bluetoothEnabled: stateChangedEvent.enabled,
+      device: stateChangedEvent.enabled ? prevState.device : undefined,
+    }));
+  };
+
+  useEffect(() => {
+    console.log('App::componentDidMount adding listeners: onBluetoothEnabled and onBluetoothDistabled');
+    console.log('App::componentDidMount alternatively could use onStateChanged');
+    enabledSubscription = RNBluetoothClassic.onBluetoothEnabled(onStateChanged);
+    disabledSubscription = RNBluetoothClassic.onBluetoothDisabled(onStateChanged);
+
+    checkBluetoothEnabled();
+
+    return () => {
+      console.log('App:componentWillUnmount removing subscriptions: enabled and disabled');
+      console.log('App:componentWillUnmount alternatively could have used stateChanged');
+      enabledSubscription.remove();
+      disabledSubscription.remove();
+    };
+  }, []);
 
 	return (
 		<Wrapper>
@@ -139,15 +203,32 @@ export function Device() {
 				   <ElementConnectedDevice 
 					 connectedDevice={connectedDevice} 
 					 />
-
+		 {!state.device ? (
+        <DeviceListScreen
+          bluetoothEnabled={state.bluetoothEnabled}
+          selectDevice={selectDevice}
+        />
+      ) : (
+        <ConnectionScreen
+          device={state.device}
+          onBack={() => setState((prevState) => ({ ...prevState, device: undefined }))}
+        />
+      )}  
 						<ContainerCarousel>
-							<Equalizer
+							{/* <Equalizer
 								onOpen={openModal}
 								handleFrequencies={handleFrequencies}
 								handlePreset={handlePreset}
 								handleModalEdit={handleModalEdit}
 								handleScrollEnabled={handleScrollEnabled}
-							/>
+							/> */}
+					
+		
+	
+							 {/* <ConnectionScreen
+          device={device}
+          onBack={() => setState((prevState) => ({ ...prevState, device: undefined }))}
+        />   */}
 
 							<CarouselProfile
 								titleProfile={'Perfis Personalidades'}
