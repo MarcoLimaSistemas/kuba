@@ -17,6 +17,7 @@ interface BluetoothContextType {
 	scanDevices: () => Promise<void>;
 	stopScanDevices(): Promise<void>;
 	connectToDevice: (device: BluetoothDevice) => Promise<void>;
+	disconnectFromDevice: () => Promise<void>;
 	pairToDevice: (device: BluetoothDevice) => Promise<void>;
 }
 
@@ -96,6 +97,17 @@ export const BluetoothProvider: React.FC<BluetoothProviderProps> = ({
 			console.log('Error pairing to device', error);
 		}
 	};
+	const disconnectFromDevice = async () => {
+		if (connectedDevice) {
+			try {
+				await connectedDevice.disconnect();
+				setConnectedDevice(null);
+				console.log("Dispositivo desconectado");
+			} catch (error) {
+				console.error("Erro ao desconectar do dispositivo:", error);
+			}
+		}
+	};
 
 	return (
 		<BluetoothContext.Provider
@@ -106,7 +118,8 @@ export const BluetoothProvider: React.FC<BluetoothProviderProps> = ({
 				scanDevices,
 				stopScanDevices,
 				connectToDevice,
-				pairToDevice
+				pairToDevice,
+				disconnectFromDevice
 			}}>
 			{children}
 		</BluetoothContext.Provider>
