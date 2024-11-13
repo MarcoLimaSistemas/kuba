@@ -12,6 +12,7 @@ import {
 	Container,
 	ContainerCarousel,
 	ContainerConnections,
+	ContainerEqualizer,
 	ContainerImg,
 	Footer,
 	Wrapper
@@ -36,6 +37,7 @@ import ConnectionScreen from '@components/Equalizer/connectionScreen';
 
 import DeviceListScreen from '@components/Equalizer/deviceList';
 import { StateChangeEvent } from 'react-native-bluetooth-classic/lib/BluetoothEvent';
+import { HeaderEqualizer } from '@components/Equalizer/Header';
 
 export interface IFrequency {
 	frequency: string;
@@ -201,7 +203,8 @@ export function Device() {
 				{device?.isBluetooth && (
 					<>
 				   <ElementConnectedDevice 
-					 connectedDevice={connectedDevice} 
+				 //connectedDevice={connectedDevice} 
+					connectedDevice={state.device ? state.device: null}
 					 />
 		 {!state.device ? (
         <DeviceListScreen
@@ -209,10 +212,19 @@ export function Device() {
           selectDevice={selectDevice}
         />
       ) : (
+				<ContainerEqualizer>
+					<HeaderEqualizer 
+					onOpen={openModal}
+					handleFrequencies={handleFrequencies}
+					handlePreset={handlePreset}
+					handleModalEdit={handleModalEdit}
+					handleScrollEnabled={handleScrollEnabled}
+					/>
         <ConnectionScreen
           device={state.device}
           onBack={() => setState((prevState) => ({ ...prevState, device: undefined }))}
         />
+				</ContainerEqualizer>
       )}  
 						<ContainerCarousel>
 							{/* <Equalizer
@@ -225,10 +237,6 @@ export function Device() {
 					
 		
 	
-							 {/* <ConnectionScreen
-          device={device}
-          onBack={() => setState((prevState) => ({ ...prevState, device: undefined }))}
-        />   */}
 
 							<CarouselProfile
 								titleProfile={'Perfis Personalidades'}

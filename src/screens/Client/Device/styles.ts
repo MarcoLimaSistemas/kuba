@@ -10,6 +10,14 @@ export const Container = styled.ScrollView`
 
 	background: #f4f2f2;
 `;
+export const ContainerEqualizer = styled.View`
+	 margin-left: ${scale(8)}px;
+	margin-right: ${scale(8)}px; 
+	background-color:${({theme})=> theme.COLORS.white_100} ;
+	padding:  ${scale(16)}px;
+	border-radius:${scale(16)}px;
+	
+`;
 
 export const ContainerImg = styled.View`
 	height: ${scale(200)}px;
