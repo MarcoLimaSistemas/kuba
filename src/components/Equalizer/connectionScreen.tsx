@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, FlatList, Text, StyleSheet } from 'react-native';
 import RNBluetoothClassic, { BluetoothDevice } from 'react-native-bluetooth-classic';
 import { Buffer } from 'buffer';
-import MasterGainControl from './filter';
+import MasterGainControl from './MasterGainControl';
+
 global.Buffer = global.Buffer || Buffer;
 
 
