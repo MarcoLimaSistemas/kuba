@@ -24,6 +24,7 @@ import { getPresets, getPresetsPublics } from '@services/preset';
 import { useAuth } from '@hooks/auth';
 import { Modalize } from 'react-native-modalize';
 import { ElementConnectedDevice } from '@components/ElementConnectedDevice';
+import { HeaderEqualizer } from '@components/Equalizer/Header';
 
 
 export function Preset() {
@@ -130,7 +131,17 @@ export function Preset() {
 
 			<ContainerBody>
 				<ContainerEqualizer>
-					<Equalizer
+				{/* <HeaderEqualizer 
+					disabled
+					onOpen={openModal}
+					handleModalEdit={(isEdit: boolean) => {}}
+					handleFrequencies={handleFrequencies}
+					handlePreset={handlePreset}
+					handleScrollEnabled={handleScrollEnabled}
+					frequenciesList={listFrequencies}
+					/> */}
+					
+					 <Equalizer
 						disabled
 						onOpen={openModal}
 						handleModalEdit={(isEdit: boolean) => {}}
@@ -138,7 +149,7 @@ export function Preset() {
 						handlePreset={handlePreset}
 						handleScrollEnabled={handleScrollEnabled}
 						frequenciesList={listFrequencies}
-					/>
+					/> 
 						<ContainerCarousel>
 						<CarouselProfile
 								titleProfile={'Perfis Personalidades'}
