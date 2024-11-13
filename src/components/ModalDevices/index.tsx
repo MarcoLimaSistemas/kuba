@@ -16,7 +16,7 @@ interface IModalDevices extends ModalizeProps {
 
 export const ModalDevices = forwardRef(
 	({ close, ...rest }: IModalDevices, ref) => {
-		const { searchingDevices, devices, scanDevices, pairToDevice } =
+		const { connectedDevice,searchingDevices, devices, scanDevices, pairToDevice,connectToDevice,stopScanDevices,disconnectFromDevice} =
 			useBluetooth();
 
 		return (
@@ -49,7 +49,7 @@ export const ModalDevices = forwardRef(
 					renderItem: ({ item }) => (
 						<S.Device
 							key={item.id}
-							onPress={() => pairToDevice(item)}>
+							onPress={() => connectToDevice(item)}>
 							<Text>
 								<Text variant="bold">Dispositivo: </Text>
 								<Text>{item.name ?? item.id}</Text>
@@ -71,8 +71,16 @@ export const ModalDevices = forwardRef(
 						) : null,
 					ListFooterComponent: (
 						<>
-							<Button title="Parar busca" onPress={() => {}} />
-							{/* <Button title="Fechar" onPress={() => {}} /> */}
+						   {connectedDevice ? (
+     					 <View>
+     					   <Text>Conectado a: {connectedDevice.name}</Text>
+     					   <Button title="Desconectar" onPress={disconnectFromDevice} />
+     					 </View>
+    					) : (
+    					  <Text>Nenhum dispositivo conectado</Text>
+    					)}
+						<Button title="Parar busca" onPress={() => stopScanDevices()} />
+					 	<Button title="Desconectar" onPress={() => disconnectFromDevice()} />
 						</>
 					),
 					ListFooterComponentStyle: {
