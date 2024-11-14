@@ -39,9 +39,11 @@ import DeviceListScreen from '@components/Equalizer/deviceList';
 import { StateChangeEvent } from 'react-native-bluetooth-classic/lib/BluetoothEvent';
 import { HeaderEqualizer } from '@components/Equalizer/Header';
 
+
 export interface IFrequency {
 	frequency: string;
 	decibelQuantity: number;
+	quality:number
 }
 
 interface AppState {
@@ -59,6 +61,7 @@ export function Device() {
 	const [currentFrequencies, setCurrentFrequencies] = useState<IFrequency[]>(
 		[]
 	);
+
 
 	const [isEdit, setIsEdit] = useState(false);
 
@@ -162,6 +165,8 @@ export function Device() {
     };
   }, []);
 
+
+
 	return (
 		<Wrapper>
 			<Header />
@@ -203,7 +208,9 @@ export function Device() {
 				{device?.isBluetooth && (
 					<>
 				   <ElementConnectedDevice 
-				 //connectedDevice={connectedDevice} 
+				 //connectedDevice={connectedDevice}
+					connectToDevice={()=>{}}
+				 //connectToDevice={()=>(state.device)} 
 					connectedDevice={state.device ? state.device: null}
 					 />
 		 {!state.device ? (
@@ -330,7 +337,6 @@ export function Device() {
 			<ModalPreset
 				ref={modalizeRef}
 				currentPreset={currentPreset}
-				currentFrequencies={currentFrequencies}
 				isEdit={isEdit}
 				onClose={() => closeModal()}
 			/>
