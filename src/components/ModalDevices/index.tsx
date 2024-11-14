@@ -68,16 +68,16 @@ export const ModalDevices = forwardRef(
 									color={theme.COLORS.gold_100}
 								/>
 							</View>
-						) : null,
+						) :  (
+							<Text>Nenhum dispositivo conectado</Text>
+						),
 					ListFooterComponent: (
 						<>
-						   {connectedDevice ? (
+						   {connectedDevice && (
      					 <View>
      					   <Text>Conectado a: {connectedDevice.name}</Text>
      					   <Button title="Desconectar" onPress={disconnectFromDevice} />
      					 </View>
-    					) : (
-    					  <Text>Nenhum dispositivo conectado</Text>
     					)}
 						<Button title="Parar busca" onPress={() => stopScanDevices()} />
 					 	<Button title="Desconectar" onPress={() => disconnectFromDevice()} />
