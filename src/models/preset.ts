@@ -1,7 +1,8 @@
 export interface IPresets {
 	name: string;
 	description: string;
-	settings: string;
+	preamp:number;
+	equalizerConfigs: IEqualizerConfig[];
 	genreId: string;
 	isPublic: boolean;
 }
@@ -29,6 +30,7 @@ export interface IEqualizerConfig {
 	id:               number;
 	frequency:        string;
 	decibel_quantity: number;
+	quality:number;
 	preset_id:        number;
 }
 
@@ -43,4 +45,5 @@ export interface Meta {
 	next_page_url:     string|null;
 	previous_page_url: string|null;
 }
+
 
