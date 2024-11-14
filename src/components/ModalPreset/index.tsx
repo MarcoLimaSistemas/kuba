@@ -26,11 +26,12 @@ import { Spacer } from '@components/Spacer';
 import theme from '../../styles/theme';
 import { typography } from '../../styles/typography';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { createPreset, getGenres } from '@services/preset';
+import { createPreset, editPreset, getGenres } from '@services/preset';
 import { useAuth } from '@hooks/auth';
 import { Modalize } from 'react-native-modalize';
 import { queryClient } from '../../../App';
 import { IFrequency } from '@screens/Client/Device';
+import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
 
 export interface IPreset {
 	id: number;
@@ -44,7 +45,6 @@ export interface IPreset {
 interface ModalPresetProps {
 	isEdit: boolean;
 	currentPreset: IPreset | null;
-	currentFrequencies: IFrequency[];
 	onOpen?(): void;
 	onClose(): void;
 }
@@ -55,7 +55,7 @@ export const ModalPreset = forwardRef(
 			isEdit,
 			onClose,
 			currentPreset,
-			currentFrequencies
+
 		}: ModalPresetProps,
 		ref
 	) => {
@@ -67,6 +67,15 @@ export const ModalPreset = forwardRef(
 
 		const openModal = () => modalizeRef.current?.open();
 		const closeModal = () => modalizeRef.current?.close();
+
+			
+	const {
+		frequency, 
+		gain, 
+		quality, 
+		 selectedOptionBand
+	} = useValuesEqualizer()
+
 
 		const {
 			setValue: setValueForm,
@@ -90,24 +99,53 @@ export const ModalPreset = forwardRef(
 			}
 		});
 
+		const { mutateAsync: mutateAsyncEdit, isPending:isPendingEdit } = useMutation({
+			mutationFn: (data: IPresets) => editPreset(data, 1,user?.id),
+			onSuccess: async res => {
+				await queryClient.invalidateQueries({
+					queryKey: ['MyPresets']
+				});
+				onClose();
+			},
+			onError(error) {
+				console.log(error);
+			}
+		});
+
 		const toggleSwitch = () => {
 			setIsEnabled(previousState => !previousState);
 		};
 
 		const savePreset = (data: IPresets) => {
-			//TODO: implement logic to settings
-			const settings = {
-				settings: '1,2,3,45'
-			};
 
-			mutateAsync({ ...data, ...settings });
+		const settings={ 
+			preamp:selectedOptionBand,
+			equalizerConfigs:[	{
+					"frequency": frequency,
+					"decibelQuantity": gain,
+					"quality":quality
+				}]
+		}
+
+const form = { ...data, ...settings } as unknown  as IPresets
+
+console.log('form', form )
+			mutateAsync(form);
 		};
-		const editPreset = (data: IPresets) => {
+		const editPresetUser = (data: IPresets) => {
 			console.log('🚀 ~ savePreset ~ data:', data);
-			//TODO: implement logic to settings
-			const settings = {
-				settings: '0,0,0,0,0,0,0,0,0'
-			};
+
+			const settings={ 
+				preamp:selectedOptionBand,
+				equalizerConfigs:[	{
+						"frequency": frequency,
+						"decibelQuantity": gain,
+						"quality":quality
+					}]
+			}
+	
+	const form = { ...data, ...settings } as unknown  as IPresets
+	mutateAsyncEdit(form)
 		};
 
 		const { data, isLoading } = useQuery({
@@ -124,13 +162,13 @@ export const ModalPreset = forwardRef(
 			if (isEdit) {
 				setValueForm('name', currentPreset?.name ?? '');
 				setValueForm('description', currentPreset?.description ?? '');
-				setValueForm('settings', currentPreset?.settings ?? '');
+			//	setValueForm('settings', currentPreset?.settings ?? '');
 				setValue(currentPreset?.genreId ?? '');
 				setIsEnabled(currentPreset?.isPublic ?? false);
 			} else {
 				setValueForm('name', '');
 				setValueForm('description', '');
-				setValueForm('settings', '');
+				setValueForm('equalizerConfigs', []);
 				setValue('');
 				setIsEnabled(false);
 			}
@@ -256,7 +294,7 @@ export const ModalPreset = forwardRef(
 							activeLoad={isPending}
 							title="Salvar"
 							onPress={handleSubmit(data =>
-								isEdit ? editPreset(data) : savePreset(data)
+								isEdit ? editPresetUser(data) : savePreset(data)
 							)}
 						/>
 						<Button
