@@ -7,7 +7,7 @@ import AuthRoutes from './auth.routes';
 import { NavigationContainer } from '@react-navigation/native';
 import { navigationRef } from '../config/RootNavigation';
 import { useAuth } from '../hooks/auth';
-import { Loading } from '@components/Loading';
+import { Loading } from '../components/Loading';
 
 export const Routes = () => {
 	const { user, loading } = useAuth();
