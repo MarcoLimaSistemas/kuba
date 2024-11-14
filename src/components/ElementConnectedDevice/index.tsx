@@ -10,7 +10,7 @@ import { Lighting } from '@assets/icons';
 
 interface ElementConnectedDeviceProps {
   connectedDevice: BluetoothDevice | null;
-  connectToDevice?:void;
+  connectToDevice:()=>void;
 }
 
 export function ElementConnectedDevice({ connectedDevice,connectToDevice}: ElementConnectedDeviceProps) {
@@ -57,7 +57,7 @@ export function ElementConnectedDevice({ connectedDevice,connectToDevice}: Eleme
 										DESCONECTADO
 									</Text>
 
-									<TouchableOpacity onPress={() => {}}>
+									<TouchableOpacity onPress={()=> connectToDevice()}>
 										<Text color="#2E9CCB" variant="bold">
 											Conectar
 										</Text>
