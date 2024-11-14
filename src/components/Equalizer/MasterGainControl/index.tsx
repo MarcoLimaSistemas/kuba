@@ -6,6 +6,7 @@ import RadioButton from '@components/RadioButton';
 import { Button } from '@components/Button';
 import { Text } from '@components/Text/styles';
 import { Buffer } from 'buffer';
+import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
 global.Buffer = global.Buffer || Buffer;
 
 enum Filter {
@@ -19,14 +20,23 @@ interface FilterEqualizerScreenProps {
 }
 
 const MasterGainControl: React.FC<FilterEqualizerScreenProps> = ({ createGaiaMessage }) => {
-  const [frequency, setFrequency] = useState<number>(0.3);
-  const [gain, setGain] = useState<number>(-12);
-  const [quality, setQuality] = useState<number>(0.25);
-
+  // const [frequency, setFrequency] = useState<number>(0.3);
+  // const [gain, setGain] = useState<number>(-12);
+  // const [quality, setQuality] = useState<number>(0.25);
+const {
+  frequency, 
+  setFrequency,
+  gain,
+  setGain,
+  quality, 
+  setQuality,
+  selectedOptionBand, 
+  setSelectedOptionBand,
+} = useValuesEqualizer()
   const [minFrequency, setMinFrequency] = useState<number>(0.2);
   const [maxFrequency, setMaxFrequency] = useState<number>(20000);
 
-  const [selectedOptionBand, setSelectedOptionBand] = useState<string | null>('1');
+  const [] = useState<string | null>('');
   const options = ['1', '2', '3', '4', '5'];
 
   const [selectedFilter, setSelectedFilter] = useState<Filter>(Filter.BYPASS);
@@ -146,7 +156,7 @@ const MasterGainControl: React.FC<FilterEqualizerScreenProps> = ({ createGaiaMes
   return (
     <S.Container>
     
-      <Text style={{color:"#000"}}>Escolha uma opção de band:</Text>
+      <Text style={{color:"#000"}}>Escolha uma opção de band</Text>
       <RadioButton options={options} selectedOption={selectedOptionBand} onSelect={handleSelect} />
 
       <Button title="BYPASS" onPress={() => onPreset(Filter.BYPASS)} />

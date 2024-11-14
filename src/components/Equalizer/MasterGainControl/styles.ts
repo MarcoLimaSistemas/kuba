@@ -19,7 +19,10 @@ export const ContainerEqualizer = styled.View`
 
 export const ContainerSlider = styled.View`
 	align-items: flex-start;
+justify-content: center;
+	height: ${scale(64)}px;
 	margin-top: ${scale(16)}px;
+
 	
 `;
 
