@@ -205,9 +205,7 @@ const DeviceListItem: React.FC<DeviceListItemProps> = ({ device, onPress }) => {
       <View>
         <Text style={{color:"#000"}}>{device.name}</Text>
         <Text style={{color:"#000"}}>{device.address}</Text>
-        <Text style={{color:"#000"}}>{device.id}</Text>
-        <Text style={{color:"#000"}}>{String(device.rssi) }</Text>
-        <Text style={{color:"#000"}}>{String(device.extra)}</Text>
+ 
       </View>
     </TouchableOpacity>
   );
