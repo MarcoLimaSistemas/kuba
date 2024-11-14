@@ -10,8 +10,10 @@ async function createPreset(
 	return api.post(`/user/${userId}/preset`, data);
 }
 
-async function editPreset(data: IPresets, userId: number | undefined) {
-	return undefined;
+async function editPreset(data: IPresets, presetId:number, 
+	userId: number | undefined):AxiosPromise<any>  {
+		
+	return api.patch(`/user/${userId}/preset/${presetId}`,data)
 }
 
 async function deletePreset(
@@ -63,4 +65,4 @@ async function getGenres(userId: number | undefined) {
 	return data;
 }
 
-export { createPreset, getPresets, getPresetsPublics, getGenres, deletePreset };
+export { createPreset,editPreset, getPresets, getPresetsPublics, getGenres, deletePreset };

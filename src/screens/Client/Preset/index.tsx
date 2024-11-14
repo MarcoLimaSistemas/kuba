@@ -149,7 +149,7 @@ export function Preset() {
 						handlePreset={handlePreset}
 						handleScrollEnabled={handleScrollEnabled}
 						frequenciesList={listFrequencies}
-					/> 
+					/>  
 						<ContainerCarousel>
 						<CarouselProfile
 								titleProfile={'Perfis Personalidades'}
