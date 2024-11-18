@@ -30,10 +30,11 @@ export interface IMyPresets {
 
 interface EqualizerProps {
   handlePreset:(preset:IMyPresets) => void;
-	handleFrequencies: (frequencies: IFrequency[]) => void;
+  handleScrollEnabled: (enabled: boolean) => void;
 	handleModalEdit: (isEdit: boolean) => void;
 	onOpen(): void;
 	disabled?: boolean;
+  presetCustom?:string;
 	frequenciesList?: IFrequenciesListProps[];
 }
 
@@ -41,9 +42,10 @@ interface EqualizerProps {
 export function HeaderEqualizer({
 	handleModalEdit,
   handlePreset,
-	handleFrequencies,
+  handleScrollEnabled,
 	onOpen,
 	disabled = false,
+  presetCustom,
 	frequenciesList,
 }: EqualizerProps){
   const [openDropdown, setOpenDropdown] = useState(false);
@@ -146,7 +148,19 @@ function handleSelectPreset(preset: IMyPresets){
   </S.Header>
 
   <S.ContainerDropdown>
-    <DropDownPicker
+    {presetCustom && presetCustom?.length >0 ?(
+        <Text
+         variant='regular'
+         fontSize={14}
+         color='#656565'
+         style={{
+          textTransform:"uppercase",
+          marginVertical:24
+         }}
+        >{presetCustom}</Text>
+    ):(
+      <DropDownPicker
+      disabled={disabled}
       open={openDropdown}
       value={currentPreset}
       items={myPresets}
@@ -167,7 +181,7 @@ function handleSelectPreset(preset: IMyPresets){
       textStyle={{
         color: '#656565',
         fontFamily: typography['Lato-Regular'].fontFamily,
-        fontSize: scale(16)
+        fontSize: scale(14)
       }}
       listItemLabelStyle={{
         fontFamily: typography['Lato-Regular'].fontFamily,
@@ -191,6 +205,8 @@ function handleSelectPreset(preset: IMyPresets){
         ItemSeparatorComponent: () => <S.LineSeparator />
       }}
     />
+  )}
+    
   </S.ContainerDropdown>
   </>
   )
