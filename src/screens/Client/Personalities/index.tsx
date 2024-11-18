@@ -44,9 +44,10 @@ export function Personalities() {
 		return data?.pages.flatMap(page => page.data) ?? [];
 	}, [data]);
 
-	const handleOpenPreset = (name:string, imgURL:string)=>{
+	const handleOpenPreset = (id:number, name:string, imgURL:string)=>{
 		navigation.navigate('Preset', {
 			preset: {
+				id,
 				name,
 				imgURL
 			}
@@ -89,7 +90,7 @@ export function Personalities() {
 							key={item.id}
 							imgURL={item.img_url}
 							name={item.name}
-							onPress={()=> handleOpenPreset(item.name, item.img_url)}
+							onPress={()=> handleOpenPreset(item.id,item.name, item.img_url)}
 						/>
 					)}
 					ListEmptyComponent={() =>

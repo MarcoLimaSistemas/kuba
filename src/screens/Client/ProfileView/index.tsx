@@ -175,6 +175,7 @@ export function ProfileView() {
                 type={item.description} 
                 onPress={()=> navigation.navigate('Preset',{
                  preset: {
+                   id:item.id,
                    name:item.name,
                    imgURL:item.img_url
                  }
