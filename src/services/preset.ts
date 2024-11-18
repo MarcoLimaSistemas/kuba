@@ -13,7 +13,7 @@ async function createPreset(
 async function editPreset(data: IPresets, presetId:number, 
 	userId: number | undefined):AxiosPromise<any>  {
 		
-	return api.patch(`/user/${userId}/preset/${presetId}`,data)
+	return api.put(`/user/${userId}/preset/${presetId}`,data)
 }
 
 async function deletePreset(
