@@ -1,10 +1,10 @@
 import React, {  useState } from 'react';
-import Slider from '@react-native-community/slider';
 import * as S from './styles';
 
-import RadioButton from '@components/RadioButton';
-import { Button } from '@components/Button';
-import { Text } from '@components/Text/styles';
+// import Slider from '@react-native-community/slider';
+// import RadioButton from '@components/RadioButton';
+// import { Button } from '@components/Button';
+// import { Text } from '@components/Text/styles';
 import { Buffer } from 'buffer';
 import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
 import EqualizerVisual from '../ui/equalizer';
@@ -155,14 +155,12 @@ const {
   
   return (
     <S.Container>
-    
-      
 
-      <Button title="BYPASS" onPress={() => onPreset(Filter.BYPASS)} />
+      {/* <Button title="BYPASS" onPress={() => onPreset(Filter.BYPASS)} />
       <Button title="Low Pass 1" onPress={() => onPreset(Filter.LOW_PASS_1)} />
       <Button title="High Shelf 2" onPress={() => onPreset(Filter.HIGH_SHELF_2)} />
 
-      <Text color='black'> Filter: {selectedFilter} </Text>
+      <Text color='black'> Filter: {selectedFilter} </Text> */}
       
       <EqualizerVisual
       frequency={frequency}
@@ -182,59 +180,7 @@ const {
       onValueChangeGain={(value) => setGain(value)}
       onValueChangeQuality={(value) => setQuality(value)}
       />
-  {/* <S.ContainerEqualizer>
-
-   <S.ContainerSlider>
-      <Text color='black'>Frequência: {formatFrequency(frequency)}</Text>
-          
-      <Slider
-        style={{ width: '100%', marginVertical: 12,	height: 3 }}
-        minimumValue={minFrequency}
-        maximumValue={maxFrequency} 
-        value={frequency}
-        onValueChange={(value) => setFrequency(value)}
-        onSlidingComplete={generateCodeForFrequency}
-        minimumTrackTintColor="#242424" 
-        maximumTrackTintColor="#656565"
-        thumbTintColor={disabledFrequency  ? '#d7d7d7' : '#242424'}
-        step={0.1}
-       
-      />
-   
-      </S.ContainerSlider>
-
-      <S.ContainerSlider>
-      <Text color='black'>Ganho: {gain.toFixed(2)} dB</Text>
-      <Slider
-        style={{ width: '100%', marginVertical: 12,	height: 3 }}
-        minimumValue={-12}
-        maximumValue={12}
-        value={gain}
-        onValueChange={(value) => setGain(value)}
-        onSlidingComplete={generateCodeForGain}
-        minimumTrackTintColor="#242424" 
-        maximumTrackTintColor="#656565"
-        thumbTintColor={disabledGain  ? '#d7d7d7' : '#242424'}
  
-      />
-      </S.ContainerSlider>
-
-      <S.ContainerSlider>
-      <Text color='black'>Qualidade: {quality.toFixed(2)}</Text>
-      <Slider
-        style={{ width: '100%', marginVertical: 12,	height: 3 }}
-        minimumValue={0.25}
-        maximumValue={8}
-        value={quality}
-        onValueChange={(value) => setQuality(value)}
-        onSlidingComplete={generateCodeForQuality}
-        minimumTrackTintColor="#242424" 
-        maximumTrackTintColor="#656565"
-        thumbTintColor={disabledQuality  ? '#d7d7d7' : '#242424'}
- 
-      />
-      </S.ContainerSlider>
-      </S.ContainerEqualizer>  */}
     </S.Container>
   );
 };
