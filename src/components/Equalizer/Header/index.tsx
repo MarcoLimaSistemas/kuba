@@ -10,15 +10,26 @@ import DropDownPicker, { ValueType } from 'react-native-dropdown-picker';
 import { typography } from '../../../styles/typography';
 import { useMemo, useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { getPresets } from '@services/preset';
+import { getPresetsOwn } from '@services/preset';
 import { useAuth } from '@hooks/auth';
 import { IFrequenciesListProps } from '..';
 
 import { IFrequency } from '@screens/Client/Device';
-import { IPreset } from '@components/ModalPreset';
+import { IEqualizerConfig, IPreset } from '@models/preset';
+import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
+
+export interface IMyPresets {
+  label: string;
+  value:number;
+  isPublic: boolean,
+  genreId: number,
+  description: string,
+  preamp:number;
+  equalizerConfigs: IEqualizerConfig[]
+} 
+
 interface EqualizerProps {
-	handleScrollEnabled: (enabled: boolean) => void;
-	handlePreset: (preset: IPreset) => void;
+  handlePreset:(preset:IMyPresets) => void;
 	handleFrequencies: (frequencies: IFrequency[]) => void;
 	handleModalEdit: (isEdit: boolean) => void;
 	onOpen(): void;
@@ -26,10 +37,10 @@ interface EqualizerProps {
 	frequenciesList?: IFrequenciesListProps[];
 }
 
+
 export function HeaderEqualizer({
-	handleScrollEnabled,
 	handleModalEdit,
-	handlePreset,
+  handlePreset,
 	handleFrequencies,
 	onOpen,
 	disabled = false,
@@ -39,11 +50,16 @@ export function HeaderEqualizer({
 	const [currentPreset, setCurrentPreset] = useState<ValueType | null>(null);
 
   const { user } = useAuth();
-
+const {
+  setSelectedOptionBand,
+  setFrequency,
+  setGain,
+  setQuality
+} = useValuesEqualizer();
 	const { data, isLoading, isFetched } = useInfiniteQuery({
 		queryKey: ['MyPresets'],
 		queryFn: ({ pageParam }) =>
-			getPresets(user?.id, undefined, pageParam, true, 15),
+			getPresetsOwn(user?.id, undefined, pageParam, true, 15),
 		initialPageParam: 1,
 		getNextPageParam: (lastPage, allPages, lastPageParam) => {
       if (lastPage.data.length === 0) {
@@ -60,16 +76,25 @@ export function HeaderEqualizer({
 				.map(preset => ({
 					label: preset.name,
 					value: preset.id,
-					isPublic: preset.is_public,
-					genreId: preset.genre_id,
+          id:preset.id,
+					is_public: preset.is_public,
+          genre_id: preset.genre_id,
 					description: preset.description,
-					settings: preset.settings
+          preamp:preset.preamp,
+					equalizerConfigs: preset.equalizerConfigs
 				})) ?? []
 		);
 
 	}, [data]);
 
-
+function handleSelectPreset(preset: IMyPresets){
+  handlePreset(preset)
+  setFrequency(preset.equalizerConfigs[0].frequency)
+  setGain(preset.equalizerConfigs[0].decibel_quantity)
+  setQuality(preset.equalizerConfigs[0].quality)
+  setSelectedOptionBand(String(preset.preamp) ?? null)
+ 
+}
   return(
     <>
     <S.Header>
@@ -131,14 +156,7 @@ export function HeaderEqualizer({
       placeholder='Selecione preset'
       onSelectItem={(item: any) =>
        {
-         handlePreset({
-         	id: item.value,
-         	name: item.label,
-         	description: item.description,
-         	genreId: item.genreId,
-         	settings: item.settings,
-         	isPublic: item.isPublic
-         })
+        handleSelectPreset(item)
         }
       }
       //setItems={setPresets}

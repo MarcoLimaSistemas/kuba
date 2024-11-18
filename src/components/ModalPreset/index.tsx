@@ -7,7 +7,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { Pressable, Switch, TouchableOpacity } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-import { IPresets } from '../../models/preset';
+import { IPreset, IPresets } from '../../models/preset';
 
 import {
 	ContainerButtonDelete,
@@ -33,14 +33,14 @@ import { queryClient } from '../../../App';
 import { IFrequency } from '@screens/Client/Device';
 import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
 
-export interface IPreset {
-	id: number;
-	name: string;
-	description: string;
-	settings: string;
-	genreId: string;
-	isPublic: boolean;
-}
+// export interface IPreset {
+// 	id: number;
+// 	name: string;
+// 	description: string;
+// 	settings: string;
+// 	genreId: string;
+// 	isPublic: boolean;
+// }
 
 interface ModalPresetProps {
 	isEdit: boolean;
@@ -60,7 +60,7 @@ export const ModalPreset = forwardRef(
 		ref
 	) => {
 		const [open, setOpen] = useState(false);
-		const [value, setValue] = useState('');
+		const [value, setValue] = useState<number>(0);
 		const [isEnabled, setIsEnabled] = useState(false);
 
 		const modalizeRef = useRef<Modalize>(null);
@@ -162,20 +162,20 @@ console.log('form', form )
 			if (isEdit) {
 				setValueForm('name', currentPreset?.name ?? '');
 				setValueForm('description', currentPreset?.description ?? '');
-			//	setValueForm('settings', currentPreset?.settings ?? '');
-				setValue(currentPreset?.genreId ?? '');
-				setIsEnabled(currentPreset?.isPublic ?? false);
+			  setValueForm('equalizerConfigs',currentPreset?.equalizerConfigs?? []);
+				setValue(currentPreset?.genre_id ??0);
+				setIsEnabled(currentPreset?.is_public ?? false);
 			} else {
 				setValueForm('name', '');
 				setValueForm('description', '');
 				setValueForm('equalizerConfigs', []);
-				setValue('');
+				setValue(0);
 				setIsEnabled(false);
 			}
-		}, [isEdit]);
+		}, [isEdit, currentPreset]);
 
 		useEffect(() => {
-			setValueForm('genreId', value);
+			setValueForm('genre_id', value);
 		}, [value]);
 
 		useEffect(() => {

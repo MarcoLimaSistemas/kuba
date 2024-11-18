@@ -42,6 +42,25 @@ async function getPresets(
 	return data;
 }
 
+async function getPresetsOwn(
+	userId: number | undefined,
+	search: string | undefined,
+	page: number,
+	isMyPreset = false,
+	perPage?: number | undefined
+) {
+	const { data } = await api.get<IPresetResponse>(`/user/${userId}/preset/index/own`, {
+		params: {
+			userId: isMyPreset ? userId : undefined,
+			search: search ?? undefined,
+			page: page ?? 1,
+			perPage: perPage ?? 10
+		}
+	});
+
+	return data;
+}
+
 async function getPresetsPublics(
 	userId: number | undefined,
 	search: string | undefined,
@@ -65,4 +84,4 @@ async function getGenres(userId: number | undefined) {
 	return data;
 }
 
-export { createPreset,editPreset, getPresets, getPresetsPublics, getGenres, deletePreset };
+export { createPreset,editPreset, getPresets,getPresetsOwn, getPresetsPublics, getGenres, deletePreset };

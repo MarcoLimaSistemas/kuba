@@ -9,11 +9,12 @@ import { Icons } from '@assets/icons';
 import { scale } from 'react-native-size-matters';
 import Trash from '@assets/icons/trash-2.svg';
 import { Modalize } from 'react-native-modalize';
-import { IPreset } from '@components/ModalPreset';
+
 import { useMutation } from '@tanstack/react-query';
 import { deletePreset } from '@services/preset';
 import { useAuth } from '@hooks/auth';
 import { queryClient } from '../../../App';
+import { IPreset } from '@models/preset';
 
 interface ModalDeleteProps {
 	currentPreset: IPreset | null;

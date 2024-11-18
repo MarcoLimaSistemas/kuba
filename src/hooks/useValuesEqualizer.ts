@@ -16,7 +16,7 @@ export const useValuesEqualizer = create<IValuesEqualizer>((set) => ({
   frequency: 0.3,
   gain:-12,
   quality:0.25,
-  selectedOptionBand:"",
+  selectedOptionBand:"1",
 
   setFrequency: (frequency:number) => {
     set(() => ({ frequency }));
