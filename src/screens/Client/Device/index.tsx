@@ -27,7 +27,7 @@ import { useBluetooth } from '../../../context/BluetoothContext';
 import { Header } from '@components/Header';
 import Text from '@components/Text';
 import { scale } from 'react-native-size-matters';
-import { IPreset, ModalPreset } from '@components/ModalPreset';
+import {  ModalPreset } from '@components/ModalPreset';
 import { Modalize } from 'react-native-modalize';
 import { useQuery } from '@tanstack/react-query';
 import { getPresets, getPresetsPublics } from '@services/preset';
@@ -37,7 +37,8 @@ import ConnectionScreen from '@components/Equalizer/connectionScreen';
 
 import DeviceListScreen from '@components/Equalizer/deviceList';
 import { StateChangeEvent } from 'react-native-bluetooth-classic/lib/BluetoothEvent';
-import { HeaderEqualizer } from '@components/Equalizer/Header';
+import { HeaderEqualizer, IMyPresets } from '@components/Equalizer/Header';
+import { IPreset } from '@models/preset';
 
 
 export interface IFrequency {
@@ -58,9 +59,7 @@ export function Device() {
 
 	const [scrollEnabled, setScrollEnabled] = useState(true);
 	const [currentPreset, setCurrentPreset] = useState<IPreset | null>(null);
-	const [currentFrequencies, setCurrentFrequencies] = useState<IFrequency[]>(
-		[]
-	);
+
 
 
 	const [isEdit, setIsEdit] = useState(false);
@@ -96,13 +95,15 @@ export function Device() {
 		setScrollEnabled(enabled);
 	};
 
-	const handlePreset = (preset: IPreset) => {
-		setCurrentPreset(preset);
+	const handlePreset = (preset: IMyPresets) => {
+		const form ={
+			name: preset.label,
+			...preset
+		} as unknown as IPreset
+		setCurrentPreset(form);
 	};
 
-	const handleFrequencies = (frequencies: IFrequency[]) => {
-		setCurrentFrequencies(frequencies);
-	};
+
 
 	const handleModalEdit = (isEdit: boolean) => {
 		setIsEdit(isEdit);
@@ -222,10 +223,9 @@ export function Device() {
 				<ContainerEqualizer>
 					<HeaderEqualizer 
 					onOpen={openModal}
-					handleFrequencies={handleFrequencies}
 					handlePreset={handlePreset}
+				handleScrollEnabled={handleScrollEnabled}
 					handleModalEdit={handleModalEdit}
-					handleScrollEnabled={handleScrollEnabled}
 					/>
         <ConnectionScreen
           device={state.device}
