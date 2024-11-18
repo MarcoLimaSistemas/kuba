@@ -1,8 +1,9 @@
 import { scale } from 'react-native-size-matters';
-import styled from 'styled-components/native';
+import styled, { css } from 'styled-components/native';
 
 type ButtonProps = {
-  isSelected:boolean
+  isSelected:boolean,
+  disabled?:boolean
 }
 export const Container = styled.View`
 flex-direction: row;
@@ -17,8 +18,11 @@ justify-content: center;
 `;
 
 export const Button = styled.TouchableOpacity<ButtonProps>`
-
-background-color: ${({ isSelected,theme }) => isSelected?theme.COLORS.black:theme.COLORS.white_100};
+  background-color: ${({ isSelected,disabled, theme }) => 
+  disabled && isSelected 
+  ? theme.COLORS.gray_100
+  : isSelected ? theme.COLORS.black : theme.COLORS.white_100};
+  
 padding: ${scale(8)}px;
 flex-direction: row;
 align-items: center;
