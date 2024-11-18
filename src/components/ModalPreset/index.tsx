@@ -68,7 +68,7 @@ export const ModalPreset = forwardRef(
 		const openModal = () => modalizeRef.current?.open();
 		const closeModal = () => modalizeRef.current?.close();
 
-			
+
 	const {
 		frequency, 
 		gain, 
@@ -100,7 +100,7 @@ export const ModalPreset = forwardRef(
 		});
 
 		const { mutateAsync: mutateAsyncEdit, isPending:isPendingEdit } = useMutation({
-			mutationFn: (data: IPresets) => editPreset(data, 1,user?.id),
+			mutationFn: (data: IPresets) => editPreset(data, currentPreset?.id ?? 0,user?.id),
 			onSuccess: async res => {
 				await queryClient.invalidateQueries({
 					queryKey: ['MyPresets']
@@ -108,7 +108,7 @@ export const ModalPreset = forwardRef(
 				onClose();
 			},
 			onError(error) {
-				console.log(error);
+				console.error(error);
 			}
 		});
 
@@ -119,7 +119,7 @@ export const ModalPreset = forwardRef(
 		const savePreset = (data: IPresets) => {
 
 		const settings={ 
-			preamp:selectedOptionBand,
+			preamp:Number(selectedOptionBand),
 			equalizerConfigs:[	{
 					"frequency": frequency,
 					"decibelQuantity": gain,
@@ -129,14 +129,15 @@ export const ModalPreset = forwardRef(
 
 const form = { ...data, ...settings } as unknown  as IPresets
 
-console.log('form', form )
+//console.log('form', form )
 			mutateAsync(form);
 		};
+
 		const editPresetUser = (data: IPresets) => {
-			console.log('🚀 ~ savePreset ~ data:', data);
+
 
 			const settings={ 
-				preamp:selectedOptionBand,
+				preamp:Number(selectedOptionBand),
 				equalizerConfigs:[	{
 						"frequency": frequency,
 						"decibelQuantity": gain,
@@ -145,6 +146,8 @@ console.log('form', form )
 			}
 	
 	const form = { ...data, ...settings } as unknown  as IPresets
+
+	//console.log('form edit', form )
 	mutateAsyncEdit(form)
 		};
 
@@ -175,7 +178,7 @@ console.log('form', form )
 		}, [isEdit, currentPreset]);
 
 		useEffect(() => {
-			setValueForm('genre_id', value);
+			setValueForm('genreId', value);
 		}, [value]);
 
 		useEffect(() => {

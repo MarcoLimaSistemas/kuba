@@ -3,7 +3,7 @@ export interface IPresets {
 	description: string;
 	preamp:number;
 	equalizerConfigs: IEqualizerConfig[];
-	genre_id: number;
+	genreId: number;
 	isPublic: boolean;
 }
 export interface IPresetResponse {
