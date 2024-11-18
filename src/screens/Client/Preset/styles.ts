@@ -12,7 +12,7 @@ export const ContainerBody = styled.View`
 
 export const ContainerEqualizer = styled.View`
 	background: #fff;
-	padding-top: ${scale(16)}px;
+	padding: ${scale(16)}px;
 	border-radius: ${scale(12)}px;
 `;
 

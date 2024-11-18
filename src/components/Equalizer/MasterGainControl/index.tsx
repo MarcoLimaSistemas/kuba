@@ -7,6 +7,8 @@ import { Button } from '@components/Button';
 import { Text } from '@components/Text/styles';
 import { Buffer } from 'buffer';
 import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
+import EqualizerVisual from '../ui/equalizer';
+
 global.Buffer = global.Buffer || Buffer;
 
 enum Filter {
@@ -20,9 +22,7 @@ interface FilterEqualizerScreenProps {
 }
 
 const MasterGainControl: React.FC<FilterEqualizerScreenProps> = ({ createGaiaMessage }) => {
-  // const [frequency, setFrequency] = useState<number>(0.3);
-  // const [gain, setGain] = useState<number>(-12);
-  // const [quality, setQuality] = useState<number>(0.25);
+
 const {
   frequency, 
   setFrequency,
@@ -37,7 +37,7 @@ const {
   const [maxFrequency, setMaxFrequency] = useState<number>(20000);
 
   const [] = useState<string | null>('');
-  const options = ['1', '2', '3', '4', '5'];
+ 
 
   const [selectedFilter, setSelectedFilter] = useState<Filter>(Filter.BYPASS);
 
@@ -156,19 +156,35 @@ const {
   return (
     <S.Container>
     
-      <Text style={{color:"#000"}}>Escolha uma opção de band</Text>
-      <RadioButton options={options} selectedOption={selectedOptionBand} onSelect={handleSelect} />
+      
 
       <Button title="BYPASS" onPress={() => onPreset(Filter.BYPASS)} />
       <Button title="Low Pass 1" onPress={() => onPreset(Filter.LOW_PASS_1)} />
       <Button title="High Shelf 2" onPress={() => onPreset(Filter.HIGH_SHELF_2)} />
 
       <Text color='black'> Filter: {selectedFilter} </Text>
-      <S.ContainerEqualizer>
- 
+      
+      <EqualizerVisual
+      frequency={frequency}
+      gain={gain}
+      quality={quality}
+      maxFrequency={maxFrequency}
+      minFrequency={minFrequency}
+      optionBand={selectedOptionBand}
+      disabledFrequency={disabledFrequency}
+      disabledGain={disabledGain}
+      disabledQuality={disabledQuality}
+      onSelect={handleSelect}
+      generateCodeForFrequency={generateCodeForFrequency}
+      generateCodeForGain={generateCodeForGain}
+      generateCodeForQuality={generateCodeForQuality}
+      onValueChangeFrequency={(value) => setFrequency(value)}
+      onValueChangeGain={(value) => setGain(value)}
+      onValueChangeQuality={(value) => setQuality(value)}
+      />
+  {/* <S.ContainerEqualizer>
 
-
-      <S.ContainerSlider>
+   <S.ContainerSlider>
       <Text color='black'>Frequência: {formatFrequency(frequency)}</Text>
           
       <Slider
@@ -218,7 +234,7 @@ const {
  
       />
       </S.ContainerSlider>
-      </S.ContainerEqualizer>
+      </S.ContainerEqualizer>  */}
     </S.Container>
   );
 };

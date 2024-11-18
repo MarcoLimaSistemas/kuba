@@ -25,6 +25,8 @@ import { useAuth } from '@hooks/auth';
 import { Modalize } from 'react-native-modalize';
 import { ElementConnectedDevice } from '@components/ElementConnectedDevice';
 import { HeaderEqualizer } from '@components/Equalizer/Header';
+import EqualizerVisual from '@components/Equalizer/ui/equalizer';
+
 
 
 export function Preset() {
@@ -76,16 +78,15 @@ export function Preset() {
 		setCurrentFrequencies(frequencies);
 	};
 
-
   const filtered = personalities.filter((item) => item.id === preset.id)
-  const listFrequencies = filtered[0]?.equalizerConfigs.map((item)=> {
-		return{
-      decibelQuantity:item.decibel_quantity,
-      frequency:item.frequency
-		} as IFrequenciesListProps
+
+  const listFrequencies = filtered[0]?.equalizerConfigs?.map((item)=> {
+		return item
   })
-	console.log()
-	console.log( "preset.id", preset.id,"listFrequencies",listFrequencies )
+
+//console.log('filtered',filtered)
+
+	//console.log("listFrequencies",listFrequencies )
 
 	return (
 		<Container>
@@ -131,16 +132,35 @@ export function Preset() {
 
 			<ContainerBody>
 				<ContainerEqualizer>
-				{/* <HeaderEqualizer 
+				 <HeaderEqualizer 
 					disabled
 					onOpen={openModal}
 					handleModalEdit={(isEdit: boolean) => {}}
-					handleFrequencies={handleFrequencies}
-					handlePreset={handlePreset}
 					handleScrollEnabled={handleScrollEnabled}
-					frequenciesList={listFrequencies}
-					/> */}
-					
+					handlePreset={handlePreset}
+					presetCustom={filtered[0].name}
+				//	frequenciesList={listFrequencies}
+					/> 
+			{
+			listFrequencies &&(
+				<EqualizerVisual
+					disabled
+     		 frequency={listFrequencies[0]?.frequency ?? 0}
+     		 gain={listFrequencies[0]?.decibel_quantity ?? 0}
+     		 quality={listFrequencies[0]?.quality ?? 0}
+     		 minFrequency={0.2}
+     		 maxFrequency={20000}
+     		 optionBand={'1'}
+     		 disabledFrequency={true}
+     		 disabledGain={true}
+     		 disabledQuality={true}
+     		onSelect={()=>{}}
+     		 />
+				)
+			}
+			
+		
+{/* 					
 					 <Equalizer
 						disabled
 						onOpen={openModal}
@@ -149,7 +169,7 @@ export function Preset() {
 						handlePreset={handlePreset}
 						handleScrollEnabled={handleScrollEnabled}
 						frequenciesList={listFrequencies}
-					/>  
+					/>   */}
 						<ContainerCarousel>
 						<CarouselProfile
 								titleProfile={'Perfis Personalidades'}
