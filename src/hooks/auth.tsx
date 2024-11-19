@@ -17,7 +17,7 @@ import {
 } from '../models/auth';
 import api from '../services/api';
 import Auth from '../services/auth';
-import { STORAGE_KEY } from '@config/storage';
+import { STORAGE_KEY } from '../config/storage';
 
 interface AuthContextData {
 	user: IUserAuth | null;
