@@ -3,7 +3,7 @@ import * as S from './styles';
 
 // import Slider from '@react-native-community/slider';
 // import RadioButton from '@components/RadioButton';
-// import { Button } from '@components/Button';
+import { Button } from '@components/Button';
 // import { Text } from '@components/Text/styles';
 import { Buffer } from 'buffer';
 import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
@@ -52,12 +52,7 @@ const {
     setSelectedOptionBand(option);
   };
 
-  const formatFrequency = (value: number | null): string => {
-    if (value === null) return "- Hz";
-    if (value < 50) return `${value.toFixed(1)} Hz`;
-    if (value < 1000) return `${value.toFixed(0)} Hz`;
-    return `${(value / 1000).toFixed(1)} kHz`;
-  };
+
 
 
   const generateCodeAndSendToGaia = (filterId: number, value: string) => {
@@ -152,7 +147,22 @@ const {
         break;
     }
   };
-  
+
+
+  const generateBass= () => {
+    const code = "FF010100000A0218F4";
+
+
+    createGaiaMessage(Buffer.from(code, 'hex'));
+  };
+
+  const getBatteryLevel= async() => {
+    const code = "FF010100000A0300F3";
+
+
+    createGaiaMessage(Buffer.from(code, 'hex'));
+  };
+
   return (
     <S.Container>
 
@@ -161,7 +171,10 @@ const {
       <Button title="High Shelf 2" onPress={() => onPreset(Filter.HIGH_SHELF_2)} />
 
       <Text color='black'> Filter: {selectedFilter} </Text> */}
-      
+{/*       
+      <Button title="GET_BATTERY" onPress={getBatteryLevel} />
+       <Button title="Bass" onPress={generateBass} /> */}
+       
       <EqualizerVisual
       frequency={frequency}
       gain={gain}

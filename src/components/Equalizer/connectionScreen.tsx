@@ -166,8 +166,8 @@ const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack }) =
     try {
       if (!msg) return;
 
-      const resp = await device.write(msg);
- console.log("resp",msg)
+     await device.write(msg);
+ console.log("msg",msg)
       const byteArray = Array.from(msg);
       const msgHex = msg.toString('hex');
  
@@ -176,17 +176,23 @@ const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack }) =
         data: `Byte array: ${msgHex}`,
         type: 'sent',
       });
+
+      const response = await device.read();
+      if (response) {
+        const buffer = Buffer.from(response, "hex");
+        const batteryPercentage = buffer
+        console.log("batteryPercentage",batteryPercentage)
+      }
     } catch (error) {
       console.log(error);
     }
   };
-//true
-//console.log("data",data)
+
   return (
     <View style={styles.container}>
       {connection && <MasterGainControl createGaiaMessage={createGaiaMessage} />}
 
-      <FlatList
+      {/* <FlatList
         style={styles.output}
         contentContainerStyle={{ justifyContent: 'flex-end' }}
         inverted
@@ -201,14 +207,14 @@ const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack }) =
             <Text style={{ flexShrink: 1 ,color:"#000"}}>{item.data.trim()}</Text>
           </View>
         )}
-      />
+      /> */}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-width:'100%'
+width:'100%',
   },
   header: {
     flexDirection: 'row',

@@ -5,10 +5,11 @@ import {
   View,
   FlatList,
   TouchableOpacity,
-  Text,
   Button as RNButton,
   StyleSheet,
 } from 'react-native';
+import Text from '@components/Text';
+import { ElementConnectedDevice } from '@components/ElementConnectedDevice';
 
 const requestAccessFineLocationPermission = async () => {
   const granted = await PermissionsAndroid.request(
@@ -154,7 +155,7 @@ const DeviceListScreen: React.FC<DeviceListScreenProps> = ({ bluetoothEnabled, s
       {bluetoothEnabled ? (
         <>
           <DeviceList devices={devices} onPress={selectDevice} />
-          <View style={styles.buttonContainer}>
+          {/* <View style={styles.buttonContainer}>
             <RNButton
               title={accepting ? 'Accepting (cancel)...' : 'Accept Connection'}
               onPress={toggleAccept}
@@ -163,12 +164,16 @@ const DeviceListScreen: React.FC<DeviceListScreenProps> = ({ bluetoothEnabled, s
               title={discovering ? 'Discovering (cancel)...' : 'Discover Devices'}
               onPress={toggleDiscovery}
             />
-          </View>
+          </View> */}
         </>
       ) : (
         <View style={styles.center}>
-          <Text>Bluetooth is OFF</Text>
-          <RNButton title="Enable Bluetooth" onPress={() => requestEnabled()} />
+            <Text
+				fontSize={12}
+				variant="bold"
+				color="#777777">Bluetooth está desligado</Text>
+
+          {/* <RNButton title="Enable Bluetooth" onPress={() => requestEnabled()} /> */}
         </View>
       )}
     </View>
@@ -198,16 +203,30 @@ const DeviceListItem: React.FC<DeviceListItemProps> = ({ device, onPress }) => {
   let icon = device.bonded ? 'ios-bluetooth' : 'ios-cellular';
 
   return (
-    <TouchableOpacity onPress={() => onPress(device)} style={styles.deviceListItem}>
+    <>
+        <ElementConnectedDevice 
+					connectToDevice={() => onPress(device)}
+					connectedDevice={null}
+					 />
+  
+    {/* <TouchableOpacity onPress={() => onPress(device)} style={styles.deviceListItem}>
       <View style={styles.deviceListItemIcon}>
         <Text style={{color:"#000"}}>{icon}</Text>
       </View>
       <View>
-        <Text style={{color:"#000"}}>{device.name}</Text>
-        <Text style={{color:"#000"}}>{device.address}</Text>
+  
+      <Text
+				fontSize={10}
+				variant="bold"
+				color="#777777">
+				{`${device.name}`}
+				  </Text>
+         <Text style={{color:"#000"}}>{device.name}</Text> 
+         <Text style={{color:"#000"}}>{device.address}</Text> 
  
       </View>
-    </TouchableOpacity>
+    </TouchableOpacity> */}
+    </>
   );
 };
 
