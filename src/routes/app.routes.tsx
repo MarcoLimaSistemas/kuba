@@ -18,11 +18,7 @@ const AppRoutes = () => {
 			}}>
 			<Stack.Screen
 				name="Home"
-				component={() => (
-					<BluetoothProvider>
-						<Client.Home />
-					</BluetoothProvider>
-				)}
+				component={Client.Home}
 			/>
 			<Stack.Screen name="Profile" component={Client.Profile} />
 			<Stack.Screen name="ProfileView" component={Client.ProfileView} />
@@ -30,11 +26,7 @@ const AppRoutes = () => {
 
 			<Stack.Screen
 				name="Device"
-				component={() => (
-					<BluetoothProvider>
-						<Client.Device />
-					</BluetoothProvider>
-				)}
+				component={Client.Device}
 			/>
 
 			<Stack.Screen name="Tutorials" component={Client.Tutorials} />
@@ -42,8 +34,9 @@ const AppRoutes = () => {
 				name="SettingsEarphone"
 				component={Client.SettingsEarphone}
 			/>
-			<Stack.Screen name="Preset" component={Client.Preset} />
 			<Stack.Screen name="School" component={Client.School} />
+			<Stack.Screen name="Preset" component={Client.Preset} 
+				/>
 			<Stack.Screen
 				name="Personalities"
 				component={Client.Personalities}

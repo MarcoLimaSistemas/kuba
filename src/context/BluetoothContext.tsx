@@ -10,6 +10,11 @@ import RNBluetoothClassic, {
 	BluetoothDevice
 } from 'react-native-bluetooth-classic';
 
+interface AppState {
+  device?: BluetoothDevice;
+  bluetoothEnabled: boolean;
+}
+
 interface BluetoothContextType {
 	searchingDevices: boolean;
 	devices: BluetoothDevice[];
@@ -19,6 +24,8 @@ interface BluetoothContextType {
 	connectToDevice: (device: BluetoothDevice) => Promise<void>;
 	disconnectFromDevice: () => Promise<void>;
 	pairToDevice: (device: BluetoothDevice) => Promise<void>;
+	state:AppState;
+	setState:React.Dispatch<React.SetStateAction<AppState>>
 }
 
 interface BluetoothProviderProps {
@@ -36,6 +43,10 @@ export const BluetoothProvider: React.FC<BluetoothProviderProps> = ({
 	const [devices, setDevices] = useState<BluetoothDevice[]>([]);
 	const [connectedDevice, setConnectedDevice] =
 		useState<BluetoothDevice | null>(null);
+		const [state, setState] = useState<AppState>({
+			device: undefined,
+			bluetoothEnabled: true,
+		});
 
 	useEffect(() => {
 		if (Platform.OS === 'android') {
@@ -119,7 +130,9 @@ export const BluetoothProvider: React.FC<BluetoothProviderProps> = ({
 				stopScanDevices,
 				connectToDevice,
 				pairToDevice,
-				disconnectFromDevice
+				disconnectFromDevice,
+				state,
+				setState,
 			}}>
 			{children}
 		</BluetoothContext.Provider>

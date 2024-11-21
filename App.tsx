@@ -6,6 +6,7 @@ import {StatusBar} from 'react-native';
 
 import {gestureHandlerRootHOC} from 'react-native-gesture-handler';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import { BluetoothProvider } from './src/context/BluetoothContext';
 
 export const queryClient = new QueryClient();
 
@@ -20,7 +21,9 @@ const App = () => {
           barStyle="dark-content"
         />
         <AppProvider>
+        <BluetoothProvider>
           <Routes />
+          </BluetoothProvider>
         </AppProvider>
       </QueryClientProvider>
     </>
