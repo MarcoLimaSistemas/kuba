@@ -41,6 +41,7 @@ import { HeaderEqualizer, IMyPresets } from '@components/Equalizer/Header';
 import { IPreset } from '@models/preset';
 
 
+
 export interface IFrequency {
 	frequency: string;
 	decibelQuantity: number;
@@ -66,7 +67,7 @@ export function Device() {
 
 	const navigation = useNavigation<any>();
 
-	const { connectedDevice, connectToDevice } = useBluetooth();
+	const { connectedDevice, connectToDevice,state,setState } = useBluetooth();
 
 	const { user } = useAuth();
 
@@ -114,10 +115,10 @@ export function Device() {
 	const openModal = () => modalizeRef.current?.open();
 	const closeModal = () => modalizeRef.current?.close();
 
-	const [state, setState] = useState<AppState>({
-    device: undefined,
-    bluetoothEnabled: true,
-  });
+	// const [state, setState] = useState<AppState>({
+  //   device: undefined,
+  //   bluetoothEnabled: true,
+  // });
 
   let enabledSubscription: any;
   let disabledSubscription: any;
@@ -167,7 +168,6 @@ export function Device() {
   }, []);
 
 
-
 	return (
 		<Wrapper>
 			<Header />
@@ -205,21 +205,25 @@ export function Device() {
 				</Text>
 
 				<Spacer h={16} />
-
+			
 				{device?.isBluetooth && (
 					<>
-				   <ElementConnectedDevice 
-				 //connectedDevice={connectedDevice}
-					connectToDevice={()=>{}}
-				 //connectToDevice={()=>(state.device)} 
-					connectedDevice={state.device ? state.device: null}
-					 />
+					{state.device === null&&(
+	   					<ElementConnectedDevice 
+		 					connectToDevice={selectDevice}
+		 					connectedDevice={state.device ? state.device: null}
+								/>
+					)}
+			
+				
+						
 		 {!state.device ? (
         <DeviceListScreen
           bluetoothEnabled={state.bluetoothEnabled}
           selectDevice={selectDevice}
         />
       ) : (
+				<>
 				<ContainerEqualizer>
 					<HeaderEqualizer 
 					onOpen={openModal}
@@ -232,35 +236,26 @@ export function Device() {
           onBack={() => setState((prevState) => ({ ...prevState, device: undefined }))}
         />
 				</ContainerEqualizer>
-      )}  
-						<ContainerCarousel>
-							{/* <Equalizer
-								onOpen={openModal}
-								handleFrequencies={handleFrequencies}
-								handlePreset={handlePreset}
-								handleModalEdit={handleModalEdit}
-								handleScrollEnabled={handleScrollEnabled}
-							/> */}
+
+				<ContainerCarousel>
+					
 					
 		
 	
 
-							<CarouselProfile
-								titleProfile={'Perfis Personalidades'}
-								data={personalities}
-							/>
+					<CarouselProfile
+						titleProfile={'Perfis Personalidades'}
+						data={personalities}
+					/>
 
-							<Spacer h={16} />
+					<Spacer h={16} />
 
-							<CarouselProfile
-								titleProfile={'Perfis Públicos '}
-								data={profiles}
-								isPersonalities={false}
-							/>
-						</ContainerCarousel>
-					</>
-				)}
-
+					<CarouselProfile
+						titleProfile={'Perfis Públicos '}
+						data={profiles}
+						isPersonalities={false}
+					/>
+				</ContainerCarousel>
 				<Spacer h={32} />
 
 				<View style={{ flex: 1 }} />
@@ -285,9 +280,9 @@ export function Device() {
 							resizeMode="contain"
 						/>
 					</ButtonSquare>
-
+						
 					<Spacer w={16} />
-
+						
 					<ButtonSquare
 						label="Tutorias de uso"
 						onPress={() =>
@@ -304,7 +299,7 @@ export function Device() {
 							resizeMode="contain"
 						/>
 					</ButtonSquare>
-
+						
 					{device.isBluetooth && (
 						<>
 							<Spacer w={16} />
@@ -325,6 +320,13 @@ export function Device() {
 						</>
 					)}
 				</BoxButtons>
+				</>
+      )}  
+					
+					</>
+				)}
+
+		
 
 				<Footer>
 					<Button

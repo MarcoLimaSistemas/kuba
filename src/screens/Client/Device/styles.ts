@@ -11,11 +11,13 @@ export const Container = styled.ScrollView`
 	background: #f4f2f2;
 `;
 export const ContainerEqualizer = styled.View`
-	 margin-left: ${scale(8)}px;
+	margin-left: ${scale(8)}px;
 	margin-right: ${scale(8)}px; 
 	background-color:${({theme})=> theme.COLORS.white_100} ;
 	padding:  ${scale(16)}px;
-	border-radius:${scale(16)}px;
+	border-top-left-radius: ${scale(16)}px;
+	border-top-right-radius: ${scale(16)}px;
+
 	
 `;
 
@@ -27,10 +29,13 @@ export const ContainerImg = styled.View`
 
 export const ContainerCarousel = styled.View`
 	background: #fff;
-	margin-left: ${scale(16)}px;
-	margin-right: ${scale(16)}px;
+	margin-left: ${scale(8)}px;
+	margin-right: ${scale(8)}px; 
 	padding: ${scale(8)}px;
-	border-radius: 8px;
+	border-bottom-left-radius:${scale(16)}px;
+	border-bottom-right-radius:${scale(16)}px;
+	margin-bottom: 8px;
+
 
 `;
 
