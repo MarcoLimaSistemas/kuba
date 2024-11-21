@@ -8,7 +8,7 @@ import Toast from 'react-native-toast-message';
 import DropDownPicker, { ValueType } from 'react-native-dropdown-picker';
 
 import { typography } from '../../../styles/typography';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { getPresetsOwn } from '@services/preset';
 import { useAuth } from '@hooks/auth';
@@ -17,6 +17,9 @@ import { IFrequenciesListProps } from '..';
 import { IFrequency } from '@screens/Client/Device';
 import { IEqualizerConfig, IPreset } from '@models/preset';
 import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { STORAGE_PRESET } from '@config/storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 export interface IMyPresets {
   label: string;
@@ -34,7 +37,7 @@ interface EqualizerProps {
 	onOpen(): void;
 	disabled?: boolean;
   presetCustom?:string;
-	frequenciesList?: IFrequenciesListProps[];
+  equalizerConfigs?: IEqualizerConfig[];
 }
 
 
@@ -45,7 +48,7 @@ export function HeaderEqualizer({
 	onOpen,
 	disabled = false,
   presetCustom,
-	frequenciesList,
+	equalizerConfigs,
 }: EqualizerProps){
   const [openDropdown, setOpenDropdown] = useState(false);
 	const [currentPreset, setCurrentPreset] = useState<ValueType | null>(null);
@@ -87,7 +90,9 @@ const {
 
 	}, [data]);
 
-function handleSelectPreset(preset: IMyPresets){
+async function handleSelectPreset(preset: IMyPresets){
+
+  await AsyncStorage.setItem(STORAGE_PRESET, JSON.stringify(preset));
   handlePreset(preset)
   setFrequency(preset.equalizerConfigs[0].frequency)
   setGain(preset.equalizerConfigs[0].decibel_quantity)
@@ -95,6 +100,32 @@ function handleSelectPreset(preset: IMyPresets){
   setSelectedOptionBand(String(preset.equalizerConfigs[0].band) ?? null)
  
 }
+useFocusEffect(
+  useCallback(() => {
+    (async () => {
+     if( presetCustom && presetCustom?.length >0 && equalizerConfigs){
+
+      setFrequency(equalizerConfigs[0].frequency)
+      setGain(equalizerConfigs[0].decibel_quantity)
+      setQuality(equalizerConfigs[0].quality)
+      setSelectedOptionBand(String(equalizerConfigs[0].band) ?? null)
+      return
+     }
+      const preset = await AsyncStorage.getItem(STORAGE_PRESET);
+   
+      if (preset !== null) {
+        const presetData = JSON.parse(preset);
+    
+        setCurrentPreset(presetData.id)
+        handleSelectPreset(presetData)
+     
+      }
+      return
+    })();
+  }, [])
+)
+
+
   return(
     <>
     <S.Header>
