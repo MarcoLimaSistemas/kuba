@@ -57,7 +57,7 @@ export function Carousel({devices, isLoading}: ICarousselProps) {
           )}
           ListFooterComponent={
             <S.ButtonAdd
-              onPress={onOpen}
+              //onPress={onOpen}
               style={{
                 elevation: 4,
                 marginVertical: scale(4),
