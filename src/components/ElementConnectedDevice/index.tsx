@@ -7,13 +7,19 @@ import { BluetoothDevice } from 'react-native-bluetooth-classic';
 import Text from '@components/Text';
 import { Spacer } from '@components/Spacer';
 import { Lighting } from '@assets/icons';
+import { useBluetooth } from '../../context/BluetoothContext';
+import { useNavigation } from '@react-navigation/native';
 
 interface ElementConnectedDeviceProps {
   connectedDevice: BluetoothDevice | null;
-  connectToDevice:()=>void;
+  connectToDevice:(device: BluetoothDevice) => void;
+	isNavigateHome?:boolean;
 }
 
-export function ElementConnectedDevice({ connectedDevice,connectToDevice}: ElementConnectedDeviceProps) {
+export function ElementConnectedDevice({ connectedDevice,connectToDevice,isNavigateHome}: ElementConnectedDeviceProps) {
+	const { navigate } = useNavigation<any>();
+
+	const {state,setState } = useBluetooth();
   return (
 
 						<S.ContainerConnections>
@@ -37,8 +43,16 @@ export function ElementConnectedDevice({ connectedDevice,connectToDevice}: Eleme
 
 										<Spacer w={16} />
 										<TouchableOpacity
-											onPress={() => {
-												// connectToDevice()
+											onPress={async() => {
+												await state.device?.disconnect()
+												setState({
+													device:undefined,
+													bluetoothEnabled: true,
+												})
+												if(isNavigateHome){
+													return navigate("Home")
+												}
+
 											}}>
 											<Text
 												color="#2E9CCB"
@@ -57,7 +71,9 @@ export function ElementConnectedDevice({ connectedDevice,connectToDevice}: Eleme
 										DESCONECTADO
 									</Text>
 
-									<TouchableOpacity onPress={()=> connectToDevice()}>
+									<TouchableOpacity onPress={() => {
+												 connectToDevice(connectedDevice)
+											}}>
 										<Text color="#2E9CCB" variant="bold">
 											Conectar
 										</Text>
