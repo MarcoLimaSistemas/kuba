@@ -26,7 +26,7 @@ import { Modalize } from 'react-native-modalize';
 import { ElementConnectedDevice } from '@components/ElementConnectedDevice';
 import { HeaderEqualizer } from '@components/Equalizer/Header';
 import EqualizerVisual from '@components/Equalizer/ui/equalizer';
-
+import { useBluetooth } from '../../../context/BluetoothContext';
 
 
 export function Preset() {
@@ -42,7 +42,7 @@ export function Preset() {
 	const [currentFrequencies, setCurrentFrequencies] = useState<IFrequency[]>(
 		[]
 	);
-
+	const { state } = useBluetooth();
 
 	const openModal = () => modalizeRef.current?.open();
 
@@ -88,6 +88,7 @@ export function Preset() {
 
 	//console.log("listFrequencies",listFrequencies )
 
+	console.log("state",state)
 	return (
 		<Container>
 			<ContainerImage>
@@ -125,7 +126,9 @@ export function Preset() {
 			<Spacer h={14} />
 
 			<ElementConnectedDevice
-			 connectedDevice={null} 
+			 isNavigateHome
+			 connectToDevice={()=>{}} 
+			 connectedDevice={state.device ? state.device: null}
 			 />
 
 			<Spacer h={16} />
@@ -138,8 +141,8 @@ export function Preset() {
 					handleModalEdit={(isEdit: boolean) => {}}
 					handleScrollEnabled={handleScrollEnabled}
 					handlePreset={handlePreset}
-					presetCustom={filtered[0].name}
-				//	frequenciesList={listFrequencies}
+					presetCustom={filtered[0]?.name ?? ""}
+					equalizerConfigs={listFrequencies}
 					/> 
 			{
 			listFrequencies &&(
