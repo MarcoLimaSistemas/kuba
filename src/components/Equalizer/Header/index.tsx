@@ -24,7 +24,6 @@ export interface IMyPresets {
   isPublic: boolean,
   genreId: number,
   description: string,
-  preamp:number;
   equalizerConfigs: IEqualizerConfig[]
 } 
 
@@ -82,7 +81,6 @@ const {
 					is_public: preset.is_public,
           genre_id: preset.genre_id,
 					description: preset.description,
-          preamp:preset.preamp,
 					equalizerConfigs: preset.equalizerConfigs
 				})) ?? []
 		);
@@ -94,7 +92,7 @@ function handleSelectPreset(preset: IMyPresets){
   setFrequency(preset.equalizerConfigs[0].frequency)
   setGain(preset.equalizerConfigs[0].decibel_quantity)
   setQuality(preset.equalizerConfigs[0].quality)
-  setSelectedOptionBand(String(preset.preamp) ?? null)
+  setSelectedOptionBand(String(preset.equalizerConfigs[0].band) ?? null)
  
 }
   return(

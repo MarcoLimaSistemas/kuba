@@ -119,11 +119,12 @@ export const ModalPreset = forwardRef(
 		const savePreset = (data: IPresets) => {
 
 		const settings={ 
-			preamp:Number(selectedOptionBand),
+		
 			equalizerConfigs:[	{
 					"frequency": frequency,
 					"decibelQuantity": gain,
-					"quality":quality
+					"quality":quality,
+					"band":Number(selectedOptionBand),
 				}]
 		}
 
@@ -137,11 +138,12 @@ const form = { ...data, ...settings } as unknown  as IPresets
 
 
 			const settings={ 
-				preamp:Number(selectedOptionBand),
+				
 				equalizerConfigs:[	{
 						"frequency": frequency,
 						"decibelQuantity": gain,
-						"quality":quality
+						"quality":quality,
+						"band":Number(selectedOptionBand),
 					}]
 			}
 	
