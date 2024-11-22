@@ -7,7 +7,6 @@ padding-top: ${scale(16)}px;
 `;
 
 export const Container = styled.ScrollView`
-
 	background: #f4f2f2;
 `;
 export const ContainerEqualizer = styled.View`

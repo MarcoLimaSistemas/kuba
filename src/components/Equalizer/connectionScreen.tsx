@@ -15,10 +15,11 @@ interface Message {
 
 interface ConnectionScreenProps {
   device: BluetoothDevice;
+  handleScrollEnabled: (enabled: boolean) => void;
   onBack: () => void;
 }
 
-const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack }) => {
+const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack,handleScrollEnabled  }) => {
   const [setText] = useState<string | undefined | Buffer>(undefined);
   const [data, setData] = useState<Message[]>([]);
   const [polling, setPolling] = useState(false);
@@ -190,7 +191,7 @@ const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack }) =
 
   return (
     <View style={styles.container}>
-      {connection && <MasterGainControl createGaiaMessage={createGaiaMessage} />}
+      {!connection && <MasterGainControl createGaiaMessage={createGaiaMessage} handleScrollEnabled={handleScrollEnabled}/>}
 
       {/* <FlatList
         style={styles.output}

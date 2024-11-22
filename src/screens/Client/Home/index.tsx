@@ -80,7 +80,7 @@ export function Home() {
       <Spacer h={32} />
 
       <Carousel devices={devices} isLoading={isLoading} />
-<Button onPress={()=>navigation.navigate("Device",{ id:123, name: "teste", imgURL:"", isBluetooth:true })} title='teste'/>
+
       <Container>
         <Spacer h={16} />
         <ContainerSchoolKuba onPress={() => navigation.navigate('School')}>

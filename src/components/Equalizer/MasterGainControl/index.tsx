@@ -19,9 +19,10 @@ enum Filter {
 
 interface FilterEqualizerScreenProps {
   createGaiaMessage: (command: Buffer) => void;
+  handleScrollEnabled: (enabled: boolean) => void;
 }
 
-const MasterGainControl: React.FC<FilterEqualizerScreenProps> = ({ createGaiaMessage }) => {
+const MasterGainControl: React.FC<FilterEqualizerScreenProps> = ({ createGaiaMessage,handleScrollEnabled }) => {
 
 const {
   frequency, 
@@ -192,6 +193,8 @@ const {
       onValueChangeFrequency={(value) => setFrequency(value)}
       onValueChangeGain={(value) => setGain(value)}
       onValueChangeQuality={(value) => setQuality(value)}
+      onTouchStart={()=>handleScrollEnabled(false)}
+      onTouchEnd={()=>handleScrollEnabled(true)}
       />
  
     </S.Container>

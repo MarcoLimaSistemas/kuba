@@ -62,7 +62,6 @@ export function Device() {
 	const [currentPreset, setCurrentPreset] = useState<IPreset | null>(null);
 
 
-
 	const [isEdit, setIsEdit] = useState(false);
 
 	const navigation = useNavigation<any>();
@@ -217,7 +216,7 @@ export function Device() {
 			
 				
 						
-		 {!state.device ? (
+		 {state.device ? (
         <DeviceListScreen
           bluetoothEnabled={state.bluetoothEnabled}
           selectDevice={selectDevice}
@@ -228,11 +227,12 @@ export function Device() {
 					<HeaderEqualizer 
 					onOpen={openModal}
 					handlePreset={handlePreset}
-				handleScrollEnabled={handleScrollEnabled}
+					handleScrollEnabled={handleScrollEnabled}
 					handleModalEdit={handleModalEdit}
 					/>
         <ConnectionScreen
           device={state.device}
+					handleScrollEnabled={handleScrollEnabled}
           onBack={() => setState((prevState) => ({ ...prevState, device: undefined }))}
         />
 				</ContainerEqualizer>

@@ -3,6 +3,7 @@ import * as S from './styles';
 import React from 'react';
 import Text from '@components/Text';
 import RadioButton from '@components/RadioButton';
+import { GestureResponderEvent } from 'react-native';
 
 
 interface IEqualizerVisualProps {
@@ -23,7 +24,8 @@ interface IEqualizerVisualProps {
   onValueChangeFrequency?: (value: number) => void;
   onValueChangeGain?: (value: number) => void;
   onValueChangeQuality?: (value: number) => void;
-
+  onTouchStart?: ((event: GestureResponderEvent) => void) | undefined;
+  onTouchEnd?:((event: GestureResponderEvent) => void) | undefined;
 }
 
 const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
@@ -45,6 +47,8 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
   onValueChangeFrequency, 
   onValueChangeGain,
   onValueChangeQuality,
+  onTouchEnd,
+  onTouchStart
 })=>{
   const options = ['1', '2', '3', '4', '5'];
 
@@ -75,7 +79,7 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
  
     <Slider
       disabled={disabled}
-      style={{ width: '100%', marginVertical: 12,	height: 3 }}
+      style={{ width: '100%', marginVertical: 12,	height: 50 }}
       minimumValue={minFrequency}
       maximumValue={maxFrequency} 
       value={frequency}
@@ -95,7 +99,7 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
     <Text color='black'>Ganho: {gain.toFixed(2)} dB</Text>
     <Slider
      disabled={disabled}
-      style={{ width: '100%', marginVertical: 12,	height: 3 }}
+      style={{ width: '100%', marginVertical: 12,	height: 50 }}
       minimumValue={-12}
       maximumValue={12}
       value={gain}
@@ -104,6 +108,8 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
       minimumTrackTintColor="#242424" 
       maximumTrackTintColor="#656565"
       thumbTintColor={disabledGain  ? '#d7d7d7' : '#242424'}
+      onTouchStart={onTouchStart} 
+      onTouchEnd={onTouchEnd} 
 
     />
     </S.ContainerSlider>
@@ -112,7 +118,7 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
     <Text color='black'>Qualidade: {quality.toFixed(2)}</Text>
     <Slider
      disabled={disabled}
-      style={{ width: '100%', marginVertical: 12,	height: 3 }}
+      style={{ width: '100%', marginVertical: 12,	height: 50 }}
       minimumValue={0.25}
       maximumValue={8}
       value={quality}
