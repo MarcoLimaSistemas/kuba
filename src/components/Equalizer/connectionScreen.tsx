@@ -191,7 +191,7 @@ const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack,hand
 
   return (
     <View style={styles.container}>
-      {!connection && <MasterGainControl createGaiaMessage={createGaiaMessage} handleScrollEnabled={handleScrollEnabled}/>}
+      {connection && <MasterGainControl createGaiaMessage={createGaiaMessage} handleScrollEnabled={handleScrollEnabled}/>}
 
       {/* <FlatList
         style={styles.output}

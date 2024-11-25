@@ -204,25 +204,21 @@ export function Device() {
 				</Text>
 
 				<Spacer h={16} />
-			
+
 				{device?.isBluetooth && (
-					<>
-					{state.device === null&&(
+					<>	
+				 {!state.device ? (
+    		    <DeviceListScreen
+    		      selectDevice={selectDevice}
+    		    />
+    		  ) : (
+				<>
+							{state.device !== null&&(
 	   					<ElementConnectedDevice 
 		 					connectToDevice={selectDevice}
 		 					connectedDevice={state.device ? state.device: null}
 								/>
 					)}
-			
-				
-						
-		 {state.device ? (
-        <DeviceListScreen
-          bluetoothEnabled={state.bluetoothEnabled}
-          selectDevice={selectDevice}
-        />
-      ) : (
-				<>
 				<ContainerEqualizer>
 					<HeaderEqualizer 
 					onOpen={openModal}
