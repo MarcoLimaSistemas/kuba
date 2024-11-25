@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import Text from '@components/Text';
 import { ElementConnectedDevice } from '@components/ElementConnectedDevice';
+import { useBluetooth } from '../../context/BluetoothContext';
 
 const requestAccessFineLocationPermission = async () => {
   const granted = await PermissionsAndroid.request(
@@ -26,14 +27,14 @@ const requestAccessFineLocationPermission = async () => {
 };
 
 interface DeviceListScreenProps {
-  bluetoothEnabled: boolean;
   selectDevice: (device: BluetoothDevice) => void;
 }
 
-const DeviceListScreen: React.FC<DeviceListScreenProps> = ({ bluetoothEnabled, selectDevice }) => {
+const DeviceListScreen: React.FC<DeviceListScreenProps> = ({  selectDevice }) => {
   const [devices, setDevices] = useState<BluetoothDevice[]>([]);
   const [accepting, setAccepting] = useState(false);
   const [discovering, setDiscovering] = useState(false);
+ const { state } = useBluetooth();
 
   useEffect(() => {
     getBondedDevices();
@@ -152,7 +153,7 @@ const DeviceListScreen: React.FC<DeviceListScreenProps> = ({ bluetoothEnabled, s
 
   return (
     <View style={styles.container}>
-      {bluetoothEnabled ? (
+      {state.bluetoothEnabled ? (
         <>
           <DeviceList devices={devices} onPress={selectDevice} />
           {/* <View style={styles.buttonContainer}>
@@ -206,6 +207,7 @@ const DeviceListItem: React.FC<DeviceListItemProps> = ({ device, onPress }) => {
     <>
         <ElementConnectedDevice 
 					connectToDevice={() => onPress(device)}
+          deviceName={device.name}
 					connectedDevice={null}
 					 />
   
