@@ -15,6 +15,7 @@ import { deletePreset } from '@services/preset';
 import { useAuth } from '@hooks/auth';
 import { queryClient } from '../../../App';
 import { IPreset } from '@models/preset';
+import Toast from 'react-native-toast-message';
 
 interface ModalDeleteProps {
 	currentPreset: IPreset | null;
@@ -30,6 +31,10 @@ export const ModalDelete = forwardRef(
 			mutationFn: () => deletePreset(user?.id, currentPreset?.id),
 			onSuccess() {
 				queryClient.invalidateQueries({ queryKey: ['MyPresets'] });
+				Toast.show({
+					type: 'success',
+					text1: 'Preset deletado!'
+				});
 				onClose();
 			}
 		});

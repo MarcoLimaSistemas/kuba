@@ -32,6 +32,7 @@ import { Modalize } from 'react-native-modalize';
 import { queryClient } from '../../../App';
 import { IFrequency } from '@screens/Client/Device';
 import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
+import Toast from 'react-native-toast-message';
 
 // export interface IPreset {
 // 	id: number;
@@ -92,6 +93,10 @@ export const ModalPreset = forwardRef(
 				await queryClient.invalidateQueries({
 					queryKey: ['MyPresets']
 				});
+				Toast.show({
+					type: 'success',
+					text1: 'Preset criado com sucesso!'
+				});
 				onClose();
 			},
 			onError(error) {
@@ -104,6 +109,10 @@ export const ModalPreset = forwardRef(
 			onSuccess: async res => {
 				await queryClient.invalidateQueries({
 					queryKey: ['MyPresets']
+				});
+				Toast.show({
+					type: 'success',
+					text1: 'Preset editado com sucesso!'
 				});
 				onClose();
 			},
