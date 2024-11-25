@@ -13,10 +13,16 @@ import { useNavigation } from '@react-navigation/native';
 interface ElementConnectedDeviceProps {
   connectedDevice: BluetoothDevice | null;
   connectToDevice:(device: BluetoothDevice) => void;
+	deviceName?:string;
 	isNavigateHome?:boolean;
 }
 
-export function ElementConnectedDevice({ connectedDevice,connectToDevice,isNavigateHome}: ElementConnectedDeviceProps) {
+export function ElementConnectedDevice({ 
+	connectedDevice,
+	connectToDevice,
+	isNavigateHome,
+	deviceName
+}	: ElementConnectedDeviceProps) {
 	const { navigate } = useNavigation<any>();
 
 	const {state,setState } = useBluetooth();
@@ -68,7 +74,7 @@ export function ElementConnectedDevice({ connectedDevice,connectToDevice,isNavig
 										fontSize={12}
 										variant="bold"
 										color="#777777">
-										DESCONECTADO
+									{deviceName ? deviceName: 'DESCONECTADO'}
 									</Text>
 
 									<TouchableOpacity onPress={() => {
