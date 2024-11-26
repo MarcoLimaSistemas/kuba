@@ -186,12 +186,17 @@ interface DeviceListProps {
   onPress: (device: BluetoothDevice) => void;
 }
 
+const filterDevicesPerName = ( devices: BluetoothDevice[])=> {
+ return devices.filter((item)=> item.name === 'Kuba Disco')
+}
+
 const DeviceList: React.FC<DeviceListProps> = ({ devices, onPress }) => {
+ const devicesFilter = filterDevicesPerName(devices)
   const renderItem = ({ item }: { item: BluetoothDevice }) => {
     return <DeviceListItem device={item} onPress={onPress} />;
   };
 
-  return <FlatList data={devices} renderItem={renderItem} keyExtractor={(item) => item.address} />;
+  return <FlatList data={devicesFilter} renderItem={renderItem} keyExtractor={(item) => item.address} />;
 };
 
 interface DeviceListItemProps {

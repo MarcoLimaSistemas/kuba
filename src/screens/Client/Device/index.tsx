@@ -166,7 +166,6 @@ export function Device() {
     };
   }, []);
 
-
 	return (
 		<Wrapper>
 			<Header />
