@@ -224,6 +224,7 @@ console.log("toggle",toggle)
               placeholder="Adicionar descrição"
               multiline
               height={128}
+              marginBottom={4}
             />
             <Text
               fontSize={12}
