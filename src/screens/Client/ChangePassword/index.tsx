@@ -95,9 +95,9 @@ export function ChangePassword() {
 							secureTextEntry={showPassword}
 							placeholder="Digite sua senha"
 							error={
-								errors.newPassword && (
+								errors.currentPassword && (
 									<TextError>
-										{errors.newPassword.message}
+										{errors.currentPassword.message}
 									</TextError>
 								)
 							}
