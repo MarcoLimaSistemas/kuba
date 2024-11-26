@@ -66,9 +66,7 @@ export function School() {
             <StatusBar barStyle="light-content" />
             <ContainerBody>
               
-            {classes.length === 0 ? (
-              <TextNotVideos>No momento não temos nenhum video!</TextNotVideos>
-            ) : (
+       
               <FlatList
                 data={classes}
                 ItemSeparatorComponent={() => <Spacer h={16} />}
@@ -120,8 +118,14 @@ export function School() {
                   />
                   </ContainerVideos>
                 )}
+                ListEmptyComponent={
+                <>
+                <Wrapper>
+                <TextNotVideos>No momento não temos nenhum video!</TextNotVideos>
+              </Wrapper>
+              </>}
               />
-            )}
+  
      
         </ContainerBody>
 

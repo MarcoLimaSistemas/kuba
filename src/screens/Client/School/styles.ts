@@ -30,6 +30,6 @@ export const ContainerVideos = styled.View`
 export const TextNotVideos = styled.Text`
 font-size: ${RFValue(14)}px;
 text-align: justify;
-padding-left: 4px;
+padding-left:  ${scale(24)}px;
 color: ${({ theme }) => theme.COLORS.white_100};
 `;
