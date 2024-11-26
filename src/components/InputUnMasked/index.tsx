@@ -16,6 +16,7 @@ interface InputUnMaskedProps extends TextInputProps {
 	setShowPassword?: React.Dispatch<React.SetStateAction<boolean>> | any;
 	error?: ReactNode;
 	height?: number | undefined;
+	marginBottom?:number;
 }
 
 export function InputUnMasked({
@@ -27,10 +28,11 @@ export function InputUnMasked({
 	showPassword,
 	setShowPassword,
 	height,
+	marginBottom,
 	...props
 }: InputUnMaskedProps) {
 	return (
-		<InputGroup>
+		<InputGroup marginBottom={marginBottom}>
 			<Text variant="bold" fontSize={14}>
 				{label}
 			</Text>

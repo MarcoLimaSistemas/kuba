@@ -4,8 +4,12 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import { typography } from '../../styles/typography';
 import { scale } from 'react-native-size-matters';
 
-export const InputGroup = styled.View`
-	margin-bottom: ${RFValue(16)}px;
+
+export const InputGroup = styled.View<{	
+	marginBottom?: number | undefined
+	 }>`
+	margin-bottom: ${({ marginBottom }) => (marginBottom ? scale(marginBottom) : scale(16))}px;
+
 `;
 
 export const InputArea = styled.View<{
@@ -41,6 +45,7 @@ export const Input = styled.TextInput<{
 	color: ${({ theme }) => theme.COLORS.black};
 	font-family: ${typography['Lato-Regular'].fontFamily};
 	flex: 1;
+
 `;
 
 export const Error = styled.Text`
