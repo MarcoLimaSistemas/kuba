@@ -34,7 +34,7 @@ const {
   selectedOptionBand, 
   setSelectedOptionBand,
 } = useValuesEqualizer()
-  const [minFrequency, setMinFrequency] = useState<number>(0.2);
+  const [minFrequency, setMinFrequency] = useState<number>(20);
   const [maxFrequency, setMaxFrequency] = useState<number>(20000);
 
   const [] = useState<string | null>('');
