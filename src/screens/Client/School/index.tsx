@@ -60,6 +60,14 @@ export function School() {
         contentContainerStyle={{
           flexGrow: 1,
         }}
+        from={{
+          translateY: -100,
+          opacity: 1,
+        }}
+        animate={{
+          translateY: 0,
+          opacity: 1,
+        }}
         refreshControl={
           <RefreshControl refreshing={isLoading} onRefresh={refetch} />
         }>

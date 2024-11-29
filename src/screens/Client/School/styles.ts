@@ -1,3 +1,4 @@
+import { MotiScrollView } from 'moti';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { scale } from 'react-native-size-matters';
 import styled from 'styled-components/native';
@@ -8,7 +9,7 @@ export const Wrapper = styled.View`
 	background-color: ${({ theme }) => theme.COLORS.black};
 `;
 
-export const Container = styled.ScrollView`
+export const Container = styled(MotiScrollView)`
 	background-color: ${({ theme }) => theme.COLORS.black};
 `;
 

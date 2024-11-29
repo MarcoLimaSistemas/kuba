@@ -90,7 +90,16 @@ export function Preset() {
 
 	console.log("state",state)
 	return (
-		<Container>
+		<Container 
+		from={{
+			translateY: -128,
+			opacity: 0.5,
+		}}
+		animate={{
+			translateY: 0,
+			opacity: 1,
+		}}
+		>
 			<ContainerImage>
 				<LinearGradient
 					colors={['transparent', '#f4f2f2']}

@@ -31,6 +31,7 @@ import {useMutation} from '@tanstack/react-query';
 import User, {IEditInfoProps} from '@services/user';
 import Toast from 'react-native-toast-message';
 import {queryClient} from '../../../../App';
+import { MotiView } from 'moti';
 
 export function Profile() {
   const navigation = useNavigation();
@@ -75,7 +76,16 @@ export function Profile() {
   }
 
   return (
-    <>
+    <MotiView
+    from={{
+			translateY: -128,
+			opacity: 0.5,
+		}}
+		animate={{
+			translateY: 0,
+			opacity: 1,
+		}}
+    >
       <Header title="Perfil" />
       <Spacer h={16} />
       <ScrollView
@@ -174,6 +184,6 @@ export function Profile() {
           <Button title="Sair" onPress={logout} />
         </Container>
       </ScrollView>
-    </>
+    </MotiView>
   );
 }

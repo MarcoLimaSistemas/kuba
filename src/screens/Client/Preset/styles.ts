@@ -1,7 +1,8 @@
+import { MotiScrollView } from 'moti';
 import { scale } from 'react-native-size-matters';
 import styled from 'styled-components/native';
 
-export const Container = styled.ScrollView`
+export const Container = styled(MotiScrollView)`
   margin-top:  ${scale(24)}px;
 `;
 
