@@ -37,6 +37,23 @@ const {
   const [minFrequency, setMinFrequency] = useState<number>(20);
   const [maxFrequency, setMaxFrequency] = useState<number>(20000);
 
+  const logMinFrequency = Math.log10(minFrequency);
+  const logMaxFrequency = Math.log10(maxFrequency);
+
+  const logMinQuality = Math.log10(0.25);
+  const logMaxQuality = Math.log10(8);
+
+  // Converts the linear value (0 to 1) to logarithmic in the real range
+  const convertLogScaleFrequency = (linearValue: number) =>{
+   const result =  Math.pow(10, linearValue * (logMaxFrequency - logMinFrequency) + logMinFrequency);
+   return parseFloat(result.toFixed(1));
+  }
+
+  const convertLogScaleQuality = (linearValue: number) =>
+    Math.pow(10, linearValue * (logMaxQuality - logMinQuality) + logMinQuality);
+
+
+
   const [] = useState<string | null>('');
  
 
@@ -178,21 +195,21 @@ const {
        
       <EqualizerVisual
       frequency={frequency}
-      gain={gain}
       quality={quality}
+      gain={gain}
       maxFrequency={maxFrequency}
       minFrequency={minFrequency}
       optionBand={selectedOptionBand}
       disabledFrequency={disabledFrequency}
-      disabledGain={disabledGain}
       disabledQuality={disabledQuality}
+      disabledGain={disabledGain}
       onSelect={handleSelect}
       generateCodeForFrequency={generateCodeForFrequency}
-      generateCodeForGain={generateCodeForGain}
       generateCodeForQuality={generateCodeForQuality}
-      onValueChangeFrequency={(value) => setFrequency(value)}
-      onValueChangeGain={(value) => setGain(value)}
-      onValueChangeQuality={(value) => setQuality(value)}
+      generateCodeForGain={generateCodeForGain}
+      onValueChangeFrequency={(value) => setFrequency(convertLogScaleFrequency(value))}
+      onValueChangeQuality={(value) => setQuality(convertLogScaleQuality(value))}
+      onValueChangeGain={(value) => setGain((value))}
       onTouchStart={()=>handleScrollEnabled(false)}
       onTouchEnd={()=>handleScrollEnabled(true)}
       />

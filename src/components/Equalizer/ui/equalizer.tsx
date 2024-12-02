@@ -59,6 +59,26 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
     return `${(value / 1000).toFixed(1)} kHz`;
   };
 
+  const logMinFrequency = Math.log10(minFrequency);
+  const logMaxFrequency = Math.log10(maxFrequency);
+
+  const logMinQuality = Math.log10(0.25);
+  const logMaxQuality = Math.log10(8);
+
+
+
+
+  const convertLinearScaleFrequency = (logValue: number) =>{
+    const result = (Math.log10(logValue) - logMinFrequency) / (logMaxFrequency - logMinFrequency);
+    return Math.max(0, Math.min(result, 1)); 
+  }
+
+  const convertLinearScaleQuality = (logValue: number) =>{
+    const result =  (Math.log10(logValue) - logMinQuality ) / (logMaxQuality - logMinQuality );
+    return Math.max(0, Math.min(result, 1));
+  }
+
+
   return(
     <S.Container>
 
@@ -75,34 +95,54 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
 
 
     <S.ContainerSlider>
+
+
+
     <Text color='black'>Frequência: {formatFrequency(frequency)}</Text>
- 
+
     <Slider
       disabled={disabled}
       style={{ width: '100%', marginVertical: 12,	height: 50 }}
-      minimumValue={minFrequency}
-      maximumValue={maxFrequency} 
-      value={frequency}
+      minimumValue={0} 
+      maximumValue={1} 
+      value={convertLinearScaleFrequency(frequency)}
       onValueChange={onValueChangeFrequency}
       onSlidingComplete={generateCodeForFrequency}
       minimumTrackTintColor="#242424" 
       maximumTrackTintColor="#656565"
       thumbTintColor={disabledFrequency  ? '#d7d7d7' : '#242424'}
-      step={0.1}
-     
-    />
-
+      step={0.00001} 
+    />  
  
     </S.ContainerSlider>
-
+ 
     <S.ContainerSlider>
-    <Text color='black'>Ganho: {gain.toFixed(2)} dB</Text>
+    <Text color='black'>Qualidade: {quality.toFixed(2)}</Text>
     <Slider
      disabled={disabled}
       style={{ width: '100%', marginVertical: 12,	height: 50 }}
-      minimumValue={-12}
-      maximumValue={12}
-      value={gain}
+      minimumValue={0}
+      maximumValue={1}
+      value={convertLinearScaleQuality(quality)}
+      onValueChange={onValueChangeQuality}
+      onSlidingComplete={generateCodeForQuality}
+      minimumTrackTintColor="#242424" 
+      maximumTrackTintColor="#656565"
+      thumbTintColor={disabledQuality  ? '#d7d7d7' : '#242424'}
+      step={0.001}
+    />
+    </S.ContainerSlider>
+    
+    <S.ContainerSlider>
+    <Text color='black'>Ganho: {gain.toFixed(1)} dB</Text>
+
+
+   <Slider
+     disabled={disabled}
+      style={{ width: '100%', marginVertical: 12,	height: 50 }}
+      minimumValue={-10}
+      maximumValue={10}
+      value={(gain)}
       onValueChange={onValueChangeGain}
       onSlidingComplete={generateCodeForGain}
       minimumTrackTintColor="#242424" 
@@ -110,28 +150,15 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
       thumbTintColor={disabledGain  ? '#d7d7d7' : '#242424'}
       onTouchStart={onTouchStart} 
       onTouchEnd={onTouchEnd} 
-
-    />
+      step={0.01}
+    />  
     </S.ContainerSlider>
 
-    <S.ContainerSlider>
-    <Text color='black'>Qualidade: {quality.toFixed(2)}</Text>
-    <Slider
-     disabled={disabled}
-      style={{ width: '100%', marginVertical: 12,	height: 50 }}
-      minimumValue={0.25}
-      maximumValue={8}
-      value={quality}
-      onValueChange={onValueChangeQuality}
-      onSlidingComplete={generateCodeForQuality}
-      minimumTrackTintColor="#242424" 
-      maximumTrackTintColor="#656565"
-      thumbTintColor={disabledQuality  ? '#d7d7d7' : '#242424'}
-
-    />
-    </S.ContainerSlider>
+   
     </S.ContainerEqualizer>
     </S.Container>
   )
 }
 export default  EqualizerVisual
+
+
