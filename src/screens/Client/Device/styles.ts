@@ -1,7 +1,8 @@
+import { MotiView } from 'moti';
 import { scale } from 'react-native-size-matters';
 import styled from 'styled-components/native';
 
-export const Wrapper = styled.View`
+export const Wrapper = styled(MotiView)`
 flex: 1;
 padding-top: ${scale(16)}px;
 `;
@@ -20,7 +21,7 @@ export const ContainerEqualizer = styled.View`
 	
 `;
 
-export const ContainerImg = styled.View`
+export const ContainerImg = styled(MotiView)`
 	height: ${scale(200)}px;
 	justify-content: center;
 	align-items: center;

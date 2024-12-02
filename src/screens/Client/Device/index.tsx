@@ -167,16 +167,35 @@ export function Device() {
   }, []);
 
 	return (
-		<Wrapper>
+		<Wrapper      
+		from={{
+			translateY: -128,
+			opacity: 0.5,
+		}}
+		animate={{
+			translateY: 0,
+			opacity: 1,
+		}}
+	>
 			<Header />
 
 			<Spacer h={8} />
-
+	
 			<Container
 				contentContainerStyle={{ flexGrow: 1 }}
 				showsVerticalScrollIndicator={false}
 				scrollEnabled={scrollEnabled}>
-				<ContainerImg>
+				<ContainerImg 
+				     from={{
+							translateY: 300,
+							opacity: 0.5,
+						}}
+						animate={{
+							translateY: 0,
+							opacity: 1,
+						}}
+					transition={{type:'spring'}}
+				>
 					<Image
 						style={{
 							width: '80%',
@@ -204,7 +223,7 @@ export function Device() {
 
 				<Spacer h={16} />
 
-				{device?.isBluetooth && (
+			{device?.isBluetooth && (
 					<>	
 				 {!state.device ? (
     		    <DeviceListScreen
