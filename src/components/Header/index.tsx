@@ -19,9 +19,7 @@ export const Header = ({ title, typeLogo = 'black' }: IHeaderProps) => {
 	const navigation = useNavigation();
 	const insets = useSafeAreaInsets();
 
-	const { data } = userDetails({
-		isEnabled: !title
-	});
+
 
 	const goToProfile = () => {
 		navigation.navigate('Profile');
@@ -55,15 +53,6 @@ export const Header = ({ title, typeLogo = 'black' }: IHeaderProps) => {
 						<Icons.LogoWhite />
 					)}
 
-					<TouchableOpacity onPress={goToProfile}>
-						<S.Avatar
-							source={
-								data?.client.profile_url
-									? { uri: data?.client?.profile_url }
-									: require('@assets/images/avatar.png')
-							}
-						/>
-					</TouchableOpacity>
 				</S.ContainerWithAvatar>
 			)}
 		</S.Container>
