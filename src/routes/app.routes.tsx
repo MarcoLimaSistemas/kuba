@@ -16,33 +16,34 @@ const AppRoutes = () => {
 				headerShown: false,
 				cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
 			}}>
-			<Stack.Screen
+		 {/* <Stack.Screen
 				name="Home"
 				component={Client.Home}
-			/>
-			<Stack.Screen name="Profile" component={Client.Profile} />
+			/> */}
+			{/* <Stack.Screen name="Profile" component={Client.Profile} />
 			<Stack.Screen name="ProfileView" component={Client.ProfileView} />
-			<Stack.Screen name="EditProfile" component={Client.EditProfile} />
+			<Stack.Screen name="EditProfile" component={Client.EditProfile} />  */}
 
 			<Stack.Screen
 				name="Device"
 				component={Client.Device}
 			/>
 
-			<Stack.Screen name="Tutorials" component={Client.Tutorials} />
+			{/* <Stack.Screen name="Tutorials" component={Client.Tutorials} />
 			<Stack.Screen
 				name="SettingsEarphone"
 				component={Client.SettingsEarphone}
 			/>
 			<Stack.Screen name="School" component={Client.School} />
+			*/}
 			<Stack.Screen name="Preset" component={Client.Preset} 
-				/>
+				/> 
 			<Stack.Screen
 				name="Personalities"
 				component={Client.Personalities}
 			/>
 			<Stack.Screen name="Profiles" component={Client.Profiles} />
-			<Stack.Screen
+			{/* <Stack.Screen
 				name="FrequentlyQuestions"
 				component={Client.FrequentlyQuestions}
 			/>
@@ -59,7 +60,7 @@ const AppRoutes = () => {
 			<Stack.Screen
 				name="SupportSuccess"
 				component={Client.SupportSuccess}
-			/>
+			/> */}
 		</Stack.Navigator>
 	);
 };
