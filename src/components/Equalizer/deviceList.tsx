@@ -187,7 +187,7 @@ interface DeviceListProps {
 }
 
 const filterDevicesPerName = ( devices: BluetoothDevice[])=> {
- return devices.filter((item)=> item.name === 'Kuba Disco')
+ return devices.filter((item)=> item.name === 'Kuba Disco' || item.name === 'Kuba Disco Bluetooth')
 }
 
 const DeviceList: React.FC<DeviceListProps> = ({ devices, onPress }) => {
