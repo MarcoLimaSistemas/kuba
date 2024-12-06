@@ -11,94 +11,58 @@ import {
 	ContainerCarousel
 } from './styles';
 import Text from '@components/Text';
-import { Equalizer, IFrequenciesListProps } from '@components/Equalizer';
-import { IPreset } from '@components/ModalPreset';
+
+
 import { scale } from 'react-native-size-matters';
 import { Spacer } from '@components/Spacer';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { IFrequency } from '../Device';
 import LinearGradient from 'react-native-linear-gradient';
-import { CarouselProfile } from '@components/CarouselProfile';
-import { useQuery } from '@tanstack/react-query';
-import { getPresets, getPresetsPublics } from '@services/preset';
-import { useAuth } from '@hooks/auth';
+
 import { Modalize } from 'react-native-modalize';
 import { ElementConnectedDevice } from '@components/ElementConnectedDevice';
 import { HeaderEqualizer } from '@components/Equalizer/Header';
 import EqualizerVisual from '@components/Equalizer/ui/equalizer';
 import { useBluetooth } from '../../../context/BluetoothContext';
+import { IPreset } from '@models/preset';
 
 
 export function Preset() {
 	const navigation = useNavigation();
 	const route = useRoute();
-	const { user } = useAuth();
+
 	const { preset } = route.params as any;
+
+	const listFrequencies = preset.data as IPreset
 
 	const modalizeRef = useRef<Modalize>(null);
 
 	const [scrollEnabled, setScrollEnabled] = useState(true);
 	const [currentPreset, setCurrentPreset] = useState<IPreset | null>(null);
-	const [currentFrequencies, setCurrentFrequencies] = useState<IFrequency[]>(
-		[]
-	);
+
 	const { state } = useBluetooth();
 
 	const openModal = () => modalizeRef.current?.open();
 
-
-	const { data: personalitiesData, isFetched } = useQuery({
-		queryKey: ['PersonalitiesOnDeviceScreen',preset.id],
-		queryFn: () => getPresets(user?.id, undefined, 1, false, 5)
-	});
-
-	const personalities = useMemo(() => {
-		return personalitiesData?.data ?? [];
-	}, [personalitiesData]);
-
-	const { data: profilesData } = useQuery({
-		queryKey: ['PresetsPublicsOnDeviceScreen'],
-		queryFn: () => getPresetsPublics(user?.id, undefined, 1, 5),
-		enabled: isFetched
-	});
-
-	const profiles = useMemo(() => {
-		return profilesData?.data ?? [];
-	}, [profilesData]);
 
 	const handleScrollEnabled = (enabled: boolean) => {
 		setScrollEnabled(enabled);
 	};
 
 	const handlePreset = (preset: IPreset) => {
-		setCurrentPreset(preset);
+		//setCurrentPreset(preset);
 	};
 
-	const handleFrequencies = (frequencies: IFrequency[]) => {
-		setCurrentFrequencies(frequencies);
-	};
 
-  const filtered = personalities.filter((item) => item.id === preset.id)
-
-  const listFrequencies = filtered[0]?.equalizerConfigs?.map((item)=> {
-		return item
-  })
-
-//console.log('filtered',filtered)
-
-	//console.log("listFrequencies",listFrequencies )
-
-	console.log("state",state)
 	return (
-		<Container 
-		from={{
-			translateY: -128,
-			opacity: 0.5,
-		}}
-		animate={{
-			translateY: 0,
-			opacity: 1,
-		}}
+		<Container
+			from={{
+				translateY: -128,
+				opacity: 0.5,
+			}}
+			animate={{
+				translateY: 0,
+				opacity: 1,
+			}}
 		>
 			<ContainerImage>
 				<LinearGradient
@@ -115,7 +79,7 @@ export function Preset() {
 
 				<ImageProfile
 					source={{
-						uri: preset.imgURL
+						uri: "https://kuba-staging-api-files.s3.sa-east-1.amazonaws.com/preset/808-1"
 					}}
 				/>
 
@@ -135,67 +99,42 @@ export function Preset() {
 			<Spacer h={14} />
 
 			<ElementConnectedDevice
-			 isNavigateHome
-			 connectToDevice={()=>{}} 
-			 connectedDevice={state.device ? state.device: null}
-			 />
+				isNavigateHome
+				connectToDevice={() => { }}
+				connectedDevice={state.device ? state.device : null}
+			/>
 
 			<Spacer h={16} />
 
 			<ContainerBody>
 				<ContainerEqualizer>
-				 <HeaderEqualizer 
-					disabled
-					onOpen={openModal}
-					handleModalEdit={(isEdit: boolean) => {}}
-					handleScrollEnabled={handleScrollEnabled}
-					handlePreset={handlePreset}
-					presetCustom={filtered[0]?.name ?? ""}
-					equalizerConfigs={listFrequencies}
-					/> 
-			{
-			listFrequencies &&(
-				<EqualizerVisual
-					disabled
-     		 frequency={listFrequencies[0]?.frequency ?? 0}
-     		 gain={listFrequencies[0]?.decibel_quantity ?? 0}
-     		 quality={listFrequencies[0]?.quality ?? 0}
-     		 minFrequency={0.2}
-     		 maxFrequency={20000}
-     		 optionBand={'1'}
-     		 disabledFrequency={true}
-     		 disabledGain={true}
-     		 disabledQuality={true}
-     		onSelect={()=>{}}
-     		 />
-				)
-			}
-			
-		
-{/* 					
-					 <Equalizer
+					<HeaderEqualizer
 						disabled
 						onOpen={openModal}
-						handleModalEdit={(isEdit: boolean) => {}}
-						handleFrequencies={handleFrequencies}
-						handlePreset={handlePreset}
+						handleModalEdit={(isEdit: boolean) => { }}
 						handleScrollEnabled={handleScrollEnabled}
-						frequenciesList={listFrequencies}
-					/>   */}
-						<ContainerCarousel>
-						<CarouselProfile
-								titleProfile={'Perfis Personalidades'}
-								data={personalities}
+						handlePreset={handlePreset}
+						presetCustom={listFrequencies.name ?? ""}
+						equalizerConfigs={listFrequencies.equalizerConfigs}
+					/>
+					{
+						listFrequencies && (
+							<EqualizerVisual
+								disabled
+								frequency={listFrequencies.equalizerConfigs[0].frequency ?? 0}
+								gain={listFrequencies.equalizerConfigs[0]?.decibel_quantity ?? 0}
+								quality={listFrequencies.equalizerConfigs[0]?.quality ?? 0}
+								minFrequency={0.2}
+								maxFrequency={20000}
+								optionBand={'1'}
+								disabledFrequency={true}
+								disabledGain={true}
+								disabledQuality={true}
+								onSelect={() => { }}
 							/>
+						)
+					}
 
-							<Spacer h={16} />
-
-							<CarouselProfile
-								titleProfile={'Perfis Públicos '}
-								data={profiles}
-								isPersonalities={false}
-							/>
-							</ContainerCarousel>
 				</ContainerEqualizer>
 
 				<Spacer h={16} />
