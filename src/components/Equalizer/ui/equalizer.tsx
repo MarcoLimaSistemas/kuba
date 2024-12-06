@@ -117,7 +117,7 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
     </S.ContainerSlider>
  
     <S.ContainerSlider>
-    <Text color='black'>Qualidade: {quality.toFixed(2)}</Text>
+    <Text color='black'>Qualidade: {quality?.toFixed(2)}</Text>
     <Slider
      disabled={disabled}
       style={{ width: '100%', marginVertical: 12,	height: 50 }}
@@ -134,7 +134,7 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
     </S.ContainerSlider>
     
     <S.ContainerSlider>
-    <Text color='black'>Ganho: {gain.toFixed(1)} dB</Text>
+    <Text color='black'>Ganho: {gain?.toFixed(1)} dB</Text>
 
 
    <Slider
