@@ -193,22 +193,7 @@ const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack,hand
     <View style={styles.container}>
       {connection && <MasterGainControl createGaiaMessage={createGaiaMessage} handleScrollEnabled={handleScrollEnabled}/>}
 
-      {/* <FlatList
-        style={styles.output}
-        contentContainerStyle={{ justifyContent: 'flex-end' }}
-        inverted
-        data={data}
-        keyExtractor={(item) => item.timestamp.toISOString()}
-        renderItem={({ item }) => (
-          <View
-            id={item.timestamp.toISOString()}
-            style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-            <Text style={{color:"#000"}}>{item.timestamp.toLocaleDateString()}</Text>
-            <Text style={{color:"#000"}}>{item.type === 'sent' ? ' < ' : ' > '}</Text>
-            <Text style={{ flexShrink: 1 ,color:"#000"}}>{item.data.trim()}</Text>
-          </View>
-        )}
-      /> */}
+
     </View>
   );
 };
