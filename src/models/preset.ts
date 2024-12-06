@@ -1,4 +1,5 @@
 export interface IPresets {
+	id?: number;
 	name: string;
 	description: string;
 	equalizerConfigs: IEqualizerConfig[];

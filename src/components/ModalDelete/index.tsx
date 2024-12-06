@@ -16,6 +16,7 @@ import { useAuth } from '@hooks/auth';
 import { queryClient } from '../../../App';
 import { IPreset } from '@models/preset';
 import Toast from 'react-native-toast-message';
+import { deletePresetInternal } from '@services/internal-storage';
 
 interface ModalDeleteProps {
 	currentPreset: IPreset | null;
@@ -24,11 +25,11 @@ interface ModalDeleteProps {
 
 export const ModalDelete = forwardRef(
 	({ onClose, currentPreset }: ModalDeleteProps, ref) => {
-		const { user } = useAuth();
 
 		const { mutateAsync, isPending } = useMutation({
 			mutationKey: ['DeletePreset'],
-			mutationFn: () => deletePreset(user?.id, currentPreset?.id),
+			mutationFn: () => deletePresetInternal(currentPreset?.id ? currentPreset?.id : 0),
+
 			onSuccess() {
 				queryClient.invalidateQueries({ queryKey: ['MyPresets'] });
 				Toast.show({
@@ -41,6 +42,7 @@ export const ModalDelete = forwardRef(
 
 		const handleDelete = () => {
 			mutateAsync();
+
 		};
 
 		return (

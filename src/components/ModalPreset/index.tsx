@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useRef } from 'react';
+import React, { forwardRef, useEffect, useMemo, useRef } from 'react';
 import { Button } from '@components/Button';
 import { ModalDelete } from '@components/ModalDelete';
 
@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Pressable, Switch, TouchableOpacity } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
+
 
 import { IPreset, IPresets } from '../../models/preset';
 
@@ -27,12 +28,14 @@ import theme from '../../styles/theme';
 import { typography } from '../../styles/typography';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { createPreset, editPreset, getGenres } from '@services/preset';
-import { useAuth } from '@hooks/auth';
 import { Modalize } from 'react-native-modalize';
 import { queryClient } from '../../../App';
 import { IFrequency } from '@screens/Client/Device';
 import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
 import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { STORAGE_PRESET } from '@config/storage';
+import { getDataPresets, updatePresetInternal } from '@services/internal-storage';
 
 // export interface IPreset {
 // 	id: number;
@@ -56,7 +59,6 @@ export const ModalPreset = forwardRef(
 			isEdit,
 			onClose,
 			currentPreset,
-
 		}: ModalPresetProps,
 		ref
 	) => {
@@ -70,12 +72,12 @@ export const ModalPreset = forwardRef(
 		const closeModal = () => modalizeRef.current?.close();
 
 
-	const {
-		frequency, 
-		gain, 
-		quality, 
-		 selectedOptionBand
-	} = useValuesEqualizer()
+		const {
+			frequency,
+			gain,
+			quality,
+			selectedOptionBand
+		} = useValuesEqualizer()
 
 
 		const {
@@ -85,10 +87,19 @@ export const ModalPreset = forwardRef(
 			formState: { errors }
 		} = useForm<IPresets>();
 
-		const { user } = useAuth();
+
+		const { data: profilesData } = useQuery({
+			queryKey: ['MyPresets'],
+			queryFn: async () => await getDataPresets(),
+			//enabled: isFetched
+		});
+		const profiles = useMemo(() => {
+			return profilesData ?? [];
+		}, [profilesData]);
+
 
 		const { mutateAsync, isPending } = useMutation({
-			mutationFn: (data: IPresets) => createPreset(data, user?.id),
+			mutationFn: (data: IPresets[]) => updatePresetInternal(data),
 			onSuccess: async res => {
 				await queryClient.invalidateQueries({
 					queryKey: ['MyPresets']
@@ -100,12 +111,12 @@ export const ModalPreset = forwardRef(
 				onClose();
 			},
 			onError(error) {
-				console.log(error);
+				console.error(error);
 			}
 		});
 
-		const { mutateAsync: mutateAsyncEdit, isPending:isPendingEdit } = useMutation({
-			mutationFn: (data: IPresets) => editPreset(data, currentPreset?.id ?? 0,user?.id),
+		const { mutateAsync: mutateAsyncEdit, isPending: isPendingEdit } = useMutation({
+			mutationFn: (data: IPresets[]) => updatePresetInternal(data),
 			onSuccess: async res => {
 				await queryClient.invalidateQueries({
 					queryKey: ['MyPresets']
@@ -125,59 +136,76 @@ export const ModalPreset = forwardRef(
 			setIsEnabled(previousState => !previousState);
 		};
 
-		const savePreset = (data: IPresets) => {
+		const savePreset = async (data: IPresets) => {
+			try {
 
-		const settings={ 
-		
-			equalizerConfigs:[	{
-					"frequency": frequency,
-					"decibelQuantity": gain,
-					"quality":quality,
-					"band":Number(selectedOptionBand),
-				}]
-		}
+				const settings = {
 
-const form = { ...data, ...settings } as unknown  as IPresets
-
-//console.log('form', form )
-			mutateAsync(form);
-		};
-
-		const editPresetUser = (data: IPresets) => {
-
-
-			const settings={ 
-				
-				equalizerConfigs:[	{
+					equalizerConfigs: [{
 						"frequency": frequency,
 						"decibelQuantity": gain,
-						"quality":quality,
-						"band":Number(selectedOptionBand),
+						"quality": quality,
+						"band": Number(selectedOptionBand),
 					}]
-			}
-	
-	const form = { ...data, ...settings } as unknown  as IPresets
+				}
+				const form = { id: profiles?.length + 1, ...data, ...settings } as unknown as IPresets
 
-	//console.log('form edit', form )
-	mutateAsyncEdit(form)
+				const existingData = await AsyncStorage.getItem(STORAGE_PRESET)
+				const parsedData = existingData ? JSON.parse(existingData) : [];
+				const updatedData = [...parsedData, form] as IPresets[];
+
+				mutateAsync(updatedData);
+			} catch (err) {
+				console.error("Error", err)
+			}
+
 		};
 
-		const { data, isLoading } = useQuery({
-			queryKey: ['Genres'],
-			queryFn: () => getGenres(user?.id)
-		});
+		const editPresetUser = async (data: IPresets) => {
+			try {
 
-		const genres = data?.map((genre: any) => ({
-			value: genre.id,
-			label: genre.name
-		}));
+				const settings = {
 
+					equalizerConfigs: [{
+						"frequency": frequency,
+						"decibelQuantity": gain,
+						"quality": quality,
+						"band": Number(selectedOptionBand),
+					}]
+				}
+
+				const form = { ...data, ...settings } as unknown as IPresets
+
+				const existingData = await AsyncStorage.getItem(STORAGE_PRESET);
+				const parsedData = existingData ? JSON.parse(existingData) : [];
+
+				const updatedData = parsedData.map((item: IPresets) =>
+					item.id === currentPreset?.id ? { ...item, ...form } : item
+				);
+				mutateAsyncEdit(updatedData)
+			} catch (err) {
+				console.error("Error", err)
+			}
+
+
+		};
+
+
+		const genres = [
+			{
+				value: 1,
+				label: "Rock"
+			}, {
+				value: 2,
+				label: "Reggae"
+			},
+		]
 		useEffect(() => {
 			if (isEdit) {
 				setValueForm('name', currentPreset?.name ?? '');
 				setValueForm('description', currentPreset?.description ?? '');
-			  setValueForm('equalizerConfigs',currentPreset?.equalizerConfigs?? []);
-				setValue(currentPreset?.genre_id ??0);
+				setValueForm('equalizerConfigs', currentPreset?.equalizerConfigs ?? []);
+				setValue(currentPreset?.genre_id ?? 0);
 				setIsEnabled(currentPreset?.is_public ?? false);
 			} else {
 				setValueForm('name', '');
@@ -268,7 +296,7 @@ const form = { ...data, ...settings } as unknown  as IPresets
 							setOpen={setOpen}
 							setValue={setValue}
 							// setItems={setItems}
-							loading={isLoading}
+							//loading={isLoading}
 							placeholder={'Gênero'}
 							style={{
 								borderWidth: 2,
