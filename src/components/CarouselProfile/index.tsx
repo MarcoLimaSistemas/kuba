@@ -7,9 +7,10 @@ import { Spacer } from '@components/Spacer';
 import Text from '@components/Text';
 import { useNavigation } from '@react-navigation/native';
 import { scale } from 'react-native-size-matters';
+import { IPreset } from '@models/preset';
 
 interface CarouselProfileProps {
-	data: any;
+	data: IPreset[];
 	titleProfile: string;
 	isPersonalities?: boolean;
 }
@@ -19,6 +20,7 @@ export function CarouselProfile({
 	titleProfile,
 	isPersonalities = true
 }: CarouselProfileProps) {
+
 	const navigation = useNavigation();
 	return (
 		<>
@@ -36,35 +38,14 @@ export function CarouselProfile({
 				horizontal
 				ItemSeparatorComponent={() => <Spacer w={16} />}
 				renderItem={({ item }) => (
-					<CardProfile
-					  id={item.id}
-						name={item.name}
-						imgURL={
-							isPersonalities
-								? item.img_url
-								: item.client.profile_url 
-							
-						}
-					/>
+						 <CardProfile
+						 key={item.id}
+						data={item}
+						/>
+
 				)}
 				ListFooterComponent={() => (
 					<>
-						<ButtonViewGallery
-							style={{
-								backgroundColor: '#FFF',
-								borderRadius: 8,
-								elevation: 6,
-								marginHorizontal: scale(16)
-							}}
-							onPress={() =>
-								isPersonalities
-									? navigation.navigate('Personalities')
-									: navigation.navigate('Profiles')
-							}>
-							<Text color="#6E6E6E" fontSize={12} variant="bold">
-								Acessar galeria
-							</Text>
-						</ButtonViewGallery>
 					</>
 				)}
 			/>

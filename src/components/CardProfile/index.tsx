@@ -3,14 +3,18 @@ import React from 'react';
 import { Container, ImageBackground, ContainerText } from './styles';
 import Text from '@components/Text';
 import { useNavigation } from '@react-navigation/native';
+import { IPreset } from '@models/preset';
 
 interface CardProfileProps {
 	id: number;
 	name: string;
 	imgURL: string;
+
 }
 
-export function CardProfile({ id,name, imgURL }: CardProfileProps) {
+
+export function CardProfile({data}:{data: IPreset}) {
+
 	const navigation = useNavigation<any>();
 
 	return (
@@ -18,17 +22,12 @@ export function CardProfile({ id,name, imgURL }: CardProfileProps) {
 			onPress={() =>
 				navigation.navigate('Preset', {
 					preset: {
-						id,
-						name,
-						imgURL
+						data
 					}
 				})
 			}>
 			<ImageBackground
-				source={
-					imgURL ? {
-					uri: imgURL
-				}: require('@assets/images/avatar.png')}
+				source={{uri:"https://kuba-staging-api-files.s3.sa-east-1.amazonaws.com/preset/808-1"}}
 			/>
 			<ContainerText>
 				<Text
@@ -38,7 +37,7 @@ export function CardProfile({ id,name, imgURL }: CardProfileProps) {
 					style={{
 						textTransform: 'uppercase'
 					}}>
-					{name}
+					{data.name}
 				</Text>
 			</ContainerText>
 		</Container>
