@@ -9,7 +9,7 @@ import DropDownPicker, { ValueType } from 'react-native-dropdown-picker';
 
 import { typography } from '../../../styles/typography';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { getPresetsOwn } from '@services/preset';
 import { useAuth } from '@hooks/auth';
 import { IFrequenciesListProps } from '..';
@@ -18,8 +18,9 @@ import { IFrequency } from '@screens/Client/Device';
 import { IEqualizerConfig, IPreset } from '@models/preset';
 import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { STORAGE_PRESET } from '@config/storage';
+import {  STORAGE_PRESET_ID } from '@config/storage';
 import { useFocusEffect } from '@react-navigation/native';
+import { getDataPresets } from '@services/internal-storage';
 
 export interface IMyPresets {
   label: string;
@@ -53,36 +54,30 @@ export function HeaderEqualizer({
   const [openDropdown, setOpenDropdown] = useState(false);
 	const [currentPreset, setCurrentPreset] = useState<ValueType | null>(null);
 
-  const { user } = useAuth();
+
 const {
   setSelectedOptionBand,
   setFrequency,
   setGain,
   setQuality
 } = useValuesEqualizer();
-	const { data, isLoading, isFetched } = useInfiniteQuery({
-		queryKey: ['MyPresets'],
-		queryFn: ({ pageParam }) =>
-			getPresetsOwn(user?.id, undefined, pageParam, true, 15),
-		initialPageParam: 1,
-		getNextPageParam: (lastPage, allPages, lastPageParam) => {
-      if (lastPage.data.length === 0) {
-        return undefined;
-      }
-      return lastPageParam + 1;
-    }
-	});
+
+const { data, isLoading, isFetched  } = useQuery({
+  queryKey: ['MyPresets'],
+  queryFn: async() => await getDataPresets(),
+  //enabled: isFetched
+});
+
+
 
 	const myPresets = useMemo(() => {
 		return (
-			data?.pages
-				.flatMap(page => page.data)
-				.map(preset => ({
+			data?.map((preset) => ({
 					label: preset.name,
 					value: preset.id,
           id:preset.id,
-					is_public: preset.is_public,
-          genre_id: preset.genre_id,
+					is_public: preset.isPublic,
+          genre_id: preset.genreId,
 					description: preset.description,
 					equalizerConfigs: preset.equalizerConfigs
 				})) ?? []
@@ -90,9 +85,10 @@ const {
 
 	}, [data]);
 
+
 async function handleSelectPreset(preset: IMyPresets){
 
-  await AsyncStorage.setItem(STORAGE_PRESET, JSON.stringify(preset));
+  await AsyncStorage.setItem(STORAGE_PRESET_ID, JSON.stringify(preset));
   handlePreset(preset)
   setFrequency(preset.equalizerConfigs[0].frequency)
   setGain(preset.equalizerConfigs[0].decibel_quantity)
@@ -111,11 +107,11 @@ useFocusEffect(
       setSelectedOptionBand(String(equalizerConfigs[0].band) ?? null)
       return
      }
-      const preset = await AsyncStorage.getItem(STORAGE_PRESET);
-   
+      const preset = await AsyncStorage.getItem(STORAGE_PRESET_ID);
+
       if (preset !== null) {
         const presetData = JSON.parse(preset);
-    
+
         setCurrentPreset(presetData.id)
         handleSelectPreset(presetData)
      
