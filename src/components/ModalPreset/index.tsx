@@ -151,7 +151,15 @@ export const ModalPreset = forwardRef(
 				const form = { id: profiles?.length + 1, ...data, ...settings } as unknown as IPresets
 
 				const existingData = await AsyncStorage.getItem(STORAGE_PRESET)
-				const parsedData = existingData ? JSON.parse(existingData) : [];
+				const parsedData = existingData ? JSON.parse(existingData) as IPresets[] : [];
+
+				if (parsedData.length >= 10) {
+					Toast.show({
+						type: 'error',
+						text1: 'Máximo de 10 perfis permitido.'
+					});
+					onClose();
+				}
 				const updatedData = [...parsedData, form] as IPresets[];
 
 				mutateAsync(updatedData);
