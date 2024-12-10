@@ -254,12 +254,14 @@ export function Device() {
 
 
 									<Spacer h={16} />
+									{profiles.length >0 && (
+										<CarouselProfile
+											titleProfile={'Perfis Públicos '}
+											data={profiles}
+											isPersonalities={false}
+										/>
+									)}
 
-									<CarouselProfile
-										titleProfile={'Perfis Públicos '}
-										data={profiles}
-										isPersonalities={false}
-									/>
 								</ContainerCarousel>
 								<Spacer h={32} />
 
