@@ -2,7 +2,6 @@ import { CardProfile } from '@components/CardProfile';
 import { FlatList } from 'react-native';
 import React from 'react';
 
-import { ButtonViewGallery } from './styles';
 import { Spacer } from '@components/Spacer';
 import Text from '@components/Text';
 import { useNavigation } from '@react-navigation/native';
@@ -38,10 +37,10 @@ export function CarouselProfile({
 				horizontal
 				ItemSeparatorComponent={() => <Spacer w={16} />}
 				renderItem={({ item }) => (
-						 <CardProfile
-						 key={item.id}
+					<CardProfile
+						key={item.id}
 						data={item}
-						/>
+					/>
 
 				)}
 				ListFooterComponent={() => (

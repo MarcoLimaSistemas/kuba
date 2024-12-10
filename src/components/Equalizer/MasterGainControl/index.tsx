@@ -1,4 +1,4 @@
-import React, {  useState } from 'react';
+import React, { useState } from 'react';
 import * as S from './styles';
 
 // import Slider from '@react-native-community/slider';
@@ -22,18 +22,18 @@ interface FilterEqualizerScreenProps {
   handleScrollEnabled: (enabled: boolean) => void;
 }
 
-const MasterGainControl: React.FC<FilterEqualizerScreenProps> = ({ createGaiaMessage,handleScrollEnabled }) => {
+const MasterGainControl: React.FC<FilterEqualizerScreenProps> = ({ createGaiaMessage, handleScrollEnabled }) => {
 
-const {
-  frequency, 
-  setFrequency,
-  gain,
-  setGain,
-  quality, 
-  setQuality,
-  selectedOptionBand, 
-  setSelectedOptionBand,
-} = useValuesEqualizer()
+  const {
+    frequency,
+    setFrequency,
+    gain,
+    setGain,
+    quality,
+    setQuality,
+    selectedOptionBand,
+    setSelectedOptionBand,
+  } = useValuesEqualizer()
   const [minFrequency, setMinFrequency] = useState<number>(20);
   const [maxFrequency, setMaxFrequency] = useState<number>(20000);
 
@@ -44,9 +44,9 @@ const {
   const logMaxQuality = Math.log10(8);
 
   // Converts the linear value (0 to 1) to logarithmic in the real range
-  const convertLogScaleFrequency = (linearValue: number) =>{
-   const result =  Math.pow(10, linearValue * (logMaxFrequency - logMinFrequency) + logMinFrequency);
-   return parseFloat(result.toFixed(1));
+  const convertLogScaleFrequency = (linearValue: number) => {
+    const result = Math.pow(10, linearValue * (logMaxFrequency - logMinFrequency) + logMinFrequency);
+    return parseFloat(result.toFixed(1));
   }
 
   const convertLogScaleQuality = (linearValue: number) =>
@@ -55,7 +55,7 @@ const {
 
 
   const [] = useState<string | null>('');
- 
+
 
   const [selectedFilter, setSelectedFilter] = useState<Filter>(Filter.BYPASS);
 
@@ -131,8 +131,8 @@ const {
     // Garante que o valor tenha quatro dígitos
     return hexValue.padStart(4, '0');
   };
-  
-  const onPreset= (filter:Filter) => {
+
+  const onPreset = (filter: Filter) => {
     setSelectedFilter(filter)
     switch (filter) {
       case Filter.BYPASS:
@@ -142,7 +142,7 @@ const {
         setGain(0);
         setQuality(0);
         break;
-      
+
       case Filter.LOW_PASS_1:
         // LOW_PASS_1: frequency from 0.3Hz to 20 kHz, no gain, no quality
         setMinFrequency(0.3)
@@ -167,14 +167,14 @@ const {
   };
 
 
-  const generateBass= () => {
+  const generateBass = () => {
     const code = "FF010100000A0218F4";
 
 
     createGaiaMessage(Buffer.from(code, 'hex'));
   };
 
-  const getBatteryLevel= async() => {
+  const getBatteryLevel = async () => {
     const code = "FF010100000A0300F3";
 
 
@@ -189,31 +189,31 @@ const {
       <Button title="High Shelf 2" onPress={() => onPreset(Filter.HIGH_SHELF_2)} />
 
       <Text color='black'> Filter: {selectedFilter} </Text> */}
-{/*       
+      {/*       
       <Button title="GET_BATTERY" onPress={getBatteryLevel} />
        <Button title="Bass" onPress={generateBass} /> */}
-       
+
       <EqualizerVisual
-      frequency={frequency}
-      quality={quality}
-      gain={gain}
-      maxFrequency={maxFrequency}
-      minFrequency={minFrequency}
-      optionBand={selectedOptionBand}
-      disabledFrequency={disabledFrequency}
-      disabledQuality={disabledQuality}
-      disabledGain={disabledGain}
-      onSelect={handleSelect}
-      generateCodeForFrequency={generateCodeForFrequency}
-      generateCodeForQuality={generateCodeForQuality}
-      generateCodeForGain={generateCodeForGain}
-      onValueChangeFrequency={(value) => setFrequency(convertLogScaleFrequency(value))}
-      onValueChangeQuality={(value) => setQuality(convertLogScaleQuality(value))}
-      onValueChangeGain={(value) => setGain((value))}
-      onTouchStart={()=>handleScrollEnabled(false)}
-      onTouchEnd={()=>handleScrollEnabled(true)}
+        frequency={frequency}
+        quality={quality}
+        gain={gain}
+        maxFrequency={maxFrequency}
+        minFrequency={minFrequency}
+        optionBand={selectedOptionBand}
+        disabledFrequency={disabledFrequency}
+        disabledQuality={disabledQuality}
+        disabledGain={disabledGain}
+        onSelect={handleSelect}
+        generateCodeForFrequency={generateCodeForFrequency}
+        generateCodeForQuality={generateCodeForQuality}
+        generateCodeForGain={generateCodeForGain}
+        onValueChangeFrequency={(value) => setFrequency(convertLogScaleFrequency(value))}
+        onValueChangeQuality={(value) => setQuality(convertLogScaleQuality(value))}
+        onValueChangeGain={(value) => setGain((value))}
+        onTouchStart={() => handleScrollEnabled(false)}
+        onTouchEnd={() => handleScrollEnabled(true)}
       />
- 
+
     </S.Container>
   );
 };

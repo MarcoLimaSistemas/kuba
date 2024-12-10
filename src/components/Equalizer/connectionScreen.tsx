@@ -19,7 +19,7 @@ interface ConnectionScreenProps {
   onBack: () => void;
 }
 
-const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack,handleScrollEnabled  }) => {
+const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack, handleScrollEnabled }) => {
   const [setText] = useState<string | undefined | Buffer>(undefined);
   const [data, setData] = useState<Message[]>([]);
   const [polling, setPolling] = useState(false);
@@ -149,7 +149,7 @@ const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack,hand
   };
 
   const onReceivedData = async (event: any & { data: Buffer }) => {
-    console.log("data onReceived",event)
+    console.log("data onReceived", event)
     //const msgHex = data.toString('hex');
     event.timestamp = new Date();
     addData({
@@ -167,11 +167,11 @@ const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack,hand
     try {
       if (!msg) return;
 
-     await device.write(msg);
- console.log("msg",msg)
+      await device.write(msg);
+      console.log("msg", msg)
       const byteArray = Array.from(msg);
       const msgHex = msg.toString('hex');
- 
+
       addData({
         timestamp: new Date(),
         data: `Byte array: ${msgHex}`,
@@ -182,7 +182,7 @@ const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack,hand
       if (response) {
         const buffer = Buffer.from(response, "hex");
         const batteryPercentage = buffer
-        console.log("batteryPercentage",batteryPercentage)
+        console.log("batteryPercentage", batteryPercentage)
       }
     } catch (error) {
       console.log(error);
@@ -191,7 +191,7 @@ const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack,hand
 
   return (
     <View style={styles.container}>
-      {connection && <MasterGainControl createGaiaMessage={createGaiaMessage} handleScrollEnabled={handleScrollEnabled}/>}
+      {connection && <MasterGainControl createGaiaMessage={createGaiaMessage} handleScrollEnabled={handleScrollEnabled} />}
 
 
     </View>
@@ -200,7 +200,7 @@ const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack,hand
 
 const styles = StyleSheet.create({
   container: {
-width:'100%',
+    width: '100%',
   },
   header: {
     flexDirection: 'row',

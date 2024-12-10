@@ -253,9 +253,6 @@ export function Device() {
 								<ContainerCarousel>
 
 
-
-
-
 									<Spacer h={16} />
 
 									<CarouselProfile
