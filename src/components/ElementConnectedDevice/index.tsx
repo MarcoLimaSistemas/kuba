@@ -43,9 +43,9 @@ export function ElementConnectedDevice({
 											flexDirection: 'row',
 											alignItems: 'center'
 										}}>
-										<Image source={Lighting} />
+										{/* <Image source={Lighting} />
 										<Spacer w={8} />
-										<Text>{'100%'}</Text>
+										<Text>{'100%'}</Text> */}
 
 										<Spacer w={16} />
 										<TouchableOpacity
