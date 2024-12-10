@@ -8,7 +8,8 @@ import {
 	ContainerEqualizer,
 	ImageProfile,
 	ContainerImage,
-	ContainerCarousel
+	ContainerCarousel,
+
 } from './styles';
 import Text from '@components/Text';
 
@@ -85,7 +86,7 @@ export function Preset() {
 				opacity: 1,
 			}}
 		>
-			<ContainerImage>
+			{/* <ContainerImage>
 				<LinearGradient
 					colors={['transparent', '#f4f2f2']}
 					style={{
@@ -98,11 +99,12 @@ export function Preset() {
 					}}
 				/>
 
-				<ImageProfile
+	<ImageProfile
 					source={{
 						uri: "https://kuba-staging-api-files.s3.sa-east-1.amazonaws.com/preset/808-1"
 					}}
-				/>
+				/> 
+
 
 				<Text
 					color="#656565"
@@ -113,10 +115,22 @@ export function Preset() {
 						textTransform: 'uppercase',
 						letterSpacing: scale(8)
 					}}>
-					{preset.name}
+					{listFrequencies?.name}
 				</Text>
-			</ContainerImage>
+			</ContainerImage>  */}
+			<Spacer h={16} />
 
+			<Text
+				color="#656565"
+				variant="bold"
+				style={{
+					zIndex: 1111,
+					textAlign: 'center',
+					textTransform: 'uppercase',
+					letterSpacing: scale(8)
+				}}>
+				{listFrequencies?.name}
+			</Text>
 			<Spacer h={14} />
 
 			<ElementConnectedDevice
