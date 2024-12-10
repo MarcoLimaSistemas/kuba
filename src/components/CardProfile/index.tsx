@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Container, ImageBackground, ContainerText } from './styles';
+import { Container, ImageBackground, ContainerText, Background } from './styles';
 import Text from '@components/Text';
 import { useNavigation } from '@react-navigation/native';
 import { IPreset } from '@models/preset';
@@ -26,9 +26,10 @@ export function CardProfile({data}:{data: IPreset}) {
 					}
 				})
 			}>
-			<ImageBackground
+			{/* <ImageBackground
 				source={{uri:"https://kuba-staging-api-files.s3.sa-east-1.amazonaws.com/preset/808-1"}}
-			/>
+			/> */}
+			<Background/>
 			<ContainerText>
 				<Text
 					variant="bold"
