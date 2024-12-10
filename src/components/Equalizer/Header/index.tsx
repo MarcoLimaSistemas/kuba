@@ -193,6 +193,9 @@ useFocusEffect(
       setOpen={setOpenDropdown}
       setValue={setCurrentPreset}
       placeholder='Selecione preset'
+      translation={{
+        NOTHING_TO_SHOW: "Nenhum preset adicionado!"
+      }}
       onSelectItem={(item: any) =>
        {
         handleSelectPreset(item)

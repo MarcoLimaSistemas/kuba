@@ -200,13 +200,12 @@ export const ModalPreset = forwardRef(
 
 
 		const genres = [
-			{
-				value: 1,
-				label: "Rock"
-			}, {
-				value: 2,
-				label: "Reggae"
-			},
+			{value: 1,	label: "Rock"}, 
+			{	value: 2,	label: "Reggae"},
+			{ value: 3, label: 'Hip Hop' },
+			{ value: 4, label: 'Eletrônica' },
+			{ value: 5, label: 'Clássica' },
+			{ value: 6, label: 'Pop' },
 		]
 		useEffect(() => {
 			if (isEdit) {
