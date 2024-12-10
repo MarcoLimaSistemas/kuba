@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import { Button } from '@components/Button';
 
@@ -24,6 +24,9 @@ import { HeaderEqualizer } from '@components/Equalizer/Header';
 import EqualizerVisual from '@components/Equalizer/ui/equalizer';
 import { useBluetooth } from '../../../context/BluetoothContext';
 import { IPreset } from '@models/preset';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { STORAGE_PRESET_ID } from '@config/storage';
+import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
 
 
 export function Preset() {
@@ -38,6 +41,12 @@ export function Preset() {
 
 	const [scrollEnabled, setScrollEnabled] = useState(true);
 	const [currentPreset, setCurrentPreset] = useState<IPreset | null>(null);
+	const {
+		setSelectedOptionBand,
+		setFrequency,
+		setGain,
+		setQuality
+	} = useValuesEqualizer();
 
 	const { state } = useBluetooth();
 
@@ -52,6 +61,18 @@ export function Preset() {
 		//setCurrentPreset(preset);
 	};
 
+	async function setConfigPreset() {
+		await AsyncStorage.setItem(STORAGE_PRESET_ID, JSON.stringify(listFrequencies));
+
+		setFrequency(listFrequencies.equalizerConfigs[0].frequency)
+		setGain(listFrequencies.equalizerConfigs[0].decibel_quantity)
+		setQuality(listFrequencies.equalizerConfigs[0].quality)
+		setSelectedOptionBand(String(listFrequencies.equalizerConfigs[0].band) ?? null)
+	}
+
+	useEffect(() => {
+		setConfigPreset()
+	}, [listFrequencies]);
 
 	return (
 		<Container
