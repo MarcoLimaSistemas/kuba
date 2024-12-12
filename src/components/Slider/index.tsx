@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { GestureResponderEvent, StyleSheet, View } from 'react-native';
 import Slider from '@react-native-community/slider';
 
 interface VerticalSliderProps {
@@ -8,7 +8,11 @@ interface VerticalSliderProps {
 	max: number;
 	step: number;
 	value: number;
-	onValueChange: (value: number) => void;
+	disabledSlider:boolean;
+  onValueChange?: (value: number) => void;
+	onSlidingComplete?: (value: number) => void;
+	onTouchStart?: ((event: GestureResponderEvent) => void) | undefined;
+	onTouchEnd?: ((event: GestureResponderEvent) => void) | undefined;
 }
 
 const VerticalSlider: React.FC<VerticalSliderProps> = ({
@@ -17,7 +21,11 @@ const VerticalSlider: React.FC<VerticalSliderProps> = ({
 	step,
 	value,
 	disabled = false,
-	onValueChange
+	disabledSlider,
+	onSlidingComplete,
+	onValueChange,
+	onTouchStart,
+	onTouchEnd
 }) => {
 	return (
 		<View style={styles.container}>
@@ -29,17 +37,15 @@ const VerticalSlider: React.FC<VerticalSliderProps> = ({
 					maximumValue={max}
 					step={step}
 					value={value}
+					onSlidingComplete={onSlidingComplete}
 					onValueChange={onValueChange}
-					minimumTrackTintColor="transparent"
-					maximumTrackTintColor="transparent"
-					thumbTintColor={disabled ? '#d7d7d7' : '#242424'}
+					minimumTrackTintColor="#242424"
+					maximumTrackTintColor="#656565"
+					thumbTintColor={disabledSlider ? '#d7d7d7' : '#242424'}
+					onTouchStart={onTouchStart}
+					onTouchEnd={onTouchEnd}
 				/>
-				<View
-					style={[
-						styles.track,
-						{ backgroundColor: disabled ? '#d7d7d7' : '#242424' }
-					]}
-				/>
+			
 			</View>
 		</View>
 	);
