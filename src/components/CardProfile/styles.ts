@@ -1,10 +1,16 @@
 import { scale } from 'react-native-size-matters';
 import styled from 'styled-components/native';
 
+type Props = {
+  isSelected:boolean,
+
+}
+
 export const Container = styled.TouchableOpacity`
-	width: ${scale(104)}px;
-	height: ${scale(40)}px;
-	border-radius: ${scale(4)}px;
+	width: ${scale(64)}px;
+	height: ${scale(26)}px;
+	margin-left: ${scale(8)}px;
+	border-radius: ${scale(30)}px;
 `;
 
 export const ContainerText = styled.View`
@@ -22,9 +28,13 @@ export const ImageBackground = styled.Image`
 	height: 100%;
 	border-radius: ${scale(4)}px;
 `;
-export const Background = styled.View`
+export const Background = styled.View<Props >`
 	width: 100%;
 	height: 100%;
-	border-radius: ${scale(4)}px;
-	background-color: ${({theme})=> theme.COLORS.black};
+	border-radius: ${scale(30)}px;
+	background-color: ${({ isSelected, theme }) => 
+ isSelected 
+  ? theme.COLORS.gold_500
+  :  theme.COLORS.gray_300};
+
 `;
