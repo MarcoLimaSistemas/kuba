@@ -18,224 +18,207 @@ import { IFrequency } from '@screens/Client/Device';
 import { IEqualizerConfig, IPreset } from '@models/preset';
 import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {  STORAGE_PRESET_ID } from '@config/storage';
+import { STORAGE_PRESET_ID } from '@config/storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { getDataPresets } from '@services/internal-storage';
+import Switch from '@components/Switch';
+import { useSharedValue } from 'react-native-reanimated';
 
 export interface IMyPresets {
   label: string;
-  value:number;
+  value: number;
   isPublic: boolean,
   genreId: number,
   description: string,
   equalizerConfigs: IEqualizerConfig[]
-} 
+}
 
 interface EqualizerProps {
-  handlePreset:(preset:IMyPresets) => void;
+  handlePreset: (preset: IMyPresets) => void;
   handleScrollEnabled: (enabled: boolean) => void;
-	handleModalEdit: (isEdit: boolean) => void;
-	onOpen(): void;
-	disabled?: boolean;
-  presetCustom?:string;
+  handleModalEdit: (isEdit: boolean) => void;
+  onOpen(): void;
+  disabled?: boolean;
+  presetCustom?: string;
   equalizerConfigs?: IEqualizerConfig[];
 }
 
 
 export function HeaderEqualizer({
-	handleModalEdit,
+  handleModalEdit,
   handlePreset,
   handleScrollEnabled,
-	onOpen,
-	disabled = false,
+  onOpen,
+  disabled = false,
   presetCustom,
-	equalizerConfigs,
-}: EqualizerProps){
+  equalizerConfigs,
+}: EqualizerProps) {
   const [openDropdown, setOpenDropdown] = useState(false);
-	const [currentPreset, setCurrentPreset] = useState<ValueType | null>(null);
+  const [currentPreset, setCurrentPreset] = useState<ValueType | null>(null);
 
 
-const {
-  setSelectedOptionBand,
-  setFrequency,
-  setGain,
-  setQuality
-} = useValuesEqualizer();
+  const {
+    setSelectedOptionBand,
+    setFrequency,
+    setGain,
+    setQuality
+  } = useValuesEqualizer();
 
-const { data, isLoading, isFetched  } = useQuery({
-  queryKey: ['MyPresets'],
-  queryFn: async() => await getDataPresets(),
-  //enabled: isFetched
-});
-
-
-
-	const myPresets = useMemo(() => {
-		return (
-			data?.map((preset) => ({
-					label: preset.name,
-					value: preset.id,
-          id:preset.id,
-					is_public: preset.isPublic,
-          genre_id: preset.genreId,
-					description: preset.description,
-					equalizerConfigs: preset.equalizerConfigs
-				})) ?? []
-		);
-
-	}, [data]);
+  const { data, isLoading, isFetched } = useQuery({
+    queryKey: ['MyPresets'],
+    queryFn: async () => await getDataPresets(),
+    //enabled: isFetched
+  });
 
 
-async function handleSelectPreset(preset: IMyPresets){
 
-  await AsyncStorage.setItem(STORAGE_PRESET_ID, JSON.stringify(preset));
-  handlePreset(preset)
-  setFrequency(preset.equalizerConfigs[0].frequency)
-  setGain(preset.equalizerConfigs[0].decibel_quantity)
-  setQuality(preset.equalizerConfigs[0].quality)
-  setSelectedOptionBand(String(preset.equalizerConfigs[0].band) ?? null)
- 
-}
-useFocusEffect(
-  useCallback(() => {
-    (async () => {
-     if( presetCustom && presetCustom?.length >0 && equalizerConfigs){
+  const myPresets = useMemo(() => {
+    return (
+      data?.map((preset) => ({
+        label: preset.name,
+        value: preset.id,
+        id: preset.id,
+        is_public: preset.isPublic,
+        genre_id: preset.genreId,
+        description: preset.description,
+        equalizerConfigs: preset.equalizerConfigs
+      })) ?? []
+    );
 
-      setFrequency(equalizerConfigs[0].frequency)
-      setGain(equalizerConfigs[0].decibel_quantity)
-      setQuality(equalizerConfigs[0].quality)
-      setSelectedOptionBand(String(equalizerConfigs[0].band) ?? null)
-      return
-     }
-      const preset = await AsyncStorage.getItem(STORAGE_PRESET_ID);
-
-      if (preset !== null) {
-        const presetData = JSON.parse(preset);
-
-        setCurrentPreset(presetData.id)
-        handleSelectPreset(presetData)
-     
-      }
-      return
-    })();
-  }, [])
-)
+  }, [data]);
 
 
-  return(
-    <>
-    <S.Header>
-    <Text variant="bold" color="#656565">
-      Equalizador
-    </Text>
+  async function handleSelectPreset(preset: IMyPresets) {
 
-    <View
-      style={{
-        flexDirection: 'row'
-      }}>
-      <TouchableOpacity
-        disabled={disabled}
-        onPress={() => {
-           onOpen();
-           handleModalEdit(false);
-        }}>
-        <Icons.Plus
-          width={scale(32)}
-          height={scale(32)}
-          color={disabled ? '#d7d7d7' : '#6E6E6E'}
-          
-        />
-      </TouchableOpacity>
+    await AsyncStorage.setItem(STORAGE_PRESET_ID, JSON.stringify(preset));
+    handlePreset(preset)
+    setFrequency(String(preset.equalizerConfigs[0].frequency))
+    setGain(preset.equalizerConfigs[0].decibel_quantity)
+    setQuality(preset.equalizerConfigs[0].quality)
+    setSelectedOptionBand(String(preset.equalizerConfigs[0].band) ?? null)
 
-      <Spacer w={16} />
+  }
+  const [deviceConnection, setDeviceConnection] = useState(false)
+  const statusConnection = useSharedValue(0);
 
-      <TouchableOpacity
-        disabled={disabled}
-        onPress={() => {
-          if (currentPreset) {
-            onOpen();
-            handleModalEdit(true);
-          } else {
-            Toast.show({
-              type: 'info',
-              text1: 'Selecione um preset!'
-            });
-          }
-        }}>
-        <Icons.Pencil
-          width={scale(32)}
-          height={scale(32)}
-        color={disabled ? '#d7d7d7' : '#6E6E6E'}
-       
-        />
-      </TouchableOpacity>
-    </View>
-  </S.Header>
+  const handleSwitchConnection = () => {
+    statusConnection.value = statusConnection.value === 0 ? 1 : 0;
 
-  <S.ContainerDropdown>
-    {presetCustom && presetCustom?.length >0 ?(
-        <Text
-         variant='regular'
-         fontSize={14}
-         color='#656565'
-         style={{
-          textTransform:"uppercase",
-          marginVertical:24
-         }}
-        >{presetCustom}</Text>
-    ):(
-      <DropDownPicker
-      disabled={disabled}
-      open={openDropdown}
-      value={currentPreset}
-      items={myPresets}
-      loading={isLoading}
-      setOpen={setOpenDropdown}
-      setValue={setCurrentPreset}
-      placeholder='Selecione preset'
-      translation={{
-        NOTHING_TO_SHOW: "Nenhum preset adicionado!"
-      }}
-      onSelectItem={(item: any) =>
-       {
-        handleSelectPreset(item)
+    if (statusConnection.value === 0) {
+      return setDeviceConnection(true);
+    }
+    return setDeviceConnection(false);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        if (presetCustom && presetCustom?.length > 0 && equalizerConfigs) {
+
+          setFrequency(String(equalizerConfigs[0].frequency))
+          setGain(equalizerConfigs[0].decibel_quantity)
+          setQuality(equalizerConfigs[0].quality)
+          setSelectedOptionBand(String(equalizerConfigs[0].band) ?? null)
+          return
         }
-      }
-      //setItems={setPresets}
-      selectedItemContainerStyle={{
-        backgroundColor: '#e4e1e1'
-      }}
-      showTickIcon={false}
-      textStyle={{
-        color: '#656565',
-        fontFamily: typography['Lato-Regular'].fontFamily,
-        fontSize: scale(14)
-      }}
-      listItemLabelStyle={{
-        fontFamily: typography['Lato-Regular'].fontFamily,
-        color: '#656565'
-      }}
-      labelProps={{
-        numberOfLines: 1
-      }}
-      style={{
-        borderColor: 'transparent',
-        paddingLeft: 0,
-        width: '41%'
-      }}
-      dropDownContainerStyle={{
-        borderColor: 'transparent',
-        width: '60%',
-        elevation: 4,
-        borderRadius: 0
-      }}
-      flatListProps={{
-        ItemSeparatorComponent: () => <S.LineSeparator />
-      }}
-    />
-  )}
-    
-  </S.ContainerDropdown>
-  </>
+        const preset = await AsyncStorage.getItem(STORAGE_PRESET_ID);
+
+        if (preset !== null) {
+          const presetData = JSON.parse(preset);
+
+          setCurrentPreset(presetData.id)
+          handleSelectPreset(presetData)
+
+        }
+        return
+      })();
+    }, [])
+  )
+
+
+  return (
+    <>
+      <S.Header>
+        <Text variant="bold" fontSize={14} color="#777777">
+          EQUALIZADOR
+        </Text>
+     
+        <View
+          style={{
+            flexDirection: 'row'
+          }}>
+        
+        <Switch
+          value={statusConnection}
+          onPress={handleSwitchConnection}
+        />
+
+        </View>
+      </S.Header>
+
+      <S.ContainerDropdown>
+        {presetCustom && presetCustom?.length > 0 ? (
+          <Text
+            variant='regular'
+            fontSize={14}
+            color='#656565'
+            style={{
+              textTransform: "uppercase",
+              marginVertical: 24
+            }}
+          >{presetCustom}</Text>
+        ) : (
+          <DropDownPicker
+            disabled={disabled}
+            open={openDropdown}
+            value={currentPreset}
+            items={myPresets}
+            loading={isLoading}
+            setOpen={setOpenDropdown}
+            setValue={setCurrentPreset}
+            placeholder='Selecione preset'
+            translation={{
+              NOTHING_TO_SHOW: "Nenhum preset adicionado!"
+            }}
+            onSelectItem={(item: any) => {
+              handleSelectPreset(item)
+            }
+            }
+            //setItems={setPresets}
+            selectedItemContainerStyle={{
+              backgroundColor: '#e4e1e1'
+            }}
+            showTickIcon={false}
+            textStyle={{
+              color: '#656565',
+              fontFamily: typography['Lato-Regular'].fontFamily,
+              fontSize: scale(14)
+            }}
+            listItemLabelStyle={{
+              fontFamily: typography['Lato-Regular'].fontFamily,
+              color: '#656565'
+            }}
+            labelProps={{
+              numberOfLines: 1
+            }}
+            style={{
+              borderColor: 'transparent',
+              paddingLeft: 0,
+              width: '41%'
+            }}
+            dropDownContainerStyle={{
+              borderColor: 'transparent',
+              width: '60%',
+              elevation: 4,
+              borderRadius: 0
+            }}
+            flatListProps={{
+              ItemSeparatorComponent: () => <S.LineSeparator />
+            }}
+          />
+        )}
+
+      </S.ContainerDropdown>
+    </>
   )
 }
