@@ -3,6 +3,8 @@ export { default as backgroundSecondary } from './backgroundSecondary.png';
 export { default as FigureCompleted } from './completed.png';
 export { default as Puppet } from './confirmedPeople.png';
 export { default as KubaFone } from './kubaFone.png';
+export { default as KubaFoneDiscoImg } from './kuba_disco_bluetooth_classico.png';
+
 export { default as FoneExample } from './frontalFone.png';
 export { default as logo } from './logo.png';
 export { default as logoGray } from './logo_gray.png';
