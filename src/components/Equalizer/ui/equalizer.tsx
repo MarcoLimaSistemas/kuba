@@ -1,9 +1,14 @@
-import Slider from '@react-native-community/slider';
 import * as S from './styles';
 import React from 'react';
 import Text from '@components/Text';
 import RadioButton from '@components/RadioButton';
-import { GestureResponderEvent } from 'react-native';
+import { GestureResponderEvent, } from 'react-native';
+import VerticalSlider from '@components/Slider';
+
+import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
+
+
+
 
 
 interface IEqualizerVisualProps {
@@ -30,9 +35,9 @@ interface IEqualizerVisualProps {
 
 const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
   {
-    frequency,
-    gain,
-    quality,
+    // frequency,
+    // gain,
+    // quality,
     optionBand,
     maxFrequency,
     minFrequency,
@@ -51,6 +56,17 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
     onTouchStart
   }) => {
   const options = ['1', '2', '3', '4', '5'];
+  const {
+    frequency,
+    setFrequency,
+    gain,
+    setGain,
+    quality,
+    setQuality,
+    selectedOptionBand,
+    setSelectedOptionBand,
+  } = useValuesEqualizer()
+
 
   const formatFrequency = (value: number | null): string => {
     if (value === null) return "- Hz";
@@ -58,6 +74,14 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
     if (value < 1000) return `${value.toFixed(0)} Hz`;
     return `${(value / 1000).toFixed(1)} kHz`;
   };
+
+  const formatFrequencyInput = (value: number | null): string => {
+    if (value === null) return "";
+    if (value < 50) return `${value.toFixed(1)} `;
+    if (value < 1000) return `${value.toFixed(0)} `;
+    return `${(value / 1000).toFixed(1)}`;
+  };
+
 
   const logMinFrequency = Math.log10(minFrequency);
   const logMaxFrequency = Math.log10(maxFrequency);
@@ -79,6 +103,55 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
   }
 
 
+  const handleSliderChange = (newValue: number) => {
+    setFrequency(newValue.toFixed(2));
+  };
+
+  const handleInputChangeFrequency = (text: string) => {
+    if (/^-?\d*(\.\d{0,2})?$/.test(text)) {
+      setFrequency(text);
+    } else if (text === "") {
+      setFrequency("0");
+    }
+
+
+  };
+  const handleInputChangeQuality = (text: string) => {
+    const validText = text.match(/^-?\d*\.?\d{0,1}$/);
+    if (!validText) return;
+
+    const numericValue = parseFloat(text);
+
+    if (text === '' || text === '-') {
+      setQuality(text);
+      return;
+    }
+
+    if (numericValue >= 0.25 && numericValue <= 8) {
+      setQuality(text);
+    }
+
+  }
+
+  const handleInputChangeGain = (text: string) => {
+    const validText = text.match(/^-?\d*\.?\d{0,1}$/);
+    if (!validText) return;
+
+    const numericValue = parseFloat(text);
+
+    if (text === '' || text === '-') {
+      setGain(text);
+      return;
+    }
+
+    if (numericValue >= -10 && numericValue <= 10) {
+      setGain(text);
+    }
+
+  };
+
+
+
   return (
     <S.Container>
 
@@ -90,11 +163,11 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
         onSelect={onSelect}
         disabled={disabled}
       />
+
       <S.ContainerEqualizer>
 
 
-
-        <S.ContainerSlider>
+        {/* <S.ContainerSlider>
 
 
 
@@ -152,10 +225,105 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
             onTouchEnd={onTouchEnd}
             step={0.01}
           />
-        </S.ContainerSlider>
+        </S.ContainerSlider>  */}
 
 
+
+
+        <S.ContainerBars>
+          <Text color='black'>{frequency ? formatFrequency(parseFloat(frequency)) : "20 Hz"}</Text>
+          <Text color='black'>{parseFloat(quality)?.toFixed(2)}</Text>
+          <Text color='black'>{gain !== "undefined" ? parseFloat(gain)?.toFixed(1) ?? 0 : 0} dB</Text>
+        </S.ContainerBars>
+
+        <S.ContainerBars>
+          <S.ContainerBar>
+
+            <VerticalSlider
+              disabled={disabled}
+              disabledSlider={disabledFrequency}
+              min={0}
+              max={1}
+              value={convertLinearScaleFrequency(parseFloat(frequency))}
+              onValueChange={onValueChangeFrequency}
+              onSlidingComplete={generateCodeForFrequency}
+              step={0.00001}
+            />
+          </S.ContainerBar>
+
+
+          <S.ContainerBar>
+            <VerticalSlider
+              disabled={disabled}
+              disabledSlider={disabledQuality}
+              min={0}
+              max={1}
+              value={convertLinearScaleQuality(parseFloat(quality))}
+              onValueChange={onValueChangeQuality}
+              onSlidingComplete={generateCodeForQuality}
+              onTouchStart={onTouchStart}
+              onTouchEnd={onTouchEnd}
+              step={0.001}
+            />
+          </S.ContainerBar>
+
+
+          <S.ContainerBar>
+            <VerticalSlider
+              disabled={disabled}
+              disabledSlider={disabledGain}
+              min={-10}
+              max={10}
+              value={parseFloat(gain)}
+              onValueChange={onValueChangeGain}
+              onSlidingComplete={generateCodeForGain}
+              onTouchStart={onTouchStart}
+              onTouchEnd={onTouchEnd}
+              step={0.01}
+            />
+          </S.ContainerBar>
+        </S.ContainerBars>
+
+        <S.ContainerInputs>
+          <S.ContainerBar>
+            <Text color='#777777' variant='bold'>Freq.</Text>
+            <S.Input
+              keyboardType='number-pad'
+              placeholder=""
+              placeholderTextColor={'#000'}
+              value={frequency}
+              onChangeText={handleInputChangeFrequency}
+            />
+          </S.ContainerBar>
+
+          <S.ContainerBar>
+            <Text color='#777777' variant='bold'>Q.</Text>
+            <S.Input
+              keyboardType='number-pad'
+              placeholder=""
+              placeholderTextColor={'#A0A0A0'}
+              value={quality}
+              onChangeText={handleInputChangeQuality}
+            />
+          </S.ContainerBar>
+
+          <S.ContainerBar>
+            <Text color='#777777' variant='bold'>G.</Text>
+            <S.Input
+              keyboardType='number-pad'
+              placeholder=""
+              placeholderTextColor={'#A0A0A0'}
+              maxLength={6}
+              value={(gain)}
+              onChangeText={handleInputChangeGain}
+            />
+          </S.ContainerBar>
+
+        </S.ContainerInputs>
       </S.ContainerEqualizer>
+
+
+
     </S.Container>
   )
 }
