@@ -9,11 +9,13 @@ import { Headset, Info, Lighting, Settings } from '@assets/icons';
 
 import {
 	BoxButtons,
+	Button,
 	Container,
 	ContainerCarousel,
 	ContainerConnections,
 	ContainerEqualizer,
 	ContainerImg,
+	ContainerPresets,
 	Footer,
 	Wrapper
 } from './styles';
@@ -38,8 +40,13 @@ import ConnectionScreen from '@components/Equalizer/connectionScreen';
 import DeviceListScreen from '@components/Equalizer/deviceList';
 import { StateChangeEvent } from 'react-native-bluetooth-classic/lib/BluetoothEvent';
 import { HeaderEqualizer, IMyPresets } from '@components/Equalizer/Header';
-import { IPreset } from '@models/preset';
+import { IPreset, IPresets } from '@models/preset';
 import { getDataPresets } from '@services/internal-storage';
+import { KubaFoneDiscoImg } from '@assets/images';
+import { CardProfile } from '@components/CardProfile';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { STORAGE_PRESET_ID } from '@config/storage';
+import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
 
 
 
@@ -62,10 +69,15 @@ export function Device() {
 		id: 1,
 		imgURL: "https://kuba-staging-api-files.s3.sa-east-1.amazonaws.com/product/941-1",
 		isBluetooth: true,
-		name: "Disco 2 Clássico"
+		name: "Disco Bluetooth"
 	}
 
 
+
+  const {
+   
+    setCurrentPresetId,
+  } = useValuesEqualizer();
 	const [scrollEnabled, setScrollEnabled] = useState(true);
 	const [currentPreset, setCurrentPreset] = useState<IPreset | null>(null);
 
@@ -76,6 +88,7 @@ export function Device() {
 
 	const { connectedDevice, connectToDevice, state, setState } = useBluetooth();
 
+	const [presetID, setPresetId] = useState<string | null>("")
 
 	const { data: profilesData } = useQuery({
 		queryKey: ['MyPresets'],
@@ -86,7 +99,155 @@ export function Device() {
 
 	const profiles = useMemo(() => {
 		return profilesData ?? [];
+		// return [
+		// 	{
+		// 		"description": "23213",
+		// 		"equalizerConfigs": [
+		// 			{
+		// 				"band": 1,
+		// 				"frequency": 20000,
+		// 				"quality": 7.999999999999997
+		// 			}
+		// 		],
+		// 		"genreId": 1,
+		// 		"id": 1,
+		// 		"isPublic": false,
+		// 		"name": "rock"
+		// 	},
+		// 	{
+		// 		"description": "23213",
+		// 		"equalizerConfigs": [
+		// 			{
+		// 				"band": 1,
+		// 				"frequency": 20000,
+		// 				"quality": 7.999999999999997
+		// 			}
+		// 		],
+		// 		"genreId": 1,
+		// 		"id": 2,
+		// 		"isPublic": false,
+		// 		"name": "rock"
+		// 	},
+		// 	{
+		// 		"description": "23213",
+		// 		"equalizerConfigs": [
+		// 			{
+		// 				"band": 1,
+		// 				"frequency": 20000,
+		// 				"quality": 7.999999999999997
+		// 			}
+		// 		],
+		// 		"genreId": 1,
+		// 		"id": 3,
+		// 		"isPublic": false,
+		// 		"name": "rock"
+		// 	},
+		// 	{
+		// 		"description": "23213",
+		// 		"equalizerConfigs": [
+		// 			{
+		// 				"band": 1,
+		// 				"frequency": 20000,
+		// 				"quality": 7.999999999999997
+		// 			}
+		// 		],
+		// 		"genreId": 1,
+		// 		"id": 4,
+		// 		"isPublic": false,
+		// 		"name": "rock"
+		// 	},
+		// 	{
+		// 		"description": "23213",
+		// 		"equalizerConfigs": [
+		// 			{
+		// 				"band": 1,
+		// 				"frequency": 20000,
+		// 				"quality": 7.999999999999997
+		// 			}
+		// 		],
+		// 		"genreId": 1,
+		// 		"id": 5,
+		// 		"isPublic": false,
+		// 		"name": "rock"
+		// 	},
+		// 	{
+		// 		"description": "23213",
+		// 		"equalizerConfigs": [
+		// 			{
+		// 				"band": 1,
+		// 				"frequency": 20000,
+		// 				"quality": 7.999999999999997
+		// 			}
+		// 		],
+		// 		"genreId": 1,
+		// 		"id": 6,
+		// 		"isPublic": false,
+		// 		"name": "rock"
+		// 	},
+		// 	{
+		// 		"description": "23213",
+		// 		"equalizerConfigs": [
+		// 			{
+		// 				"band": 1,
+		// 				"frequency": 20000,
+		// 				"quality": 7.999999999999997
+		// 			}
+		// 		],
+		// 		"genreId": 1,
+		// 		"id": 7,
+		// 		"isPublic": false,
+		// 		"name": "rock"
+		// 	},
+		// 	{
+		// 		"description": "23213",
+		// 		"equalizerConfigs": [
+		// 			{
+		// 				"band": 1,
+		// 				"frequency": 20000,
+		// 				"quality": 7.999999999999997
+		// 			}
+		// 		],
+		// 		"genreId": 1,
+		// 		"id": 8,
+		// 		"isPublic": false,
+		// 		"name": "rock"
+		// 	},
+		// 	{
+		// 		"description": "23213",
+		// 		"equalizerConfigs": [
+		// 			{
+		// 				"band": 1,
+		// 				"frequency": 20000,
+		// 				"quality": 7.999999999999997
+		// 			}
+		// 		],
+		// 		"genreId": 1,
+		// 		"id": 9,
+		// 		"isPublic": false,
+		// 		"name": "rock"
+		// 	},
+		// 	{
+		// 		"description": "23213",
+		// 		"equalizerConfigs": [
+		// 			{
+		// 				"band": 1,
+		// 				"frequency": 20000,
+		// 				"quality": 7.999999999999997
+		// 			}
+		// 		],
+		// 		"genreId": 1,
+		// 		"id": 10,
+		// 		"isPublic": false,
+		// 		"name": "rock"
+		// 	},
+		// ]
+
 	}, [profilesData]);
+	const groupedProfiles = []
+
+	for (let i = 0; i < profiles.length; i += 4) {
+		groupedProfiles.push(profiles.slice(i, i + 4));
+	}
 
 
 	const handleScrollEnabled = (enabled: boolean) => {
@@ -99,6 +260,17 @@ export function Device() {
 			...preset
 		} as unknown as IPreset
 		setCurrentPreset(form);
+	};
+
+	const handlePresetBox = (preset: IPresets) => {
+		const form = {
+			label: preset.name,
+			value: preset.id,
+			...preset
+		} as unknown as IPreset
+		setCurrentPreset(form);
+		setCurrentPresetId(form.id)
+		
 	};
 
 
@@ -148,6 +320,7 @@ export function Device() {
 		}));
 	};
 
+
 	useEffect(() => {
 		console.log('App::componentDidMount adding listeners: onBluetoothEnabled and onBluetoothDistabled');
 		console.log('App::componentDidMount alternatively could use onStateChanged');
@@ -164,6 +337,10 @@ export function Device() {
 		};
 	}, []);
 
+	
+	//console.log("presetID1",presetID)
+	//console.log("profiles1", profiles[0].equalizerConfigs)
+	console.log('cuurent', currentPreset)
 	return (
 		<Wrapper
 			from={{
@@ -201,9 +378,7 @@ export function Device() {
 							height: '80%'
 						}}
 						resizeMode="contain"
-						source={{
-							uri: device?.imgURL
-						}}
+						source={KubaFoneDiscoImg}
 					/>
 				</ContainerImg>
 
@@ -224,7 +399,7 @@ export function Device() {
 
 				{device?.isBluetooth && (
 					<>
-						{!state.device ? (
+						{state.device ? (
 							<DeviceListScreen
 								selectDevice={selectDevice}
 							/>
@@ -251,15 +426,37 @@ export function Device() {
 								</ContainerEqualizer>
 
 								<ContainerCarousel>
+									<BoxButtons>
+										<Button isReset>
+											<Text variant='bold' fontSize={14} color='#777777' >RESETAR</Text>
+										</Button>
+
+										<Button isReset={false} onPress={openModal}>
+											<Text variant='bold' fontSize={14} color='#777777' >SALVAR</Text>
+										</Button>
+									</BoxButtons>
 
 
 									<Spacer h={16} />
-									{profiles.length >0 && (
-										<CarouselProfile
-											titleProfile={'Perfis Públicos '}
-											data={profiles}
-											isPersonalities={false}
-										/>
+									{groupedProfiles.length > 0 && (
+										<>
+											{groupedProfiles.map((preset) => (
+												<ContainerPresets>
+													{preset.map(item => (
+
+
+														<CardProfile
+															key={item.id}
+															handlePreset={() => handlePresetBox(item)}
+															isSelected={currentPreset?.id === item.id}
+															data={item as IPresets}
+														/>
+
+													))}
+												</ContainerPresets>
+											))}
+										</>
+
 									)}
 
 								</ContainerCarousel>
