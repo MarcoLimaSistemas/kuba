@@ -54,14 +54,16 @@ export function HeaderEqualizer({
   equalizerConfigs,
 }: EqualizerProps) {
   const [openDropdown, setOpenDropdown] = useState(false);
-  const [currentPreset, setCurrentPreset] = useState<ValueType | null>(null);
+
 
 
   const {
     setSelectedOptionBand,
     setFrequency,
     setGain,
-    setQuality
+    setQuality,
+    setCurrentPresetId,
+    currentPresetId
   } = useValuesEqualizer();
 
   const { data, isLoading, isFetched } = useQuery({
@@ -93,8 +95,8 @@ export function HeaderEqualizer({
     await AsyncStorage.setItem(STORAGE_PRESET_ID, JSON.stringify(preset));
     handlePreset(preset)
     setFrequency(String(preset.equalizerConfigs[0].frequency))
-    setGain(preset.equalizerConfigs[0].decibel_quantity)
-    setQuality(preset.equalizerConfigs[0].quality)
+    setGain(String(preset.equalizerConfigs[0].decibel_quantity))
+    setQuality(String(preset.equalizerConfigs[0].quality))
     setSelectedOptionBand(String(preset.equalizerConfigs[0].band) ?? null)
 
   }
@@ -116,8 +118,8 @@ export function HeaderEqualizer({
         if (presetCustom && presetCustom?.length > 0 && equalizerConfigs) {
 
           setFrequency(String(equalizerConfigs[0].frequency))
-          setGain(equalizerConfigs[0].decibel_quantity)
-          setQuality(equalizerConfigs[0].quality)
+          setGain(String(equalizerConfigs[0].decibel_quantity))
+          setQuality(String(equalizerConfigs[0].quality))
           setSelectedOptionBand(String(equalizerConfigs[0].band) ?? null)
           return
         }
@@ -126,7 +128,7 @@ export function HeaderEqualizer({
         if (preset !== null) {
           const presetData = JSON.parse(preset);
 
-          setCurrentPreset(presetData.id)
+          setCurrentPresetId(presetData.id)
           handleSelectPreset(presetData)
 
         }
@@ -171,11 +173,11 @@ export function HeaderEqualizer({
           <DropDownPicker
             disabled={disabled}
             open={openDropdown}
-            value={currentPreset}
+            value={currentPresetId}
             items={myPresets}
             loading={isLoading}
             setOpen={setOpenDropdown}
-            setValue={setCurrentPreset}
+            setValue={setCurrentPresetId}
             placeholder='Selecione preset'
             translation={{
               NOTHING_TO_SHOW: "Nenhum preset adicionado!"
