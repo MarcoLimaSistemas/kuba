@@ -7,11 +7,14 @@ import { IPreset, IPresets } from '@models/preset';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_PRESET_ID } from '@config/storage';
 import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
+import { IMyPresets } from '@components/Equalizer/Header';
 
 
 
 
-export function CardProfile({ data,isSelected }: { data: IPresets,isSelected:boolean }) {
+export function CardProfile(
+	{ data, isSelected, handlePreset }:
+	 { data: IPresets, isSelected: boolean, handlePreset: () => void; }) {
 
 	const {
 		setSelectedOptionBand,
@@ -22,10 +25,10 @@ export function CardProfile({ data,isSelected }: { data: IPresets,isSelected:boo
 
 	const handleSetPreset = async () => {
 		await AsyncStorage.setItem(STORAGE_PRESET_ID, JSON.stringify(data));
-
+		handlePreset()
 		setFrequency(String(data.equalizerConfigs[0].frequency))
-		setGain(data.equalizerConfigs[0].decibel_quantity)
-		setQuality(data.equalizerConfigs[0].quality)
+		setGain(String(data.equalizerConfigs[0].decibel_quantity))
+		setQuality(String(data.equalizerConfigs[0].quality))
 		setSelectedOptionBand(String(data.equalizerConfigs[0].band) ?? null)
 	}
 
@@ -36,7 +39,7 @@ export function CardProfile({ data,isSelected }: { data: IPresets,isSelected:boo
 			{/* <ImageBackground
 				source={{uri:"https://kuba-staging-api-files.s3.sa-east-1.amazonaws.com/preset/808-1"}}
 			/> */}
-			<Background  isSelected={isSelected}/>
+			<Background isSelected={isSelected} />
 			<ContainerText>
 				<Text
 					variant="bold"
