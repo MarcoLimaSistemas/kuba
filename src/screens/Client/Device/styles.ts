@@ -1,5 +1,4 @@
 import { MotiView } from 'moti';
-
 import { scale } from 'react-native-size-matters';
 import styled from 'styled-components/native';
 
