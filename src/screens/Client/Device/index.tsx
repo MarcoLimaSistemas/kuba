@@ -397,7 +397,7 @@ export function Device() {
 
 				<Spacer h={16} />
 
-				{device?.isBluetooth && (
+				{!device?.isBluetooth && (
 					<>
 						{state.device ? (
 							<DeviceListScreen
