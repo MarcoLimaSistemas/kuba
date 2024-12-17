@@ -65,9 +65,9 @@ export function Preset() {
 	async function setConfigPreset() {
 		await AsyncStorage.setItem(STORAGE_PRESET_ID, JSON.stringify(listFrequencies));
 
-		setFrequency(listFrequencies.equalizerConfigs[0].frequency)
-		setGain(listFrequencies.equalizerConfigs[0].decibel_quantity)
-		setQuality(listFrequencies.equalizerConfigs[0].quality)
+		setFrequency(String(listFrequencies.equalizerConfigs[0].frequency))
+		setGain(String(listFrequencies.equalizerConfigs[0].decibel_quantity))
+		setQuality(String(listFrequencies.equalizerConfigs[0].quality))
 		setSelectedOptionBand(String(listFrequencies.equalizerConfigs[0].band) ?? null)
 	}
 

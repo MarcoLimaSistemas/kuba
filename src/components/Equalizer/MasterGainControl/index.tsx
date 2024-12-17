@@ -9,6 +9,7 @@ import { Buffer } from 'buffer';
 import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
 import EqualizerVisual from '../ui/equalizer';
 
+
 global.Buffer = global.Buffer || Buffer;
 
 enum Filter {
@@ -50,7 +51,7 @@ const MasterGainControl: React.FC<FilterEqualizerScreenProps> = ({ createGaiaMes
   }
 
   const convertLogScaleQuality = (linearValue: number) =>
-    Math.pow(10, linearValue * (logMaxQuality - logMinQuality) + logMinQuality);
+    Math.pow(10, linearValue * (logMaxQuality - logMinQuality) + logMinQuality).toFixed(2);
 
 
 
@@ -59,9 +60,9 @@ const MasterGainControl: React.FC<FilterEqualizerScreenProps> = ({ createGaiaMes
 
   const [selectedFilter, setSelectedFilter] = useState<Filter>(Filter.BYPASS);
 
-  const disabledFrequency = frequency === 0
-  const disabledGain = gain === 0
-  const disabledQuality = quality === 0
+  const disabledFrequency = frequency === "0"
+  const disabledGain = gain === "0"
+  const disabledQuality = quality === "0"
 
 
 
@@ -138,27 +139,27 @@ const MasterGainControl: React.FC<FilterEqualizerScreenProps> = ({ createGaiaMes
       case Filter.BYPASS:
         setMinFrequency(0.2)
         setMaxFrequency(20000)
-        setFrequency(0);
-        setGain(0);
-        setQuality(0);
+        setFrequency("0");
+        setGain("0");
+        setQuality("0");
         break;
 
       case Filter.LOW_PASS_1:
         // LOW_PASS_1: frequency from 0.3Hz to 20 kHz, no gain, no quality
         setMinFrequency(0.3)
         setMaxFrequency(20000)
-        setFrequency(1.2);
-        setGain(0);
-        setQuality(0);
+        setFrequency("1.2");
+        setGain("0");
+        setQuality("0");
         break;
 
       case Filter.HIGH_SHELF_2:
         // HIGH_SHELF_2: frequency from 40Hz to 20kHz, gain from -12 dB to +12 dB, quality from 0.25 to 2.0
         setMinFrequency(0.4)
         setMinFrequency(20000)
-        setFrequency(1.2);
-        setGain(3);
-        setQuality(8);
+        setFrequency("1.2");
+        setGain("3");
+        setQuality("8");
         break;
 
       default:
@@ -194,9 +195,9 @@ const MasterGainControl: React.FC<FilterEqualizerScreenProps> = ({ createGaiaMes
        <Button title="Bass" onPress={generateBass} /> */}
 
       <EqualizerVisual
-        frequency={frequency}
-        quality={quality}
-        gain={gain}
+        frequency={parseFloat(frequency)}
+        quality={parseFloat(quality)}
+        gain={parseFloat(gain)}
         maxFrequency={maxFrequency}
         minFrequency={minFrequency}
         optionBand={selectedOptionBand}
@@ -207,12 +208,13 @@ const MasterGainControl: React.FC<FilterEqualizerScreenProps> = ({ createGaiaMes
         generateCodeForFrequency={generateCodeForFrequency}
         generateCodeForQuality={generateCodeForQuality}
         generateCodeForGain={generateCodeForGain}
-        onValueChangeFrequency={(value) => setFrequency(convertLogScaleFrequency(value))}
-        onValueChangeQuality={(value) => setQuality(convertLogScaleQuality(value))}
-        onValueChangeGain={(value) => setGain((value))}
+        onValueChangeFrequency={(value) => setFrequency(String(convertLogScaleFrequency(value)))}
+        onValueChangeQuality={(value) => setQuality(String(convertLogScaleQuality(value)))}
+        onValueChangeGain={(value) => setGain(String((value.toFixed(1))))}
         onTouchStart={() => handleScrollEnabled(false)}
         onTouchEnd={() => handleScrollEnabled(true)}
       />
+
 
     </S.Container>
   );
