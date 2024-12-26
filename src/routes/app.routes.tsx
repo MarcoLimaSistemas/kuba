@@ -16,7 +16,7 @@ const AppRoutes = () => {
 				headerShown: false,
 				cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
 			}}>
-		 {/* <Stack.Screen
+			{/* <Stack.Screen
 				name="Home"
 				component={Client.Home}
 			/> */}
@@ -24,6 +24,10 @@ const AppRoutes = () => {
 			<Stack.Screen name="ProfileView" component={Client.ProfileView} />
 			<Stack.Screen name="EditProfile" component={Client.EditProfile} />  */}
 
+			<Stack.Screen
+				name="HomeScreen"
+				component={Client.HomeScreen}
+			/>
 			<Stack.Screen
 				name="Device"
 				component={Client.Device}
@@ -36,8 +40,8 @@ const AppRoutes = () => {
 			/>
 			<Stack.Screen name="School" component={Client.School} />
 			*/}
-			<Stack.Screen name="Preset" component={Client.Preset} 
-				/> 
+			<Stack.Screen name="Preset" component={Client.Preset}
+			/>
 			<Stack.Screen
 				name="Personalities"
 				component={Client.Personalities}

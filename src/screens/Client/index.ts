@@ -1,4 +1,5 @@
 export { Home } from './Home';
+export { HomeScreen } from './HomeScreen';
 export { Device } from './Device';
 export { Tutorials } from './Tutorials';
 export { SettingsEarphone } from './SettingsEarphone';
