@@ -4,10 +4,12 @@ export { default as FigureCompleted } from './completed.png';
 export { default as Puppet } from './confirmedPeople.png';
 export { default as KubaFone } from './kubaFone.png';
 export { default as KubaFoneDiscoImg } from './kuba_disco_bluetooth_classico.png';
+export { default as KubaFoneDiscoHome} from './kuba_disco_home.png';
 
 export { default as FoneExample } from './frontalFone.png';
 export { default as logo } from './logo.png';
 export { default as logoGray } from './logo_gray.png';
+export { default as logoWhite } from './logo_white.png';
 export { default as perfil } from './perfil.png';
 export { default as profile } from './Profile.png';
 export { default as singer } from './singer.png';
