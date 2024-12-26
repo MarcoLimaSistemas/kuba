@@ -1,6 +1,7 @@
 export default {
   COLORS: {
     gold_50: '#d4bd8559;',
+    gold_80  :"#DCD0B2",
     gold_100: '#D4BD85',
     gold_200: '#998860',
     gold_500:'#FCD539',
