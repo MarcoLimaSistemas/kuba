@@ -30,7 +30,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { createPreset, editPreset, getGenres } from '@services/preset';
 import { Modalize } from 'react-native-modalize';
 import { queryClient } from '../../../App';
-import { IFrequency } from '@screens/Client/Device';
+
 import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -143,7 +143,7 @@ export const ModalPreset = forwardRef(
 
 					equalizerConfigs: [{
 						"frequency": frequency,
-						"decibelQuantity": gain,
+						"decibel_quantity": gain,
 						"quality": quality,
 						"band": Number(selectedOptionBand),
 					}]
@@ -176,7 +176,7 @@ export const ModalPreset = forwardRef(
 
 					equalizerConfigs: [{
 						"frequency": frequency,
-						"decibelQuantity": gain,
+						"decibel_quantity": gain,
 						"quality": quality,
 						"band": Number(selectedOptionBand),
 					}]
@@ -200,8 +200,8 @@ export const ModalPreset = forwardRef(
 
 
 		const genres = [
-			{value: 1,	label: "Rock"}, 
-			{	value: 2,	label: "Reggae"},
+			{ value: 1, label: "Rock" },
+			{ value: 2, label: "Reggae" },
 			{ value: 3, label: 'Hip Hop' },
 			{ value: 4, label: 'Eletrônica' },
 			{ value: 5, label: 'Clássica' },
@@ -321,7 +321,7 @@ export const ModalPreset = forwardRef(
 
 					<Spacer h={16} />
 
-					<ContainerSwitch>
+					{/* <ContainerSwitch>
 						<Switch
 							trackColor={{
 								false: '#656565',
@@ -335,7 +335,7 @@ export const ModalPreset = forwardRef(
 						<Text variant="bold" fontSize={12}>
 							Tornar Público
 						</Text>
-					</ContainerSwitch>
+					</ContainerSwitch> */}
 					<Spacer h={32} />
 
 					<Footer>
