@@ -14,7 +14,6 @@ import { getPresetsOwn } from '@services/preset';
 import { useAuth } from '@hooks/auth';
 import { IFrequenciesListProps } from '..';
 
-import { IFrequency } from '@screens/Client/Device';
 import { IEqualizerConfig, IPreset } from '@models/preset';
 import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -23,6 +22,9 @@ import { useFocusEffect } from '@react-navigation/native';
 import { getDataPresets } from '@services/internal-storage';
 import Switch from '@components/Switch';
 import { useSharedValue } from 'react-native-reanimated';
+import { useBluetooth } from '../../../context/BluetoothContext';
+import { BluetoothDevice } from 'react-native-bluetooth-classic';
+import React from 'react';
 
 export interface IMyPresets {
   label: string;
@@ -41,6 +43,7 @@ interface EqualizerProps {
   disabled?: boolean;
   presetCustom?: string;
   equalizerConfigs?: IEqualizerConfig[];
+  connectToDevice: (device: BluetoothDevice) => void;
 }
 
 
@@ -52,10 +55,12 @@ export function HeaderEqualizer({
   disabled = false,
   presetCustom,
   equalizerConfigs,
+  connectToDevice
 }: EqualizerProps) {
   const [openDropdown, setOpenDropdown] = useState(false);
 
-
+  const { state, setState } = useBluetooth();
+  const connectedDevice = state.device ? state.device : null
 
   const {
     setSelectedOptionBand,
@@ -101,15 +106,24 @@ export function HeaderEqualizer({
 
   }
   const [deviceConnection, setDeviceConnection] = useState(false)
-  const statusConnection = useSharedValue(0);
+  const statusConnection = useSharedValue(connectedDevice!==null?1:0);
 
-  const handleSwitchConnection = () => {
+  const handleSwitchConnection =async () => {
     statusConnection.value = statusConnection.value === 0 ? 1 : 0;
 
     if (statusConnection.value === 0) {
-      return setDeviceConnection(true);
+      if(connectedDevice !== null)
+      connectToDevice(connectedDevice)
+      setDeviceConnection(true);
+      return
     }
-    return setDeviceConnection(false);
+    await state.device?.disconnect()
+    setState({
+      device: undefined,
+      bluetoothEnabled: true,
+    })
+    setDeviceConnection(false);
+    return 
   };
 
   useFocusEffect(
@@ -144,16 +158,16 @@ export function HeaderEqualizer({
         <Text variant="bold" fontSize={14} color="#777777">
           EQUALIZADOR
         </Text>
-     
+
         <View
           style={{
             flexDirection: 'row'
           }}>
-        
-        <Switch
-          value={statusConnection}
-          onPress={handleSwitchConnection}
-        />
+
+          <Switch
+            value={statusConnection}
+            onPress={handleSwitchConnection}
+          />
 
         </View>
       </S.Header>

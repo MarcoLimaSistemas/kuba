@@ -39,7 +39,7 @@ export const Input = styled.TextInput`
 	height:  ${scale(35)}px;
 	color: ${({ theme }) => theme.COLORS.black};
 	font-family: ${typography['Lato-Regular'].fontFamily};
-	font-size: ${scale(16)}px;
+	font-size: ${scale(14)}px;
 padding-left: 4px;
 	border-radius: ${scale(10)}px;
 	border:2px solid #777777;

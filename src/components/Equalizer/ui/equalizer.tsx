@@ -314,7 +314,7 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
               placeholder=""
               placeholderTextColor={'#A0A0A0'}
               maxLength={6}
-              value={(gain)}
+              value={gain}
               onChangeText={handleInputChangeGain}
             />
           </S.ContainerBar>
