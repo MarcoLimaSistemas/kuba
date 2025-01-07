@@ -44,8 +44,6 @@ import { IPreset, IPresets } from '@models/preset';
 import { getDataPresets } from '@services/internal-storage';
 import { KubaFoneDiscoImg } from '@assets/images';
 import { CardProfile } from '@components/CardProfile';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { STORAGE_PRESET_ID } from '@config/storage';
 import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
 
 
@@ -54,7 +52,7 @@ import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
 
 export interface IFrequency {
 	frequency: string;
-	decibelQuantity: number;
+	decibel_quantity: number;
 	quality: number
 }
 
@@ -62,6 +60,8 @@ interface AppState {
 	device?: BluetoothDevice;
 	bluetoothEnabled: boolean;
 }
+
+
 
 export function Device() {
 
@@ -74,10 +74,11 @@ export function Device() {
 
 
 
-  const {
-   
-    setCurrentPresetId,
-  } = useValuesEqualizer();
+	const {
+		setFrequency, setGain, setQuality,
+		setCurrentPresetId,
+	} = useValuesEqualizer();
+
 	const [scrollEnabled, setScrollEnabled] = useState(true);
 	const [currentPreset, setCurrentPreset] = useState<IPreset | null>(null);
 
@@ -96,153 +97,11 @@ export function Device() {
 		//enabled: isFetched
 	});
 
-
+console.log("state",state)
 	const profiles = useMemo(() => {
-		return profilesData ?? [];
-		// return [
-		// 	{
-		// 		"description": "23213",
-		// 		"equalizerConfigs": [
-		// 			{
-		// 				"band": 1,
-		// 				"frequency": 20000,
-		// 				"quality": 7.999999999999997
-		// 			}
-		// 		],
-		// 		"genreId": 1,
-		// 		"id": 1,
-		// 		"isPublic": false,
-		// 		"name": "rock"
-		// 	},
-		// 	{
-		// 		"description": "23213",
-		// 		"equalizerConfigs": [
-		// 			{
-		// 				"band": 1,
-		// 				"frequency": 20000,
-		// 				"quality": 7.999999999999997
-		// 			}
-		// 		],
-		// 		"genreId": 1,
-		// 		"id": 2,
-		// 		"isPublic": false,
-		// 		"name": "rock"
-		// 	},
-		// 	{
-		// 		"description": "23213",
-		// 		"equalizerConfigs": [
-		// 			{
-		// 				"band": 1,
-		// 				"frequency": 20000,
-		// 				"quality": 7.999999999999997
-		// 			}
-		// 		],
-		// 		"genreId": 1,
-		// 		"id": 3,
-		// 		"isPublic": false,
-		// 		"name": "rock"
-		// 	},
-		// 	{
-		// 		"description": "23213",
-		// 		"equalizerConfigs": [
-		// 			{
-		// 				"band": 1,
-		// 				"frequency": 20000,
-		// 				"quality": 7.999999999999997
-		// 			}
-		// 		],
-		// 		"genreId": 1,
-		// 		"id": 4,
-		// 		"isPublic": false,
-		// 		"name": "rock"
-		// 	},
-		// 	{
-		// 		"description": "23213",
-		// 		"equalizerConfigs": [
-		// 			{
-		// 				"band": 1,
-		// 				"frequency": 20000,
-		// 				"quality": 7.999999999999997
-		// 			}
-		// 		],
-		// 		"genreId": 1,
-		// 		"id": 5,
-		// 		"isPublic": false,
-		// 		"name": "rock"
-		// 	},
-		// 	{
-		// 		"description": "23213",
-		// 		"equalizerConfigs": [
-		// 			{
-		// 				"band": 1,
-		// 				"frequency": 20000,
-		// 				"quality": 7.999999999999997
-		// 			}
-		// 		],
-		// 		"genreId": 1,
-		// 		"id": 6,
-		// 		"isPublic": false,
-		// 		"name": "rock"
-		// 	},
-		// 	{
-		// 		"description": "23213",
-		// 		"equalizerConfigs": [
-		// 			{
-		// 				"band": 1,
-		// 				"frequency": 20000,
-		// 				"quality": 7.999999999999997
-		// 			}
-		// 		],
-		// 		"genreId": 1,
-		// 		"id": 7,
-		// 		"isPublic": false,
-		// 		"name": "rock"
-		// 	},
-		// 	{
-		// 		"description": "23213",
-		// 		"equalizerConfigs": [
-		// 			{
-		// 				"band": 1,
-		// 				"frequency": 20000,
-		// 				"quality": 7.999999999999997
-		// 			}
-		// 		],
-		// 		"genreId": 1,
-		// 		"id": 8,
-		// 		"isPublic": false,
-		// 		"name": "rock"
-		// 	},
-		// 	{
-		// 		"description": "23213",
-		// 		"equalizerConfigs": [
-		// 			{
-		// 				"band": 1,
-		// 				"frequency": 20000,
-		// 				"quality": 7.999999999999997
-		// 			}
-		// 		],
-		// 		"genreId": 1,
-		// 		"id": 9,
-		// 		"isPublic": false,
-		// 		"name": "rock"
-		// 	},
-		// 	{
-		// 		"description": "23213",
-		// 		"equalizerConfigs": [
-		// 			{
-		// 				"band": 1,
-		// 				"frequency": 20000,
-		// 				"quality": 7.999999999999997
-		// 			}
-		// 		],
-		// 		"genreId": 1,
-		// 		"id": 10,
-		// 		"isPublic": false,
-		// 		"name": "rock"
-		// 	},
-		// ]
-
+		return profilesData ?? []
 	}, [profilesData]);
+
 	const groupedProfiles = []
 
 	for (let i = 0; i < profiles.length; i += 4) {
@@ -270,7 +129,7 @@ export function Device() {
 		} as unknown as IPreset
 		setCurrentPreset(form);
 		setCurrentPresetId(form.id)
-		
+
 	};
 
 
@@ -283,7 +142,11 @@ export function Device() {
 
 	const openModal = () => modalizeRef.current?.open();
 	const closeModal = () => modalizeRef.current?.close();
-
+	const resetValues = () => {
+		setFrequency("0")
+		setGain("0")
+		setQuality("0")
+	}
 	// const [state, setState] = useState<AppState>({
 	//   device: undefined,
 	//   bluetoothEnabled: true,
@@ -337,10 +200,11 @@ export function Device() {
 		};
 	}, []);
 
-	
+
 	//console.log("presetID1",presetID)
 	//console.log("profiles1", profiles[0].equalizerConfigs)
-	console.log('cuurent', currentPreset)
+	//console.log('current', currentPreset)
+
 	return (
 		<Wrapper
 			from={{
@@ -397,9 +261,9 @@ export function Device() {
 
 				<Spacer h={16} />
 
-				{!device?.isBluetooth && (
+				{device?.isBluetooth && (
 					<>
-						{state.device ? (
+						{!state.device ? (
 							<DeviceListScreen
 								selectDevice={selectDevice}
 							/>
@@ -417,6 +281,8 @@ export function Device() {
 										handlePreset={handlePreset}
 										handleScrollEnabled={handleScrollEnabled}
 										handleModalEdit={handleModalEdit}
+										connectToDevice={selectDevice}
+
 									/>
 									<ConnectionScreen
 										device={state.device}
@@ -427,7 +293,7 @@ export function Device() {
 
 								<ContainerCarousel>
 									<BoxButtons>
-										<Button isReset>
+										<Button isReset onPress={resetValues}>
 											<Text variant='bold' fontSize={14} color='#777777' >RESETAR</Text>
 										</Button>
 
@@ -438,6 +304,8 @@ export function Device() {
 
 
 									<Spacer h={16} />
+									<Text variant='bold' fontSize={14} color='#777777' >SEUS PERFIS</Text>
+									<Spacer h={10} />
 									{groupedProfiles.length > 0 && (
 										<>
 											{groupedProfiles.map((preset) => (
@@ -471,15 +339,12 @@ export function Device() {
 					</>
 				)}
 
-
-
-
 			</Container>
 
 			<ModalPreset
 				ref={modalizeRef}
 				currentPreset={currentPreset}
-				isEdit={isEdit}
+				isEdit={true}
 				onClose={() => closeModal()}
 			/>
 		</Wrapper>
