@@ -8,28 +8,34 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_PRESET_ID } from '@config/storage';
 import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
 import { IMyPresets } from '@components/Equalizer/Header';
+import { IPresetUser } from '@models/band';
+
 
 
 
 
 export function CardProfile(
 	{ data, isSelected, handlePreset }:
-	 { data: IPresets, isSelected: boolean, handlePreset: () => void; }) {
+	 { data:  IPresetUser, isSelected: boolean, handlePreset: () => void; }) {
 
 	const {
 		setSelectedOptionBand,
 		setFrequency,
 		setGain,
-		setQuality
+		setQuality,
+		setBands
 	} = useValuesEqualizer();
 
 	const handleSetPreset = async () => {
 		await AsyncStorage.setItem(STORAGE_PRESET_ID, JSON.stringify(data));
 		handlePreset()
-		setFrequency(String(data.equalizerConfigs[0].frequency))
-		setGain(String(data.equalizerConfigs[0].decibel_quantity))
-		setQuality(String(data.equalizerConfigs[0].quality))
-		setSelectedOptionBand(String(data.equalizerConfigs[0].band) ?? null)
+
+
+
+		// setFrequency(String(data.equalizerConfigs[0].frequency))
+		// setGain(String(data.equalizerConfigs[0].decibel_quantity))
+		// setQuality(String(data.equalizerConfigs[0].quality))
+		// setSelectedOptionBand(String(data.equalizerConfigs[0].band) ?? null)
 	}
 
 	return (
