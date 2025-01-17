@@ -45,6 +45,10 @@ import { getDataPresets } from '@services/internal-storage';
 import { KubaFoneDiscoImg } from '@assets/images';
 import { CardProfile } from '@components/CardProfile';
 import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
+import { ModalSelectValue } from '@components/ModalSelectValue';
+import { IBand, IPresetUser } from '@models/band';
+import { initialBands } from '../HomeScreen/initialDate';
+
 
 
 
@@ -77,10 +81,16 @@ export function Device() {
 	const {
 		setFrequency, setGain, setQuality,
 		setCurrentPresetId,
+		isModalSelectValueVisible,
+		setIsModalSelectValueVisible,
+		selectedBand,
+		bands,
+		setBands,
+		modalValue
 	} = useValuesEqualizer();
 
 	const [scrollEnabled, setScrollEnabled] = useState(true);
-	const [currentPreset, setCurrentPreset] = useState<IPreset | null>(null);
+	const [currentPreset, setCurrentPreset] = useState<IPresetUser | null>(null);
 
 
 	const [isEdit, setIsEdit] = useState(false);
@@ -97,7 +107,7 @@ export function Device() {
 		//enabled: isFetched
 	});
 
-console.log("state",state)
+
 	const profiles = useMemo(() => {
 		return profilesData ?? []
 	}, [profilesData]);
@@ -117,18 +127,13 @@ console.log("state",state)
 		const form = {
 			name: preset.label,
 			...preset
-		} as unknown as IPreset
+		} as unknown as IPresetUser
 		setCurrentPreset(form);
 	};
 
-	const handlePresetBox = (preset: IPresets) => {
-		const form = {
-			label: preset.name,
-			value: preset.id,
-			...preset
-		} as unknown as IPreset
-		setCurrentPreset(form);
-		setCurrentPresetId(form.id)
+	const handlePresetBox = (preset: IPresetUser) => {
+		setCurrentPreset(preset);
+		setCurrentPresetId(preset.id)
 
 	};
 
@@ -143,9 +148,10 @@ console.log("state",state)
 	const openModal = () => modalizeRef.current?.open();
 	const closeModal = () => modalizeRef.current?.close();
 	const resetValues = () => {
-		setFrequency("0")
-		setGain("0")
-		setQuality("0")
+		// setFrequency("0")
+		// setGain("0")
+		// setQuality("0")
+		setBands(initialBands)
 	}
 	// const [state, setState] = useState<AppState>({
 	//   device: undefined,
@@ -201,9 +207,24 @@ console.log("state",state)
 	}, []);
 
 
-	//console.log("presetID1",presetID)
-	//console.log("profiles1", profiles[0].equalizerConfigs)
-	//console.log('current', currentPreset)
+	const handleSave = (newValue: number) => {
+		if (selectedBand) {
+			if (selectedBand.type === 'quality') {
+				const newArray = bands.map((item) =>
+					item.id === selectedBand.id ? { ...item, quality: newValue } : item) as IBand[];
+				setBands(newArray)
+				return
+			}
+			if (selectedBand.type === 'gain') {
+				const newArray = bands.map((item) =>
+					item.id === selectedBand.id ? { ...item, gain: newValue } : item) as IBand[];
+				setBands(newArray)
+				return
+			}
+
+		}
+		setIsModalSelectValueVisible(false);
+	};
 
 	return (
 		<Wrapper
@@ -263,7 +284,7 @@ console.log("state",state)
 
 				{device?.isBluetooth && (
 					<>
-						{!state.device ? (
+						{state.device ? (
 							<DeviceListScreen
 								selectDevice={selectDevice}
 							/>
@@ -276,6 +297,7 @@ console.log("state",state)
 									/>
 								)}
 								<ContainerEqualizer>
+
 									<HeaderEqualizer
 										onOpen={openModal}
 										handlePreset={handlePreset}
@@ -306,25 +328,25 @@ console.log("state",state)
 									<Spacer h={16} />
 									<Text variant='bold' fontSize={14} color='#777777' >SEUS PERFIS</Text>
 									<Spacer h={10} />
+
 									{groupedProfiles.length > 0 && (
 										<>
-											{groupedProfiles.map((preset) => (
-												<ContainerPresets>
+											{groupedProfiles.map((preset,index) => (
+												<ContainerPresets key={index}>
 													{preset.map(item => (
-
-
 														<CardProfile
 															key={item.id}
 															handlePreset={() => handlePresetBox(item)}
 															isSelected={currentPreset?.id === item.id}
-															data={item as IPresets}
+															data={item as IPresetUser}
 														/>
-
 													))}
+
 												</ContainerPresets>
+
+
 											))}
 										</>
-
 									)}
 
 								</ContainerCarousel>
@@ -346,6 +368,14 @@ console.log("state",state)
 				currentPreset={currentPreset}
 				isEdit={true}
 				onClose={() => closeModal()}
+			/>
+			<ModalSelectValue
+				initialValue={parseFloat(selectedBand?.value ?? "")}
+				minValue={selectedBand?.type === 'gain' ? -10 : 0}
+				maxValue={selectedBand?.type === 'gain' ? 10 : 1}
+				isVisible={isModalSelectValueVisible}
+				onSave={handleSave}
+				onCancel={() => setIsModalSelectValueVisible(false)}
 			/>
 		</Wrapper>
 	);

@@ -8,7 +8,7 @@ import { Pressable, Switch, TouchableOpacity } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 
-import { IPreset, IPresets } from '../../models/preset';
+
 
 import {
 	ContainerButtonDelete,
@@ -27,7 +27,7 @@ import { Spacer } from '@components/Spacer';
 import theme from '../../styles/theme';
 import { typography } from '../../styles/typography';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { createPreset, editPreset, getGenres } from '@services/preset';
+
 import { Modalize } from 'react-native-modalize';
 import { queryClient } from '../../../App';
 
@@ -36,19 +36,13 @@ import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_PRESET } from '@config/storage';
 import { getDataPresets, updatePresetInternal } from '@services/internal-storage';
+import { IPresetUser } from '@models/band';
 
-// export interface IPreset {
-// 	id: number;
-// 	name: string;
-// 	description: string;
-// 	settings: string;
-// 	genreId: string;
-// 	isPublic: boolean;
-// }
+
 
 interface ModalPresetProps {
 	isEdit: boolean;
-	currentPreset: IPreset | null;
+	currentPreset: IPresetUser | null;
 	onOpen?(): void;
 	onClose(): void;
 }
@@ -73,10 +67,7 @@ export const ModalPreset = forwardRef(
 
 
 		const {
-			frequency,
-			gain,
-			quality,
-			selectedOptionBand
+			bands
 		} = useValuesEqualizer()
 
 
@@ -85,38 +76,38 @@ export const ModalPreset = forwardRef(
 			handleSubmit,
 			control,
 			formState: { errors }
-		} = useForm<IPresets>();
+		} = useForm<IPresetUser>();
 
 
-		const { data: profilesData } = useQuery({
-			queryKey: ['MyPresets'],
-			queryFn: async () => await getDataPresets(),
-			//enabled: isFetched
-		});
-		const profiles = useMemo(() => {
-			return profilesData ?? [];
-		}, [profilesData]);
+		// const { data: profilesData } = useQuery({
+		// 	queryKey: ['MyPresets'],
+		// 	queryFn: async () => await getDataPresets(),
+		// 	//enabled: isFetched
+		// });
+		// const profiles = useMemo(() => {
+		// 	return profilesData ?? [];
+		// }, [profilesData]);
 
 
-		const { mutateAsync, isPending } = useMutation({
-			mutationFn: (data: IPresets[]) => updatePresetInternal(data),
-			onSuccess: async res => {
-				await queryClient.invalidateQueries({
-					queryKey: ['MyPresets']
-				});
-				Toast.show({
-					type: 'success',
-					text1: 'Preset criado com sucesso!'
-				});
-				onClose();
-			},
-			onError(error) {
-				console.error(error);
-			}
-		});
+		// const { mutateAsync, isPending } = useMutation({
+		// 	mutationFn: (data: IPresets[]) => updatePresetInternal(data),
+		// 	onSuccess: async res => {
+		// 		await queryClient.invalidateQueries({
+		// 			queryKey: ['MyPresets']
+		// 		});
+		// 		Toast.show({
+		// 			type: 'success',
+		// 			text1: 'Preset criado com sucesso!'
+		// 		});
+		// 		onClose();
+		// 	},
+		// 	onError(error) {
+		// 		console.error(error);
+		// 	}
+		// });
 
 		const { mutateAsync: mutateAsyncEdit, isPending: isPendingEdit } = useMutation({
-			mutationFn: (data: IPresets[]) => updatePresetInternal(data),
+			mutationFn: (data: IPresetUser[]) => updatePresetInternal(data),
 			onSuccess: async res => {
 				await queryClient.invalidateQueries({
 					queryKey: ['MyPresets']
@@ -136,60 +127,55 @@ export const ModalPreset = forwardRef(
 			setIsEnabled(previousState => !previousState);
 		};
 
-		const savePreset = async (data: IPresets) => {
+		// const savePreset = async (data: IPresets) => {
+		// 	try {
+
+		// 		const settings = {
+
+		// 			equalizerConfigs: [{
+		// 				"frequency": frequency,
+		// 				"decibel_quantity": gain,
+		// 				"quality": quality,
+		// 				"band": Number(selectedOptionBand),
+		// 			}]
+		// 		}
+		// 		const form = { id: profiles?.length + 1, ...data, ...settings } as unknown as IPresets
+
+		// 		const existingData = await AsyncStorage.getItem(STORAGE_PRESET)
+		// 		const parsedData = existingData ? JSON.parse(existingData) as IPresets[] : [];
+
+		// 		if (parsedData.length >= 10) {
+		// 			Toast.show({
+		// 				type: 'error',
+		// 				text1: 'Máximo de 10 perfis permitido.'
+		// 			});
+		// 			onClose();
+		// 		}
+		// 		const updatedData = [...parsedData, form] as IPresets[];
+
+		// 		mutateAsync(updatedData);
+		// 	} catch (err) {
+		// 		console.error("Error", err)
+		// 	}
+
+		// };
+
+		const editPresetUser = async (data: IPresetUser) => {
 			try {
-
+			
 				const settings = {
-
-					equalizerConfigs: [{
-						"frequency": frequency,
-						"decibel_quantity": gain,
-						"quality": quality,
-						"band": Number(selectedOptionBand),
-					}]
-				}
-				const form = { id: profiles?.length + 1, ...data, ...settings } as unknown as IPresets
-
-				const existingData = await AsyncStorage.getItem(STORAGE_PRESET)
-				const parsedData = existingData ? JSON.parse(existingData) as IPresets[] : [];
-
-				if (parsedData.length >= 10) {
-					Toast.show({
-						type: 'error',
-						text1: 'Máximo de 10 perfis permitido.'
-					});
-					onClose();
-				}
-				const updatedData = [...parsedData, form] as IPresets[];
-
-				mutateAsync(updatedData);
-			} catch (err) {
-				console.error("Error", err)
-			}
-
-		};
-
-		const editPresetUser = async (data: IPresets) => {
-			try {
-
-				const settings = {
-
-					equalizerConfigs: [{
-						"frequency": frequency,
-						"decibel_quantity": gain,
-						"quality": quality,
-						"band": Number(selectedOptionBand),
-					}]
+					equalizerConfigs: bands
 				}
 
-				const form = { ...data, ...settings } as unknown as IPresets
+				const form = { ...data, ...settings } as unknown as IPresetUser
 
 				const existingData = await AsyncStorage.getItem(STORAGE_PRESET);
 				const parsedData = existingData ? JSON.parse(existingData) : [];
 
-				const updatedData = parsedData.map((item: IPresets) =>
+				const updatedData = parsedData.map((item: IPresetUser) =>
 					item.id === currentPreset?.id ? { ...item, ...form } : item
 				);
+
 				mutateAsyncEdit(updatedData)
 			} catch (err) {
 				console.error("Error", err)
@@ -207,16 +193,22 @@ export const ModalPreset = forwardRef(
 			{ value: 5, label: 'Clássica' },
 			{ value: 6, label: 'Pop' },
 		]
+
 		useEffect(() => {
 			if (isEdit) {
 				setValueForm('name', currentPreset?.name ?? '');
 				setValueForm('description', currentPreset?.description ?? '');
-				setValueForm('equalizerConfigs', currentPreset?.equalizerConfigs ?? []);
-				setValue(currentPreset?.genre_id ?? 0);
-				setIsEnabled(currentPreset?.is_public ?? false);
+				setValueForm("genreId", currentPreset?.genreId ?? 0)
+
+				setValueForm("equalizerConfigs", currentPreset?.equalizerConfigs ?? [])
+				setValueForm("label", currentPreset?.label ?? "")
+				// setValueForm('equalizerConfigs', currentPreset?.equalizerConfigs ?? []);
+				// setValue(currentPreset?.genre_id ?? 0);
+				// setIsEnabled(currentPreset?.is_public ?? false);
 			} else {
 				setValueForm('name', '');
 				setValueForm('description', '');
+				setValueForm('label', '');
 				setValueForm('equalizerConfigs', []);
 				setValue(0);
 				setIsEnabled(false);
@@ -227,9 +219,9 @@ export const ModalPreset = forwardRef(
 			setValueForm('genreId', value);
 		}, [value]);
 
-		useEffect(() => {
-			setValueForm('isPublic', isEnabled);
-		}, [isEnabled]);
+		// useEffect(() => {
+		// 	setValueForm('isPublic', isEnabled);
+		// }, [isEnabled]);
 
 		return (
 			<>
@@ -340,15 +332,16 @@ export const ModalPreset = forwardRef(
 
 					<Footer>
 						<Button
-							activeLoad={isPending}
+							activeLoad={isPendingEdit}
 							title="Salvar"
 							onPress={handleSubmit(data =>
-								isEdit ? editPresetUser(data) : savePreset(data)
+								editPresetUser(data)
 							)}
 						/>
 						<Button
 							title="Voltar"
 							variant="secondary"
+
 							onPress={onClose}
 						/>
 						{isEdit && (

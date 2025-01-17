@@ -1,11 +1,13 @@
 import * as S from './styles';
-import React from 'react';
+import React, { useState } from 'react';
 import Text from '@components/Text';
 import RadioButton from '@components/RadioButton';
 import { GestureResponderEvent, } from 'react-native';
 import VerticalSlider from '@components/Slider';
-
 import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
+import { Spacer } from '@components/Spacer';
+import { IBand, ISelectBand } from '@models/band';
+
 
 
 
@@ -32,6 +34,7 @@ interface IEqualizerVisualProps {
   onTouchStart?: ((event: GestureResponderEvent) => void) | undefined;
   onTouchEnd?: ((event: GestureResponderEvent) => void) | undefined;
 }
+
 
 const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
   {
@@ -65,7 +68,15 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
     setQuality,
     selectedOptionBand,
     setSelectedOptionBand,
+    setIsModalSelectValueVisible,
+    bands,
+    setBands,
+    setSelectedBand,
+    selectedBand,
+    setModalValue
   } = useValuesEqualizer()
+
+
 
 
   const formatFrequency = (value: number | null): string => {
@@ -150,94 +161,108 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
 
   };
 
+  const handleOpenModalGainSelectValue = (item: ISelectBand) => {
+    setSelectedBand(item)
+    setIsModalSelectValueVisible(true)
+  }
 
+  const handleOpenModalQualitySelectValue = (item: ISelectBand) => {
+    setSelectedBand(item)
+    //setModalValue(parseFloat(item.value))
+    setIsModalSelectValueVisible(true)
+  }
+ const  onSlidingCompleteGain = (newValue:number,) =>{
+
+ }
+
+ const onValueChangeGainVertical = (newValue:number,id:number) =>{
+  setSelectedBand({ id: id, type: "gain", value: String(newValue)})
+  if (selectedBand) {
+    if(selectedBand.type === 'quality'){
+      const newArray = bands?.map((item) =>
+        item.id === selectedBand.id  ? { ...item, quality: newValue } : item) as IBand[];
+      setBands(newArray)
+      return 
+    }
+    if(selectedBand.type === 'gain'){
+      const newArray = bands?.map((item) =>
+        item.id === selectedBand.id  ? { ...item, gain: newValue } : item) as IBand[];
+      setBands(newArray)
+      return 
+    }
+
+  }
+ }
 
   return (
     <S.Container>
 
-      <Text style={{ color: "#000" }}>Escolha uma opção de band</Text>
-
-      <RadioButton
-        options={options}
-        selectedOption={optionBand}
-        onSelect={onSelect}
-        disabled={disabled}
-      />
-
       <S.ContainerEqualizer>
+        <S.ContainerRow horizontal
+          showsHorizontalScrollIndicator={false} >
+          {bands?.map((item) => (
+            <S.SliderContainer key={item.id}>
+              <S.ContainerBars onPress={() => handleOpenModalGainSelectValue({ id: item.id, type: "gain", value: item.gain })} >
+                <Text color='black' fontSize={14}>{item.gain !== "undefined" ? parseFloat(item.gain)?.toFixed(1) ?? 0 : 0}</Text>
+                {/* <Text color='black'>{frequency ? formatFrequency(parseFloat(frequency)) : "20 Hz"}</Text>
+     <Text color='black'>{parseFloat(quality)?.toFixed(2)}</Text> */}
+              </S.ContainerBars>
 
 
-        {/* <S.ContainerSlider>
+              <S.ContainerBar>
+                <VerticalSlider
+                  disabled={disabled}
+                  disabledSlider={disabledGain}
+                  min={-10}
+                  max={10}
+                  value={parseFloat(gain)}
+                  onValueChange={(value)=>onValueChangeGainVertical(value,item.id)}
+                  onSlidingComplete={onSlidingCompleteGain}
+                //  onSlidingComplete ={generateCodeForGain}
+                  onTouchStart={onTouchStart}
+                  onTouchEnd={onTouchEnd}
+                  step={0.01}
+                />
+              </S.ContainerBar>
+              <S.ContainerInputs>
+                <S.ContainerBar>
+                  <Text color='#777777' variant='bold' fontSize={12}>Freq.</Text>
+                  <S.Circle>
 
+                    <Text color='black' variant='bold' fontSize={12}>{item.label}</Text>
+                  </S.Circle>
+                  {/* <S.Input
+                    keyboardType='number-pad'
+                    placeholder=""
+                    placeholderTextColor={'#000'}
+                    value={frequency}
+                    onChangeText={handleInputChangeFrequency}
+                  /> */}
+                  <Spacer h={10} />
+                  <Text color='#777777' variant='bold' fontSize={12}>Q.</Text>
+                  <S.ButtonCircle onPress={() => handleOpenModalQualitySelectValue({ id: item.id, type: "quality", value: item.quality })}>
+                    <Text color='black' variant='bold' fontSize={12}>{parseFloat(item.quality)?.toFixed(2)}</Text>
+                  </S.ButtonCircle>
 
+                  {/* <S.Input
+                    keyboardType='number-pad'
+                    placeholder=""
+                    placeholderTextColor={'#A0A0A0'}
+                    value={quality}
+                    onChangeText={handleInputChangeQuality}
+                  /> */}
+                </S.ContainerBar>
+              </S.ContainerInputs>
+            </S.SliderContainer>
 
-          <Text color='black'>Frequência: {formatFrequency(frequency)}</Text>
-
-          <Slider
-            disabled={disabled}
-            style={{ width: '100%', marginVertical: 12, height: 50 }}
-            minimumValue={0}
-            maximumValue={1}
-            value={convertLinearScaleFrequency(frequency)}
-            onValueChange={onValueChangeFrequency}
-            onSlidingComplete={generateCodeForFrequency}
-            minimumTrackTintColor="#242424"
-            maximumTrackTintColor="#656565"
-            thumbTintColor={disabledFrequency ? '#d7d7d7' : '#242424'}
-            step={0.00001}
-          />
-
-        </S.ContainerSlider>
-
-        <S.ContainerSlider>
-          <Text color='black'>Qualidade: {quality?.toFixed(2)}</Text>
-          <Slider
-            disabled={disabled}
-            style={{ width: '100%', marginVertical: 12, height: 50 }}
-            minimumValue={0}
-            maximumValue={1}
-            value={convertLinearScaleQuality(quality)}
-            onValueChange={onValueChangeQuality}
-            onSlidingComplete={generateCodeForQuality}
-            minimumTrackTintColor="#242424"
-            maximumTrackTintColor="#656565"
-            thumbTintColor={disabledQuality ? '#d7d7d7' : '#242424'}
-            step={0.001}
-          />
-        </S.ContainerSlider>
-
-        <S.ContainerSlider>
-          <Text color='black'>Ganho: {gain?.toFixed(1) ?? 0} dB</Text>
-
-
-          <Slider
-            disabled={disabled}
-            style={{ width: '100%', marginVertical: 12, height: 50 }}
-            minimumValue={-10}
-            maximumValue={10}
-            value={(gain)}
-            onValueChange={onValueChangeGain}
-            onSlidingComplete={generateCodeForGain}
-            minimumTrackTintColor="#242424"
-            maximumTrackTintColor="#656565"
-            thumbTintColor={disabledGain ? '#d7d7d7' : '#242424'}
-            onTouchStart={onTouchStart}
-            onTouchEnd={onTouchEnd}
-            step={0.01}
-          />
-        </S.ContainerSlider>  */}
-
+          ))}
+        </S.ContainerRow>
 
 
 
-        <S.ContainerBars>
-          <Text color='black'>{frequency ? formatFrequency(parseFloat(frequency)) : "20 Hz"}</Text>
-          <Text color='black'>{parseFloat(quality)?.toFixed(2)}</Text>
-          <Text color='black'>{gain !== "undefined" ? parseFloat(gain)?.toFixed(1) ?? 0 : 0} dB</Text>
-        </S.ContainerBars>
+        <S.ContainerInputs>
 
-        <S.ContainerBars>
-          <S.ContainerBar>
+          {/* <S.ContainerBar>
 
             <VerticalSlider
               disabled={disabled}
@@ -249,10 +274,10 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
               onSlidingComplete={generateCodeForFrequency}
               step={0.00001}
             />
-          </S.ContainerBar>
+          </S.ContainerBar> */}
 
 
-          <S.ContainerBar>
+          {/* <S.ContainerBar>
             <VerticalSlider
               disabled={disabled}
               disabledSlider={disabledQuality}
@@ -265,38 +290,12 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
               onTouchEnd={onTouchEnd}
               step={0.001}
             />
-          </S.ContainerBar>
+          </S.ContainerBar> */}
 
 
-          <S.ContainerBar>
-            <VerticalSlider
-              disabled={disabled}
-              disabledSlider={disabledGain}
-              min={-10}
-              max={10}
-              value={parseFloat(gain)}
-              onValueChange={onValueChangeGain}
-              onSlidingComplete={generateCodeForGain}
-              onTouchStart={onTouchStart}
-              onTouchEnd={onTouchEnd}
-              step={0.01}
-            />
-          </S.ContainerBar>
-        </S.ContainerBars>
 
-        <S.ContainerInputs>
-          <S.ContainerBar>
-            <Text color='#777777' variant='bold'>Freq.</Text>
-            <S.Input
-              keyboardType='number-pad'
-              placeholder=""
-              placeholderTextColor={'#000'}
-              value={frequency}
-              onChangeText={handleInputChangeFrequency}
-            />
-          </S.ContainerBar>
 
-          <S.ContainerBar>
+          {/* <S.ContainerBar>
             <Text color='#777777' variant='bold'>Q.</Text>
             <S.Input
               keyboardType='number-pad'
@@ -317,7 +316,7 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
               value={gain}
               onChangeText={handleInputChangeGain}
             />
-          </S.ContainerBar>
+          </S.ContainerBar> */}
 
         </S.ContainerInputs>
       </S.ContainerEqualizer>

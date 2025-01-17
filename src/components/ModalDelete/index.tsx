@@ -14,12 +14,13 @@ import { useMutation } from '@tanstack/react-query';
 import { deletePreset } from '@services/preset';
 import { useAuth } from '@hooks/auth';
 import { queryClient } from '../../../App';
-import { IPreset } from '@models/preset';
+
 import Toast from 'react-native-toast-message';
 import { deletePresetInternal } from '@services/internal-storage';
+import {  IPresetUser } from '@models/band';
 
 interface ModalDeleteProps {
-	currentPreset: IPreset | null;
+	currentPreset: IPresetUser | null;
 	onClose(): void;
 }
 

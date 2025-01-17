@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 import { typography } from '../../../styles/typography';
 
 export const Container = styled.View`
-
+margin-top: ${scale(24)}px ;
 `;
 
 export const ContainerEqualizer = styled.View`
@@ -21,12 +21,35 @@ height: ${scale(64)}px;
 margin-left: 10px;
 `;
 
-export const ContainerBars = styled.View`
-	margin-bottom: ${scale(16)}px;
+export const ContainerBars = styled.TouchableOpacity`
+	//margin-bottom: ${scale(16)}px;
 	flex-direction: row;
 	justify-content: space-between;
+	//border:1px solid red;
 
 `;
+export const Circle = styled.View`
+	align-items: center;
+	justify-content: center;
+	width: ${scale(35)}px; 
+	height:  ${scale(35)}px; 
+	color: ${({ theme }) => theme.COLORS.black};
+	border-radius: ${scale(10)}px;
+	margin-top: 2px;
+	border:2px solid #777777;
+`;
+
+export const ButtonCircle = styled.TouchableOpacity`
+	align-items: center;
+	justify-content: center;
+	width: ${scale(35)}px; 
+	height:  ${scale(35)}px; 
+	color: ${({ theme }) => theme.COLORS.black};
+	border-radius: ${scale(10)}px;
+	margin-top: 2px;
+	border:2px solid #777777;
+`;
+
 export const ContainerInputs = styled.View`
 padding: 0 ${scale(8)}px;
 	flex-direction: row;
@@ -56,8 +79,18 @@ export const ContainerSlider = styled.View`
 justify-content: center;
 	height: ${scale(64)}px;
 	margin-top: ${scale(16)}px;
-
-	border: 1px solid blue;
 `;
 
+export const ContainerRow = styled.ScrollView`
+	width: 100%;
+	flex-direction: row;
+
+`;
+export const SliderContainer = styled.View`
+align-items: center;
+width: ${scale(44)}px;
+margin-horizontal:2px;
+//border: 1px solid red;
+
+`;
 

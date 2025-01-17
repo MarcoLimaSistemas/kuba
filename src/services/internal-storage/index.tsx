@@ -1,11 +1,12 @@
 import { STORAGE_PRESET } from "@config/storage";
-import {  IPresets } from "@models/preset";
+import { IPresetUser } from "@models/band";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export async function getDataPresets() {
   try {
     const preset = await AsyncStorage.getItem(STORAGE_PRESET);
-    return preset ? JSON.parse(preset) as IPresets[] : [];
+    return preset ? JSON.parse(preset) as  IPresetUser[] : [];
 
   } catch (error: any) {
     console.error('Error', error);
@@ -13,7 +14,7 @@ export async function getDataPresets() {
   }
 
 }
-export async function updatePresetInternal(data:IPresets[]){
+export async function updatePresetInternal(data: IPresetUser[]){
 	await AsyncStorage.setItem(STORAGE_PRESET,JSON.stringify(data))
 }
 
