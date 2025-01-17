@@ -76,7 +76,9 @@ export function ChangePassword() {
 
   return (
     <Container>
-      <Header title='Alteração de senha' activeButtonGoBack={true} />
+      <Header title='Alteração de senha' 
+      //activeButtonGoBack={true} 
+      />
       <ScrollAwareView>
 
         <Title>
