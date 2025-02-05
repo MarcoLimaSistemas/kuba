@@ -75,7 +75,7 @@ const MasterGainControl: React.FC<FilterEqualizerScreenProps> = ({ createGaiaMes
 
 
   const generateCodeAndSendToGaia = (filterId: number, value: string) => {
-    const code = `FF010005000A021A01${selectedOptionBand}${filterId}${value}01`;
+    const code = `FF010005000A021A01${filterId}${value}01`;
 
     console.log("code", code)
     createGaiaMessage(Buffer.from(code, 'hex'));
@@ -133,66 +133,14 @@ const MasterGainControl: React.FC<FilterEqualizerScreenProps> = ({ createGaiaMes
     return hexValue.padStart(4, '0');
   };
 
-  const onPreset = (filter: Filter) => {
-    setSelectedFilter(filter)
-    switch (filter) {
-      case Filter.BYPASS:
-        setMinFrequency(0.2)
-        setMaxFrequency(20000)
-        setFrequency("0");
-        setGain("0");
-        setQuality("0");
-        break;
-
-      case Filter.LOW_PASS_1:
-        // LOW_PASS_1: frequency from 0.3Hz to 20 kHz, no gain, no quality
-        setMinFrequency(0.3)
-        setMaxFrequency(20000)
-        setFrequency("1.2");
-        setGain("0");
-        setQuality("0");
-        break;
-
-      case Filter.HIGH_SHELF_2:
-        // HIGH_SHELF_2: frequency from 40Hz to 20kHz, gain from -12 dB to +12 dB, quality from 0.25 to 2.0
-        setMinFrequency(0.4)
-        setMinFrequency(20000)
-        setFrequency("1.2");
-        setGain("3");
-        setQuality("8");
-        break;
-
-      default:
-        break;
-    }
-  };
 
 
-  const generateBass = () => {
-    const code = "FF010100000A0218F4";
 
-
-    createGaiaMessage(Buffer.from(code, 'hex'));
-  };
-
-  const getBatteryLevel = async () => {
-    const code = "FF010100000A0300F3";
-
-
-    createGaiaMessage(Buffer.from(code, 'hex'));
-  };
 
   return (
     <S.Container>
 
-      {/* <Button title="BYPASS" onPress={() => onPreset(Filter.BYPASS)} />
-      <Button title="Low Pass 1" onPress={() => onPreset(Filter.LOW_PASS_1)} />
-      <Button title="High Shelf 2" onPress={() => onPreset(Filter.HIGH_SHELF_2)} />
 
-      <Text color='black'> Filter: {selectedFilter} </Text> */}
-      {/*       
-      <Button title="GET_BATTERY" onPress={getBatteryLevel} />
-       <Button title="Bass" onPress={generateBass} /> */}
 
       <EqualizerVisual
         frequency={parseFloat(frequency)}

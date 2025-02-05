@@ -174,8 +174,9 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
  const  onSlidingCompleteGain = (newValue:number,) =>{
 
  }
-
+ //console.log("bands",bands)
  const onValueChangeGainVertical = (newValue:number,id:number) =>{
+ 
   setSelectedBand({ id: id, type: "gain", value: String(newValue)})
   if (selectedBand) {
     if(selectedBand.type === 'quality'){
@@ -192,6 +193,7 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
     }
 
   }
+  
  }
 
   return (
@@ -200,12 +202,11 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
       <S.ContainerEqualizer>
         <S.ContainerRow horizontal
           showsHorizontalScrollIndicator={false} >
-          {bands?.map((item) => (
+          {bands?.map((item,index) => (
             <S.SliderContainer key={item.id}>
               <S.ContainerBars onPress={() => handleOpenModalGainSelectValue({ id: item.id, type: "gain", value: item.gain })} >
                 <Text color='black' fontSize={14}>{item.gain !== "undefined" ? parseFloat(item.gain)?.toFixed(1) ?? 0 : 0}</Text>
-                {/* <Text color='black'>{frequency ? formatFrequency(parseFloat(frequency)) : "20 Hz"}</Text>
-     <Text color='black'>{parseFloat(quality)?.toFixed(2)}</Text> */}
+           
               </S.ContainerBars>
 
 
@@ -214,10 +215,10 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
                   disabled={disabled}
                   disabledSlider={disabledGain}
                   min={-10}
-                  max={10}
-                  value={parseFloat(gain)}
+                  max={10}  
+                  value={parseFloat(item.gain)}
                   onValueChange={(value)=>onValueChangeGainVertical(value,item.id)}
-                  onSlidingComplete={onSlidingCompleteGain}
+                //  onSlidingComplete={onSlidingCompleteGain}
                 //  onSlidingComplete ={generateCodeForGain}
                   onTouchStart={onTouchStart}
                   onTouchEnd={onTouchEnd}
@@ -262,6 +263,15 @@ const EqualizerVisual: React.FC<IEqualizerVisualProps> = (
 
         <S.ContainerInputs>
 
+        <S.ContainerBars>
+        <Text color='black'>{frequency ? formatFrequency(parseFloat(frequency)) : "20 Hz"}</Text>
+       <Spacer w={16}/>
+        <Text color='black'>{parseFloat(quality)?.toFixed(2)}</Text>
+        <Spacer w={16}/>
+        <Text color='black'>{gain !== "undefined" ? parseFloat(gain)?.toFixed(1) ?? 0 : 0} dB</Text>
+        </S.ContainerBars>
+
+     
           {/* <S.ContainerBar>
 
             <VerticalSlider
