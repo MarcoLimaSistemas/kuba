@@ -1,9 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 
 import { CarouselProfile } from '@components/CarouselProfile';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import RNBluetoothClassic, { BluetoothDevice } from 'react-native-bluetooth-classic';
+
 
 import { Headset, Info, Lighting, Settings } from '@assets/icons';
 
@@ -20,7 +21,7 @@ import {
 	Wrapper
 } from './styles';
 
-import { Image, TouchableOpacity, View } from 'react-native';
+import { DeviceEventEmitter, Image, TouchableOpacity, View } from 'react-native';
 import { ButtonSquare } from '@components/ButtonSquare';
 
 import { Spacer } from '@components/Spacer';
@@ -46,8 +47,11 @@ import { KubaFoneDiscoImg } from '@assets/images';
 import { CardProfile } from '@components/CardProfile';
 import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
 import { ModalSelectValue } from '@components/ModalSelectValue';
-import { IBand, IPresetUser } from '@models/band';
+import { IBand, IBandSettings, IPresetUser } from '@models/band';
 import { initialBands } from '../HomeScreen/initialDate';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { STORAGE_PRESET_ID } from '@config/storage';
+import { sendEQParametersSequentially } from '@utils/sendEQParametersSequentially';
 
 
 
@@ -65,7 +69,18 @@ interface AppState {
 	bluetoothEnabled: boolean;
 }
 
-
+const presetDefault =  [
+	{ id: 1, label: "32", frequency: 32, gain: 0 , quality: 0.25},
+  { id: 2, label: "62", frequency: 62, gain: 0 ,quality: 0.25},
+  { id: 3, label: "125", frequency: 125, gain: 0 ,quality: 0.25},
+  { id: 4, label: "250", frequency: 250, gain: 0 ,quality: 0.25},
+  { id: 5, label: "500", frequency: 500, gain: 0 ,quality: 0.25},
+  { id: 6, label: "1K", frequency: 1000, gain: 0 ,quality: 0.25},
+  { id: 7, label: "2K", frequency: 2000, gain: 0 ,quality: 0.25},
+  { id: 8, label: "4K", frequency: 4000, gain: 0 ,quality: 0.25},
+  { id: 9, label: "8K", frequency: 800, gain: 0 ,quality: 0.25},
+  { id: 10, label: "16K", frequency: 16000, gain: 0,quality: 0.25 }
+]
 
 export function Device() {
 
@@ -80,11 +95,11 @@ export function Device() {
 
 	const {
 		setFrequency, setGain, setQuality,
-		setCurrentPresetId,
 		isModalSelectValueVisible,
 		setIsModalSelectValueVisible,
 		selectedBand,
-		bands,
+		settings,
+		setSettings,
 		setBands,
 		modalValue
 	} = useValuesEqualizer();
@@ -124,18 +139,16 @@ export function Device() {
 	};
 
 	const handlePreset = (preset: IMyPresets) => {
-		const form = {
-			name: preset.label,
-			...preset
-		} as unknown as IPresetUser
-		setCurrentPreset(form);
+		// const form = {
+		// 	name: preset.label,
+		// 	...preset
+		// } as unknown as IPresetUser
+
+		// setCurrentPreset(form);
 	};
 
-	const handlePresetBox = (preset: IPresetUser) => {
-		setCurrentPreset(preset);
-		setCurrentPresetId(preset.id)
 
-	};
+
 
 
 
@@ -147,11 +160,11 @@ export function Device() {
 
 	const openModal = () => modalizeRef.current?.open();
 	const closeModal = () => modalizeRef.current?.close();
+
 	const resetValues = () => {
-		// setFrequency("0")
-		// setGain("0")
-		// setQuality("0")
-		setBands(initialBands)
+
+		setSettings(presetDefault)
+		sendEQParametersSequentially(presetDefault)
 	}
 	// const [state, setState] = useState<AppState>({
 	//   device: undefined,
@@ -190,6 +203,76 @@ export function Device() {
 	};
 
 
+
+	const handlePresetBox = (preset: IPresetUser) => {
+		setCurrentPreset(preset);
+
+	};
+
+	const handleSave = (newValue: number) => {
+
+		if (selectedBand) {
+			if (selectedBand.type === 'quality') {
+
+				const updatedSettings = settings.map(item =>
+					item.id === selectedBand.id + 1 ? { ...item, quality: Number(newValue.toFixed(2)) } : item
+				) as IBandSettings[];
+
+				setSettings(updatedSettings);
+
+				const bandId = selectedBand.id + 1;
+				const type = selectedBand.type;
+				const value = newValue
+
+
+				DeviceEventEmitter.emit("onEventEqualizer", { bandId, type, value });
+				return
+			}
+			if (selectedBand.type === 'gain') {
+
+				const updatedSettings = settings.map(item =>
+					item.id === selectedBand.id + 1 ? { ...item, gain: Number(newValue.toFixed(1)) } : item
+				) as IBandSettings[];
+
+				setSettings(updatedSettings);
+				const bandId = selectedBand.id + 1;
+				const type = selectedBand.type;
+				const value = newValue
+
+
+				DeviceEventEmitter.emit("onEventEqualizer", { bandId, type, value });
+				return
+			}
+
+		}
+		setIsModalSelectValueVisible(false);
+	};
+
+	useFocusEffect(
+		useCallback(() => {
+			(async () => {
+
+				const preset = await AsyncStorage.getItem(STORAGE_PRESET_ID);
+
+				if (preset !== null) {
+					const presetData = JSON.parse(preset) as IPresetUser;
+
+					setCurrentPreset(presetData);
+					const newEqualizerConfig = presetData?.equalizerConfigs.map((item) => ({
+						...item,
+						frequency: Number(item.frequency),
+						quality: Number(item.quality),
+						gain: Number(item.gain),
+					}) as unknown as IBandSettings) ?? []
+					setSettings(newEqualizerConfig)
+
+
+				}
+				return
+			})();
+		}, [])
+	)
+
 	useEffect(() => {
 		console.log('App::componentDidMount adding listeners: onBluetoothEnabled and onBluetoothDistabled');
 		console.log('App::componentDidMount alternatively could use onStateChanged');
@@ -205,27 +288,6 @@ export function Device() {
 			disabledSubscription.remove();
 		};
 	}, []);
-
-
-	const handleSave = (newValue: number) => {
-		if (selectedBand) {
-			if (selectedBand.type === 'quality') {
-				const newArray = bands.map((item) =>
-					item.id === selectedBand.id ? { ...item, quality: newValue } : item) as IBand[];
-				setBands(newArray)
-				return
-			}
-			if (selectedBand.type === 'gain') {
-				const newArray = bands.map((item) =>
-					item.id === selectedBand.id ? { ...item, gain: newValue } : item) as IBand[];
-				setBands(newArray)
-				return
-			}
-
-		}
-		setIsModalSelectValueVisible(false);
-	};
-
 	return (
 		<Wrapper
 			from={{
@@ -245,6 +307,7 @@ export function Device() {
 			<Container
 				contentContainerStyle={{ flexGrow: 1 }}
 				showsVerticalScrollIndicator={false}
+				keyboardShouldPersistTaps="handled"
 				scrollEnabled={scrollEnabled}>
 				<ContainerImg
 					from={{
@@ -284,7 +347,7 @@ export function Device() {
 
 				{device?.isBluetooth && (
 					<>
-						{state.device ? (
+						{!state.device ? (
 							<DeviceListScreen
 								selectDevice={selectDevice}
 							/>
@@ -370,9 +433,6 @@ export function Device() {
 				onClose={() => closeModal()}
 			/>
 			<ModalSelectValue
-				initialValue={parseFloat(selectedBand?.value ?? "")}
-				minValue={selectedBand?.type === 'gain' ? -10 : 0}
-				maxValue={selectedBand?.type === 'gain' ? 10 : 1}
 				isVisible={isModalSelectValueVisible}
 				onSave={handleSave}
 				onCancel={() => setIsModalSelectValueVisible(false)}
