@@ -67,7 +67,7 @@ export const ModalPreset = forwardRef(
 
 
 		const {
-			bands
+			settings
 		} = useValuesEqualizer()
 
 
@@ -163,11 +163,11 @@ export const ModalPreset = forwardRef(
 		const editPresetUser = async (data: IPresetUser) => {
 			try {
 			
-				const settings = {
-					equalizerConfigs: bands
+				const formSettings = {
+					equalizerConfigs: settings
 				}
 
-				const form = { ...data, ...settings } as unknown as IPresetUser
+				const form = { ...data, ...formSettings } as unknown as IPresetUser
 
 				const existingData = await AsyncStorage.getItem(STORAGE_PRESET);
 				const parsedData = existingData ? JSON.parse(existingData) : [];
@@ -201,14 +201,14 @@ export const ModalPreset = forwardRef(
 				setValueForm("genreId", currentPreset?.genreId ?? 0)
 
 				setValueForm("equalizerConfigs", currentPreset?.equalizerConfigs ?? [])
-				setValueForm("label", currentPreset?.label ?? "")
+				//setValueForm("label", currentPreset?.label ?? "")
 				// setValueForm('equalizerConfigs', currentPreset?.equalizerConfigs ?? []);
 				// setValue(currentPreset?.genre_id ?? 0);
 				// setIsEnabled(currentPreset?.is_public ?? false);
 			} else {
 				setValueForm('name', '');
 				setValueForm('description', '');
-				setValueForm('label', '');
+			//	setValueForm('label', '');
 				setValueForm('equalizerConfigs', []);
 				setValue(0);
 				setIsEnabled(false);
