@@ -1,6 +1,6 @@
 
-import { IBand, ISelectBand } from '@models/band';
-import { initialBands } from '@screens/Client/HomeScreen/initialDate';
+import { IBand, IBandSettings, ISelectBand } from '@models/band';
+import {  bandsSettingsMock, initialBands } from '@screens/Client/HomeScreen/initialDate';
 import { Dispatch } from 'react';
 import { ValueType } from 'react-native-dropdown-picker';
 import { create } from 'zustand';
@@ -28,6 +28,9 @@ interface IValuesEqualizer {
   setBands: (value: IBand[]) => void,
   modalValue: number
   setModalValue: (item: number) => void
+
+  settings: IBandSettings[],
+  setSettings: (value: IBandSettings[]) => void,
 }
 
 
@@ -41,6 +44,13 @@ export const useValuesEqualizer = create<IValuesEqualizer>((set) => ({
   selectedBand: null,
   bands: initialBands,
   modalValue: 0,
+  settings:bandsSettingsMock.map((band) => ({
+    id:band.id,
+    label:band.label,
+    frequency: band.frequency,
+    gain: 0,
+    quality: 1.0,
+  })),
 
   setFrequency: (frequency: string) => {
     set(() => ({ frequency }));
@@ -71,6 +81,9 @@ export const useValuesEqualizer = create<IValuesEqualizer>((set) => ({
   },
   setModalValue: (item: number) => {
     set(() => ({ modalValue: item }));
+  },
+  setSettings: (value: IBandSettings[]) => {
+    set(() => ({ settings: value }));
   },
 
 
