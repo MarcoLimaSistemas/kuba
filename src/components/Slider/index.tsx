@@ -70,12 +70,6 @@ const styles = StyleSheet.create({
 		width: 200, // height of slider
 		height: 8 // width of slider
 	},
-	track: {
-		position: 'absolute',
-		width: 180, // height of slider
-		height: 2, // width of the bar
-		zIndex: -1
-	}
 });
 
 export default VerticalSlider;
