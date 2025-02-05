@@ -33,7 +33,8 @@ export const Button = styled.TouchableOpacity`
 
 
 export const ValueText = styled.Text`
-  font-size: ${scale(20)}px;;
+  font-size: ${scale(20)}px;
+  color: ${theme.COLORS.black};
   font-weight: bold;
   margin: 0 20px;
 `;
@@ -63,5 +64,6 @@ export const Input = styled.TextInput`
   border-bottom-width: 1px;
   border-color: #ccc;
   width: 80px;
+  color: ${theme.COLORS.black};
 `;
 

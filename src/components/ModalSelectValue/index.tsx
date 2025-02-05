@@ -5,45 +5,42 @@ import * as S from "./styles"
 import { useEffect, useRef, useState } from "react";
 import Text from "@components/Text";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { scale } from "react-native-size-matters";
-import { Button } from "@components/Button";
+import { useValuesEqualizer } from "@hooks/useValuesEqualizer";
 
 
 interface ModalSelectValueProps {
-  initialValue: number;
-  minValue: number;
-  maxValue: number;
+
   isVisible: boolean;
   onSave: (value: number) => void;
   onCancel: () => void;
+
 }
 
 
-export function ModalSelectValue({ initialValue, minValue, maxValue, isVisible, onCancel, onSave }: ModalSelectValueProps) {
+export function ModalSelectValue({ isVisible, onCancel, onSave }: ModalSelectValueProps) {
   const modalRef = useRef<Modalize>(null);
-  const [value, setValue] = useState<number>(initialValue);
+  const { selectedBand } = useValuesEqualizer();
+
+  const initialValue = Number(selectedBand?.value) ?? 0
+
+  const maxValue = selectedBand?.type === 'gain' ? 10 : 8
+  const minValue = selectedBand?.type === 'quality' ? 0.25 : -10
 
   const [isEditing, setIsEditing] = useState(false);
-  const [inputValue, setInputValue] = useState<string>(initialValue.toFixed(1));
 
-  const insets = useSafeAreaInsets();
-  //  console.log("initialValue",initialValue,inputValue)
-  //  console.log("value",value)
-  useEffect(() => {
-    if (isVisible) {
-      modalRef.current?.open();
-    } else {
-      modalRef.current?.close();
-    }
-  }, [isVisible]);
+  const [value, setValue] = useState<number>(0);
+  const [inputValue, setInputValue] = useState<string>(String(initialValue));
+
 
   const handleIncrement = () => {
     setValue((prev) => Math.min(prev + 0.1, maxValue));
   };
 
   const handleDecrement = () => {
-    setValue((prev) => Math.max(prev - 0.1, minValue));
+    setValue((prev) =>
+      Math.max(prev - 0.1, minValue)
+    );
   };
 
   const handleSave = () => {
@@ -71,7 +68,20 @@ export function ModalSelectValue({ initialValue, minValue, maxValue, isVisible, 
     setInputValue(formattedText);
   };
 
+  useEffect(() => {
+    if (isVisible) {
+      modalRef.current?.open();
+    } else {
+      modalRef.current?.close();
+    }
+  }, [isVisible]);
 
+  useEffect(() => {
+    if (initialValue) {
+      setValue(initialValue)
+      setInputValue(String(initialValue))
+    }
+  }, [initialValue]);
 
   return (
     <Modalize
@@ -107,7 +117,8 @@ export function ModalSelectValue({ initialValue, minValue, maxValue, isVisible, 
               />
             ) : (
               <S.ValueText onPress={() => setIsEditing(true)}>
-                {value.toFixed(1)}
+
+                {selectedBand?.type === 'quality' ? value.toFixed(2) : value.toFixed(1)}
               </S.ValueText>
             )}
             <S.Button onPress={handleIncrement}>
