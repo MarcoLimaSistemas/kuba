@@ -1,20 +1,28 @@
 export interface IBand{
   id:number,
-  label:string,
+ // label:string,
   frequency:string,
   quality:string,
   gain:string,
 
 
 }
+export interface IBandSettings{
+  id:number
+  label:string,
+  frequency:number,
+  quality:number,
+  gain:number,
+}
+
 export interface IPresetUser{
   id:number,
-  label:string,
+ // label:string,
   name:string
   description: string;
   genreId: number;
-  equalizerConfigs: IBand[];
-   //isPublic: boolean;
+  equalizerConfigs: IBandSettings[];
+ 
 }
 
 
