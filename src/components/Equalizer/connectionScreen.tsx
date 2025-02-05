@@ -4,6 +4,11 @@ import RNBluetoothClassic, { BluetoothDevice } from 'react-native-bluetooth-clas
 import { Buffer } from 'buffer';
 import MasterGainControl from './MasterGainControl';
 
+import EqualizerNew from '@screens/Client/Device/new';
+import EqualizerTest from '@screens/Client/Device/test';
+import EqualizerSliders from './ui/equalizer-sliders';
+
+
 global.Buffer = global.Buffer || Buffer;
 
 
@@ -78,6 +83,7 @@ const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack, han
   };
 
   const createGaiaMessage = (command: Buffer) => {
+    console.log("command1",command)
     sendData(command);
 
     return command;
@@ -191,7 +197,34 @@ const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack, han
 
   return (
     <View style={styles.container}>
-      {connection && <MasterGainControl createGaiaMessage={createGaiaMessage} handleScrollEnabled={handleScrollEnabled} />}
+      {connection && 
+      <>
+    
+      {/* <EqualizerTest createGaiaMessage={createGaiaMessage}/> */}
+   {/* <EqualizerNew createGaiaMessage={createGaiaMessage}/>       */}
+   <EqualizerSliders createGaiaMessage={createGaiaMessage} handleScrollEnabled={handleScrollEnabled}/>
+     
+     {/* <MasterGainControl createGaiaMessage={createGaiaMessage} handleScrollEnabled={handleScrollEnabled} />  */}
+      
+      {/* <Text style={{color:"#000"}}>DATA type: {data[0]?.type}</Text>
+      <FlatList
+        style={styles.output}
+        contentContainerStyle={{ justifyContent: 'flex-end' }}
+        inverted
+        data={data}
+        keyExtractor={(item) => item.timestamp.toISOString()}
+        renderItem={({ item }) => (
+          <View
+            id={item.timestamp.toISOString()}
+            style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+            <Text style={{color:"#000"}}>{item.timestamp.toLocaleDateString()}</Text>
+            <Text style={{color:"#000"}}>{item.type === 'sent' ? ' < ' : ' > '}</Text>
+            <Text style={{ flexShrink: 1,color:"#000" }}>{item.data.trim()}</Text>
+          </View>
+        )}
+      />    */}
+      </>
+      }
 
 
     </View>
