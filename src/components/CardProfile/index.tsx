@@ -31,15 +31,15 @@ export function CardProfile(
 		handlePreset()
 
 		const newArray = data?.equalizerConfigs.map((item) => ({
-			...item,
+
 			id: Number(item.id),
 			frequency: Number(item.frequency),
 			quality: Number(item.quality),
 			gain: Number(item.gain),
 		}) as unknown as IBandSettings) ?? []
 
-		setSettings(newArray)
-		sendEQParametersSequentially(newArray)
+	await	setSettings(newArray)
+	sendEQParametersSequentially(newArray)
 
 	}
 
