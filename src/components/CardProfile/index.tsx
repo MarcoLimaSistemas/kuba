@@ -8,7 +8,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_PRESET_ID } from '@config/storage';
 import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
 import { IMyPresets } from '@components/Equalizer/Header';
-import { IPresetUser } from '@models/band';
+import { IBand, IBandSettings, IPresetUser } from '@models/band';
+import { sendEQParametersSequentially } from '@utils/sendEQParametersSequentially';
 
 
 
@@ -16,26 +17,30 @@ import { IPresetUser } from '@models/band';
 
 export function CardProfile(
 	{ data, isSelected, handlePreset }:
-	 { data:  IPresetUser, isSelected: boolean, handlePreset: () => void; }) {
+		{ data: IPresetUser, isSelected: boolean, handlePreset: () => void; }) {
 
 	const {
-		setSelectedOptionBand,
-		setFrequency,
-		setGain,
-		setQuality,
-		setBands
+		setSettings
 	} = useValuesEqualizer();
 
+
+
 	const handleSetPreset = async () => {
+
 		await AsyncStorage.setItem(STORAGE_PRESET_ID, JSON.stringify(data));
 		handlePreset()
 
+		const newArray = data?.equalizerConfigs.map((item) => ({
+			...item,
+			id: Number(item.id),
+			frequency: Number(item.frequency),
+			quality: Number(item.quality),
+			gain: Number(item.gain),
+		}) as unknown as IBandSettings) ?? []
 
+		setSettings(newArray)
+		sendEQParametersSequentially(newArray)
 
-		// setFrequency(String(data.equalizerConfigs[0].frequency))
-		// setGain(String(data.equalizerConfigs[0].decibel_quantity))
-		// setQuality(String(data.equalizerConfigs[0].quality))
-		// setSelectedOptionBand(String(data.equalizerConfigs[0].band) ?? null)
 	}
 
 	return (
@@ -52,7 +57,9 @@ export function CardProfile(
 					color="#777777"
 					fontSize={12}
 					style={{
-						textTransform: 'uppercase'
+						textTransform: 'uppercase',
+						textAlign: 'center',
+						padding: 2,
 					}}>
 					{data.name}
 				</Text>

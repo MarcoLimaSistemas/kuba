@@ -7,8 +7,8 @@ type Props = {
 }
 
 export const Container = styled.TouchableOpacity`
-	width: ${scale(64)}px;
-	height: ${scale(26)}px;
+	width: ${scale(72)}px;
+	height: ${scale(32)}px;
 	margin-left: ${scale(8)}px;
 	border-radius: ${scale(30)}px;
 `;
