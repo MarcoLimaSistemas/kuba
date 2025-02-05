@@ -10,6 +10,7 @@ import { bandsSettingsMock } from '@screens/Client/HomeScreen/initialDate';
 
 
 
+
 interface IEqualizerSlidersProps {
   createGaiaMessage: (command: Buffer) => void;
   handleScrollEnabled: (enabled: boolean) => void;
@@ -157,7 +158,8 @@ const EqualizerSliders: React.FC<IEqualizerSlidersProps> = (
     <S.Container>
 
       <S.ContainerEqualizer>
-        <S.ContainerRow horizontal
+        <S.ContainerRow 
+        horizontal
           showsHorizontalScrollIndicator={false} >
           {bandsSettingsMock?.map((item, index) => (
             <S.SliderContainer key={item.id}>
@@ -170,8 +172,8 @@ const EqualizerSliders: React.FC<IEqualizerSlidersProps> = (
 
 
               <S.ContainerBar>
-
-                <VerticalSlider
+          
+              <VerticalSlider
                   disabled={disabled}
                   disabledSlider={disabledGain}
                   min={-10}
@@ -180,10 +182,10 @@ const EqualizerSliders: React.FC<IEqualizerSlidersProps> = (
                   onValueChange={(value) => handleSliderChange(index, "gain", value)}
                   //  onSlidingComplete={onSlidingCompleteGain}
                   //  onSlidingComplete ={generateCodeForGain}
-                  onTouchStart={() => handleScrollEnabled(false)}
-                  onTouchEnd={() => handleScrollEnabled(true)}
+                  onTouchStart={() =>  handleScrollEnabled(false)} 
+                  onSlidingComplete={() => handleScrollEnabled(true)} 
                   step={0.01}
-                />
+                /> 
 
 
               </S.ContainerBar>
