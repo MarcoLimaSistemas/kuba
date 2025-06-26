@@ -44,7 +44,7 @@ const EqualizerGaia = ({ createGaiaMessage }: FilterEqualizerScreenProps) => {
     parameter: "frequency" | "gain" | "quality" | "filterType",
     value: number
   ) => {
-    // 1️⃣ Mapeamento de parameterType e função de escala por parâmetro
+
     const paramConfig: Record<
       string,
       { type: number; scale: (v: number) => number }
@@ -60,7 +60,6 @@ const EqualizerGaia = ({ createGaiaMessage }: FilterEqualizerScreenProps) => {
       },
       gain: {
         type: 0x02,
-        // escala ×60 (pode ajustar para 300 se quiser mais impacto)
         scale: v => {
           const s = Math.round(v * 60);
           return s < 0 ? 0x1000 + s : s;
@@ -79,10 +78,10 @@ const EqualizerGaia = ({ createGaiaMessage }: FilterEqualizerScreenProps) => {
     const parameterType = cfg.type;
     const scaledValue = cfg.scale(value);
 
-    // 2️⃣ Monta o Parameter ID
+
     const parameterId = (bandId << 4) | parameterType;
 
-    // 3️⃣ Constrói o comando GAIA
+
     const command = Buffer.from([
       0xFF, 0x01, 0x00, 0x05,       // header
       0x00, 0x0A,                   // vendor
@@ -94,13 +93,13 @@ const EqualizerGaia = ({ createGaiaMessage }: FilterEqualizerScreenProps) => {
       0x01,                         // recalc flag
     ]);
 
-    // 4️⃣ Log e envio
+    // 4 Log e envio
     const log = `SET_EQ_PARAMETER band=${bandId} ${parameter}=${value} → ${command.toString("hex")}`;
     console.log(log);
     setLogs(l => [log, ...l].slice(0, 5));
     createGaiaMessage(command);
 
-    // 5️⃣ Se for frequency, reenvia gain e quality
+    // 5️Se for frequency, reenvia gain e quality
     if (parameter === "frequency") {
       const band = bands.find(b => b.id === bandId)!;
       setTimeout(() => {

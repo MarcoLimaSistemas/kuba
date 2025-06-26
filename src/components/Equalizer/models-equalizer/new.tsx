@@ -45,170 +45,170 @@ interface FilterEqualizerScreenProps {
 
 
 
-const EqualizerNew = ({createGaiaMessage}:FilterEqualizerScreenProps) => {
+const EqualizerNew = ({ createGaiaMessage }: FilterEqualizerScreenProps) => {
   const [settings, setSettings] = useState(
     bands.map(() => ({ gain: 0, quality: 1 }))
   );
 
   // ✅ Configuração da Banda única usada no EQ
-const BAND_ID = 1; // Usamos apenas uma banda para ajuste
+  const BAND_ID = 1; // Usamos apenas uma banda para ajuste
 
-// ✅ Enviar Comando GAIA (0x021A) para uma única banda
-const sendEQParameter = (parameter: "frequency" | "gain" | "quality", value: number) => {
-  let parameterType;
-  let scaledValue;
+  // ✅ Enviar Comando GAIA (0x021A) para uma única banda
+  const sendEQParameter = (parameter: "frequency" | "gain" | "quality", value: number) => {
+    let parameterType;
+    let scaledValue;
 
-  if (parameter === "gain") {
-    parameterType = 0x02; // Tipo de parâmetro para ganho
-    scaledValue = Math.round(value * 60);
-    if (scaledValue < 0) scaledValue = 0x1000 + scaledValue; // Ajustar valores negativos
-  } else if (parameter === "quality") {
-    parameterType = 0x03; // Tipo de parâmetro para qualidade
-    scaledValue = Math.round(value * 4096);
-  } else {
-    parameterType = 0x01; // Tipo de parâmetro para frequência
-    scaledValue = Math.round(value * 1000);
-  }
+    if (parameter === "gain") {
+      parameterType = 0x02; // Tipo de parâmetro para ganho
+      scaledValue = Math.round(value * 60);
+      if (scaledValue < 0) scaledValue = 0x1000 + scaledValue; // Ajustar valores negativos
+    } else if (parameter === "quality") {
+      parameterType = 0x03; // Tipo de parâmetro para qualidade
+      scaledValue = Math.round(value * 4096);
+    } else {
+      parameterType = 0x01; // Tipo de parâmetro para frequência
+      scaledValue = Math.round(value * 1000);
+    }
 
-  // Criar identificador da banda + parâmetro
-  const parameterId = (BAND_ID << 4) | parameterType;
+    // Criar identificador da banda + parâmetro
+    const parameterId = (BAND_ID << 4) | parameterType;
 
-  const command = Buffer.from([
-    0xFF, // Start frame
-    0x01, // Protocol version
-    0x00, // Flags
-    0x05, // Payload length
-    0x00, 0x0A, // Vendor ID
-    0x02, 0x1A, // Command ID (Set EQ Parameter)
-    0x01, // Bank ID
-    parameterId, // Banda + Parâmetro
-    (scaledValue >> 8) & 0xFF, // Value MSB
-    scaledValue & 0xFF, // Value LSB
-    0x01 // Ativação do Banco de Equalização
-  ]);
+    const command = Buffer.from([
+      0xFF, // Start frame
+      0x01, // Protocol version
+      0x00, // Flags
+      0x05, // Payload length
+      0x00, 0x0A, // Vendor ID
+      0x02, 0x1A, // Command ID (Set EQ Parameter)
+      0x01, // Bank ID
+      parameterId, // Banda + Parâmetro
+      (scaledValue >> 8) & 0xFF, // Value MSB
+      scaledValue & 0xFF, // Value LSB
+      0x01 // Ativação do Banco de Equalização
+    ]);
 
-  console.log(`Enviando ${parameter.toUpperCase()}: ${value} → ${command.toString("hex")}`);
-  createGaiaMessage(command);
-};
-const [frequency, setFrequency] = useState(1000); // Hz
-const [gain, setGain] = useState(0); // dB
-const [quality, setQuality] = useState(1.0); // Q-Factor
-const handleSliderChange = (type: "frequency" | "gain" | "quality", value: number) => {
-  if (type === "frequency") {
-    setFrequency(value);
-  } else if (type === "gain") {
-    setGain(value);
-  } else {
-    setQuality(value);
-  }
-  sendEQParameter(type, value);
-};
-  
-  
-
- 
-//   const createEQCommand = (filterId: number, gainValue: number): Buffer => {
-//     // Convert gain from dB to the appropriate value range (-12dB to +12dB)
-//     const scaledGain = Math.round(Math.max(-12, Math.min(12, gainValue)) * 60);
-//     let value = scaledGain;
-//     if (scaledGain < 0) {
-//       value = 0x1000 + scaledGain; // Convert negative values to 2's complement
-//     }
-
-//     // Create command buffer exactly matching the format:
-//     const command = Buffer.from([
-//       0xFF, // Start frame
-//       0x01, // Protocol version
-//       0x00, // Flags (no checksum)
-//       0x05, // Payload length (fixed)
-//       0x00, // Length MSB
-//       0x0A, // Vendor ID
-//       0x02, // Command ID MSB
-//       0x1A, // Command ID LSB
-//       0x01, // Command parameter
-//       filterId, // Filter ID
-//       (value >> 8) & 0xFF, // Gain value MSB
-//       value & 0xFF, // Gain value LSB
-//       0x01 // Final parameter
-//     ]);
-
-//     return command;
-//   };
-//   const createFrequencyCommand = (filterId: number, frequencyValue: number): Buffer => {
-//     // Converter frequência para escala correta (em Hz multiplicado por 1000)
-//     const scaledFreq = Math.round(frequencyValue * 1000); // Correção: multiplicação correta
-
-//     return Buffer.from([
-//       0xFF, 0x01, 0x00, 0x05, 0x00, 0x0A, 0x02, 0x1A, 
-//       0x01, filterId, // ID do filtro
-//       (scaledFreq >> 8) & 0xFF, // Frequency MSB
-//       scaledFreq & 0xFF, // Frequency LSB
-//       0x01 // Finalização
-//     ]);
-//   };
-  
-  
-//   const createQualityCommand = (filterId: number, qualityValue: number): Buffer => {
-//     // Converter qualidade para escala correta (multiplicado por 4096)
-//     const scaledQuality = Math.round(qualityValue * 4096); // Correção: multiplicação correta
-
-//     return Buffer.from([
-//       0xFF, 0x01, 0x00, 0x05, 0x00, 0x0A, 0x02, 0x1A, 
-//       0x01, filterId, // ID do filtro
-//       (scaledQuality >> 8) & 0xFF, // Quality MSB
-//       scaledQuality & 0xFF, // Quality LSB
-//       0x01 // Finalização
-//     ]);
-//   };
+    console.log(`Enviando ${parameter.toUpperCase()}: ${value} → ${command.toString("hex")}`);
+    createGaiaMessage(command);
+  };
+  const [frequency, setFrequency] = useState(1000); // Hz
+  const [gain, setGain] = useState(0); // dB
+  const [quality, setQuality] = useState(1.0); // Q-Factor
+  const handleSliderChange = (type: "frequency" | "gain" | "quality", value: number) => {
+    if (type === "frequency") {
+      setFrequency(value);
+    } else if (type === "gain") {
+      setGain(value);
+    } else {
+      setQuality(value);
+    }
+    sendEQParameter(type, value);
+  };
 
 
-//   const sendEQParameter = (filterId: number, gain: number) => {
-//     try {
-//       const command = createEQCommand(filterId, gain);
-//     console.warn('Sending EQ command:', command.toString('hex'));
-      
-//       // Here you would send the command via Bluetooth
-//       createGaiaMessage(command)
-//     } catch (error) {
-//       console.error('Error sending EQ command:', error);
-//     }
 
-//   };
-//   const sendFrequency = (filterId: number, frequency: number) => {
-//     const command = createFrequencyCommand(filterId, frequency);
-//        console.warn('FrequencyCommand:', command.toString('hex'));
-//     createGaiaMessage(command)
-//   };
-  
-//   const sendQuality = (filterId: number, quality: number) => {
-//     const command = createQualityCommand(filterId, quality);
-//     console.warn('QualityCommand:', command.toString('hex'));
-//     createGaiaMessage(command)
-//   };
 
-//   const handleSliderChange = (index: number, type: "gain" | "quality", value: number) => {
-//     const updatedSettings = [...settings];
-//     updatedSettings[index][type] = value;
-//     setSettings(updatedSettings);
+  //   const createEQCommand = (filterId: number, gainValue: number): Buffer => {
+  //     // Convert gain from dB to the appropriate value range (-12dB to +12dB)
+  //     const scaledGain = Math.round(Math.max(-12, Math.min(12, gainValue)) * 60);
+  //     let value = scaledGain;
+  //     if (scaledGain < 0) {
+  //       value = 0x1000 + scaledGain; // Convert negative values to 2's complement
+  //     }
 
-// const frequency = bands[index].frequency;
-// //Alert.alert("Info",`${frequency}`)
-// sendFrequency(1, frequency);
+  //     // Create command buffer exactly matching the format:
+  //     const command = Buffer.from([
+  //       0xFF, // Start frame
+  //       0x01, // Protocol version
+  //       0x00, // Flags (no checksum)
+  //       0x05, // Payload length (fixed)
+  //       0x00, // Length MSB
+  //       0x0A, // Vendor ID
+  //       0x02, // Command ID MSB
+  //       0x1A, // Command ID LSB
+  //       0x01, // Command parameter
+  //       filterId, // Filter ID
+  //       (value >> 8) & 0xFF, // Gain value MSB
+  //       value & 0xFF, // Gain value LSB
+  //       0x01 // Final parameter
+  //     ]);
 
-//     if (type === "gain") {
-//       // Only send EQ command for gain changes
-//       sendEQParameter(1, value);
-//     }
-//     if (type === "quality") {
-//       sendQuality(1,value)
-//     }
-//   };
+  //     return command;
+  //   };
+  //   const createFrequencyCommand = (filterId: number, frequencyValue: number): Buffer => {
+  //     // Converter frequência para escala correta (em Hz multiplicado por 1000)
+  //     const scaledFreq = Math.round(frequencyValue * 1000); // Correção: multiplicação correta
+
+  //     return Buffer.from([
+  //       0xFF, 0x01, 0x00, 0x05, 0x00, 0x0A, 0x02, 0x1A, 
+  //       0x01, filterId, // ID do filtro
+  //       (scaledFreq >> 8) & 0xFF, // Frequency MSB
+  //       scaledFreq & 0xFF, // Frequency LSB
+  //       0x01 // Finalização
+  //     ]);
+  //   };
+
+
+  //   const createQualityCommand = (filterId: number, qualityValue: number): Buffer => {
+  //     // Converter qualidade para escala correta (multiplicado por 4096)
+  //     const scaledQuality = Math.round(qualityValue * 4096); // Correção: multiplicação correta
+
+  //     return Buffer.from([
+  //       0xFF, 0x01, 0x00, 0x05, 0x00, 0x0A, 0x02, 0x1A, 
+  //       0x01, filterId, // ID do filtro
+  //       (scaledQuality >> 8) & 0xFF, // Quality MSB
+  //       scaledQuality & 0xFF, // Quality LSB
+  //       0x01 // Finalização
+  //     ]);
+  //   };
+
+
+  //   const sendEQParameter = (filterId: number, gain: number) => {
+  //     try {
+  //       const command = createEQCommand(filterId, gain);
+  //     console.warn('Sending EQ command:', command.toString('hex'));
+
+  //       // Here you would send the command via Bluetooth
+  //       createGaiaMessage(command)
+  //     } catch (error) {
+  //       console.error('Error sending EQ command:', error);
+  //     }
+
+  //   };
+  //   const sendFrequency = (filterId: number, frequency: number) => {
+  //     const command = createFrequencyCommand(filterId, frequency);
+  //        console.warn('FrequencyCommand:', command.toString('hex'));
+  //     createGaiaMessage(command)
+  //   };
+
+  //   const sendQuality = (filterId: number, quality: number) => {
+  //     const command = createQualityCommand(filterId, quality);
+  //     console.warn('QualityCommand:', command.toString('hex'));
+  //     createGaiaMessage(command)
+  //   };
+
+  //   const handleSliderChange = (index: number, type: "gain" | "quality", value: number) => {
+  //     const updatedSettings = [...settings];
+  //     updatedSettings[index][type] = value;
+  //     setSettings(updatedSettings);
+
+  // const frequency = bands[index].frequency;
+  // //Alert.alert("Info",`${frequency}`)
+  // sendFrequency(1, frequency);
+
+  //     if (type === "gain") {
+  //       // Only send EQ command for gain changes
+  //       sendEQParameter(1, value);
+  //     }
+  //     if (type === "quality") {
+  //       sendQuality(1,value)
+  //     }
+  //   };
   return (
     <ScrollView contentContainerStyle={styles.container} >
-    {/* <Text style={{color:"#000"}}>{commandText}</Text> */}
+      {/* <Text style={{color:"#000"}}>{commandText}</Text> */}
 
 
-    <Text style={{color:"#000"}}>Frequência: {frequency.toFixed(0)} Hz</Text>
+      <Text style={{ color: "#000" }}>Frequência: {frequency.toFixed(0)} Hz</Text>
       <Slider
         style={styles.slider}
         minimumValue={20}
@@ -217,8 +217,8 @@ const handleSliderChange = (type: "frequency" | "gain" | "quality", value: numbe
         value={frequency}
         onValueChange={(value) => handleSliderChange("frequency", value)}
       />
-       {/* Ganho */}
-       <Text style={{color:"#000"}}>Ganho: {gain.toFixed(1)} dB</Text>
+      {/* Ganho */}
+      <Text style={{ color: "#000" }}>Ganho: {gain.toFixed(1)} dB</Text>
       <Slider
         style={styles.slider}
         minimumValue={-12}
@@ -229,7 +229,7 @@ const handleSliderChange = (type: "frequency" | "gain" | "quality", value: numbe
       />
 
       {/* Qualidade */}
-      <Text style={{color:"#000"}}>Qualidade: {quality.toFixed(2)}</Text>
+      <Text style={{ color: "#000" }}>Qualidade: {quality.toFixed(2)}</Text>
       <Slider
         style={styles.slider}
         minimumValue={0.25}
@@ -238,7 +238,7 @@ const handleSliderChange = (type: "frequency" | "gain" | "quality", value: numbe
         value={quality}
         onValueChange={(value) => handleSliderChange("quality", value)}
       />
-    {/* {bands.map((freq, index) => (
+      {/* {bands.map((freq, index) => (
       <View key={freq.frequency} style={styles.sliderContainer}>
         <Text style={styles.label}>{freq.label}</Text>
         <Text style={{color:"#000"}} >Ganho: {settings[index].gain} dB</Text>
@@ -262,7 +262,7 @@ const handleSliderChange = (type: "frequency" | "gain" | "quality", value: numbe
         />
       </View>
     ))} */}
-  </ScrollView>
+    </ScrollView>
   );
 };
 
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   label: {
-    color:"#000",
+    color: "#000",
     fontSize: 14,
     fontWeight: "bold",
     textAlign: "center",
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
   slider: {
     width: "100%",
     height: 40,
-   
+
   },
 });
 

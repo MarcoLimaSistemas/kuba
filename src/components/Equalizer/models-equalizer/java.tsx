@@ -12,7 +12,7 @@ interface FilterEqualizerScreenProps {
 
 }
 
-const EqualizerJava = ({createGaiaMessage}:FilterEqualizerScreenProps) => {
+const EqualizerJava = ({ createGaiaMessage }: FilterEqualizerScreenProps) => {
   const [settings, setSettings] = useState<Record<number, Settings>>({
     125: { gain: 0, quality: 0 },
     1000: { gain: 0, quality: 0 },
@@ -47,17 +47,17 @@ const EqualizerJava = ({createGaiaMessage}:FilterEqualizerScreenProps) => {
       1000: 2,
       8000: 3,
     };
-  
+
     const bandId = bandMapping[frequency];
     if (!bandId) {
       console.error("❌ Frequência não suportada no GAIA:", frequency);
       return;
     }
-  
+
     // Determina o tipo de parâmetro
     const parameterType = type === "gain" ? 0x02 : 0x03; // 0x02 = Gain | 0x03 = Quality
     const parameterId = (bandId << 4) | parameterType; // Criação do ID do parâmetro GAIA
-  
+
     // Conversão do valor para o formato correto
     let scaledValue;
     if (type === "gain") {
@@ -66,7 +66,7 @@ const EqualizerJava = ({createGaiaMessage}:FilterEqualizerScreenProps) => {
     } else {
       scaledValue = Math.round(value * 4096); // Qualidade multiplicada por 4096
     }
-  
+
     // Montando o comando GAIA no formato correto
     const command = Buffer.from([
       0xFF, 0x01, 0x00, 0x05, // Header
@@ -78,9 +78,9 @@ const EqualizerJava = ({createGaiaMessage}:FilterEqualizerScreenProps) => {
       scaledValue & 0xff, // Valor LSB
       0x01, // Ativar equalização
     ]);
-  
+
     console.log(`🎛️ Enviando Comando GAIA: Frequência ${frequency} Hz, ${type} ${value} → ${command.toString("hex")}`);
-  
+
     // Simula envio via Bluetooth (substitua pela função real)
     createGaiaMessage(command);
   };
