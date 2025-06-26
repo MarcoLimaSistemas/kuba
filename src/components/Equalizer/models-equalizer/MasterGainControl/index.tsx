@@ -7,7 +7,8 @@ import { Button } from '@components/Button';
 // import { Text } from '@components/Text/styles';
 import { Buffer } from 'buffer';
 import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
-import EqualizerVisual from '../ui/equalizer';
+import EqualizerVisual from '@components/Equalizer/ui/equalizer';
+
 
 
 global.Buffer = global.Buffer || Buffer;

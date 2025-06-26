@@ -1,5 +1,5 @@
 import * as S from './styles';
-import React, { useEffect} from 'react';
+import React, { useEffect } from 'react';
 import Text from '@components/Text';
 import { DeviceEventEmitter, GestureResponderEvent, } from 'react-native';
 import VerticalSlider from '@components/Slider';
@@ -75,7 +75,7 @@ const EqualizerSliders: React.FC<IEqualizerSlidersProps> = (
 
       console.log(`Band ${bandId} - ${parameter.toUpperCase()}: ${value} → ${command.toString("hex")}`);
 
-      // Here you would send the command via Bluetooth
+
       createGaiaMessage(command)
     } catch (error) {
       console.error('Error sending command:', error);
@@ -158,8 +158,8 @@ const EqualizerSliders: React.FC<IEqualizerSlidersProps> = (
     <S.Container>
 
       <S.ContainerEqualizer>
-        <S.ContainerRow 
-        horizontal
+        <S.ContainerRow
+          horizontal
           showsHorizontalScrollIndicator={false} >
           {bandsSettingsMock?.map((item, index) => (
             <S.SliderContainer key={item.id}>
@@ -172,8 +172,8 @@ const EqualizerSliders: React.FC<IEqualizerSlidersProps> = (
 
 
               <S.ContainerBar>
-          
-              <VerticalSlider
+
+                <VerticalSlider
                   disabled={disabled}
                   disabledSlider={disabledGain}
                   min={-10}
@@ -182,10 +182,10 @@ const EqualizerSliders: React.FC<IEqualizerSlidersProps> = (
                   onValueChange={(value) => handleSliderChange(index, "gain", value)}
                   //  onSlidingComplete={onSlidingCompleteGain}
                   //  onSlidingComplete ={generateCodeForGain}
-                  onTouchStart={() =>  handleScrollEnabled(false)} 
-                  onSlidingComplete={() => handleScrollEnabled(true)} 
+                  onTouchStart={() => handleScrollEnabled(false)}
+                  onSlidingComplete={() => handleScrollEnabled(true)}
                   step={0.01}
-                /> 
+                />
 
 
               </S.ContainerBar>

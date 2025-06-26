@@ -2,11 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { View, FlatList, Text, StyleSheet } from 'react-native';
 import RNBluetoothClassic, { BluetoothDevice } from 'react-native-bluetooth-classic';
 import { Buffer } from 'buffer';
-import MasterGainControl from './MasterGainControl';
 
-import EqualizerNew from '@screens/Client/Device/new';
-import EqualizerTest from '@screens/Client/Device/test';
-import EqualizerSliders from './ui/equalizer-sliders';
+
+import EqualizerNew from '@components/Equalizer/models-equalizer/new';
+import EqualizerTest from '@components/Equalizer/models-equalizer/test';
+
+import EqualizerJava from '@components/Equalizer/models-equalizer/java';
+import EqualizerGaia from '@components/Equalizer/models-equalizer/gaia';
+import EqualizerSliders from './models-equalizer/equalizer-sliders';
+import MasterGainControl from './models-equalizer/MasterGainControl';
 
 
 global.Buffer = global.Buffer || Buffer;
@@ -83,7 +87,7 @@ const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack, han
   };
 
   const createGaiaMessage = (command: Buffer) => {
-    console.log("command1",command)
+    console.log("command1", command)
     sendData(command);
 
     return command;
@@ -197,16 +201,18 @@ const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack, han
 
   return (
     <View style={styles.container}>
-      {connection && 
-      <>
-    
-      {/* <EqualizerTest createGaiaMessage={createGaiaMessage}/> */}
-   {/* <EqualizerNew createGaiaMessage={createGaiaMessage}/>       */}
-   <EqualizerSliders createGaiaMessage={createGaiaMessage} handleScrollEnabled={handleScrollEnabled}/>
-     
-     {/* <MasterGainControl createGaiaMessage={createGaiaMessage} handleScrollEnabled={handleScrollEnabled} />  */}
-      
-      {/* <Text style={{color:"#000"}}>DATA type: {data[0]?.type}</Text>
+      {connection &&
+        <>
+
+          <EqualizerGaia  createGaiaMessage={createGaiaMessage}/> 
+          {/* <EqualizerTest createGaiaMessage={createGaiaMessage} /> */}
+          {/* <EqualizerJava createGaiaMessage={createGaiaMessage}/> */}
+          {/* <EqualizerNew createGaiaMessage={createGaiaMessage}/> */}
+          {/* <EqualizerSliders createGaiaMessage={createGaiaMessage} handleScrollEnabled={handleScrollEnabled}/>   */}
+
+          {/* <MasterGainControl createGaiaMessage={createGaiaMessage} handleScrollEnabled={handleScrollEnabled} />  */}
+
+          {/* <Text style={{color:"#000"}}>DATA type: {data[0]?.type}</Text>
       <FlatList
         style={styles.output}
         contentContainerStyle={{ justifyContent: 'flex-end' }}
@@ -223,7 +229,7 @@ const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack, han
           </View>
         )}
       />    */}
-      </>
+        </>
       }
 
 

@@ -1,6 +1,7 @@
 import { scale } from 'react-native-size-matters';
 import styled from 'styled-components/native';
-import { typography } from "../../../../styles/typography";
+import { typography } from '../../../../styles/typography';
+
 
 
 
