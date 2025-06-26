@@ -376,7 +376,7 @@ export function Device() {
 									/>
 								</ContainerEqualizer>
 
-								<ContainerCarousel>
+								{/* <ContainerCarousel>
 									<BoxButtons>
 										<Button isReset onPress={resetValues}>
 											<Text variant='bold' fontSize={14} color='#777777' >RESETAR</Text>
@@ -412,7 +412,7 @@ export function Device() {
 										</>
 									)}
 
-								</ContainerCarousel>
+								</ContainerCarousel> */}
 								<Spacer h={32} />
 
 								<View style={{ flex: 1 }} />
