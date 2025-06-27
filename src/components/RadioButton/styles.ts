@@ -18,8 +18,8 @@ justify-content: center;
 `;
 
 export const Button = styled.TouchableOpacity<ButtonProps>`
-  background-color: ${({ isSelected,disabled, theme }) => 
-  disabled && isSelected 
+  background-color: ${({ isSelected,disabled, theme }) =>
+  disabled && isSelected
   ? theme.COLORS.gray_100
   : isSelected ? theme.COLORS.black : theme.COLORS.white_100};
   

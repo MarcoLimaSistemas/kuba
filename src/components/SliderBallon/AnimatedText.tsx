@@ -1,12 +1,12 @@
-import * as React from "react";
+import * as React from 'react';
 import {
   StyleProp,
   StyleSheet,
   TextInput,
   TextInputProps,
   TextStyle,
-} from "react-native";
-import Animated, { useAnimatedProps } from "react-native-reanimated";
+} from 'react-native';
+import Animated, { useAnimatedProps } from 'react-native-reanimated';
 
 Animated.addWhitelistedNativeProps({ text: true });
 
@@ -25,7 +25,7 @@ export function AnimatedText({
 
   return (
     <AnimatedTextInput
-      underlineColorAndroid='transparent'
+      underlineColorAndroid="transparent"
       editable={false}
       value={String(text.toFixed(2))}
       style={[styles.text, style]}
@@ -36,6 +36,6 @@ export function AnimatedText({
 
 const styles = StyleSheet.create({
   text: {
-    color: "black",
+    color: 'black',
   },
 });

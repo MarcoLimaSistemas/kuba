@@ -42,7 +42,7 @@ export const Error = styled.Text`
 `;
 
 export const SignUpButton = styled.TouchableOpacity.attrs({
-	activeOpacity: 0.6
+	activeOpacity: 0.6,
 })``;
 
 export const TouchableIcon = styled(SignUpButton)`

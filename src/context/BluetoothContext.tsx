@@ -3,11 +3,11 @@ import React, {
 	useState,
 	useEffect,
 	useContext,
-	ReactNode
+	ReactNode,
 } from 'react';
 import { PermissionsAndroid, Platform } from 'react-native';
 import RNBluetoothClassic, {
-	BluetoothDevice
+	BluetoothDevice,
 } from 'react-native-bluetooth-classic';
 
 interface AppState {
@@ -37,7 +37,7 @@ const BluetoothContext = createContext<BluetoothContextType | undefined>(
 );
 
 export const BluetoothProvider: React.FC<BluetoothProviderProps> = ({
-	children
+	children,
 }) => {
 	const [searchingDevices, setSearchingDevices] = useState(false);
 	const [devices, setDevices] = useState<BluetoothDevice[]>([]);
@@ -59,7 +59,7 @@ export const BluetoothProvider: React.FC<BluetoothProviderProps> = ({
 			await PermissionsAndroid.requestMultiple([
 				PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
 				PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
-				PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+				PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
 			]);
 		} catch (err) {
 			console.warn(err);
@@ -113,9 +113,9 @@ export const BluetoothProvider: React.FC<BluetoothProviderProps> = ({
 			try {
 				await connectedDevice.disconnect();
 				setConnectedDevice(null);
-				console.log("Dispositivo desconectado");
+				console.log('Dispositivo desconectado');
 			} catch (error) {
-				console.error("Erro ao desconectar do dispositivo:", error);
+				console.error('Erro ao desconectar do dispositivo:', error);
 			}
 		}
 	};

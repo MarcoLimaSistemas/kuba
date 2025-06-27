@@ -18,7 +18,7 @@ export function CardDevice({
 	id,
 	imgURL,
 	title,
-	isBluetooth
+	isBluetooth,
 }: CardDeviceProps) {
 	const { navigate } = useNavigation<any>();
 
@@ -27,7 +27,7 @@ export function CardDevice({
 			style={{
 				elevation: 4,
 				marginVertical: scale(4),
-				marginRight: scale(8)
+				marginRight: scale(8),
 			}}
 			onPress={() =>
 				navigate('Device', { id, name: title, imgURL, isBluetooth })
@@ -36,11 +36,11 @@ export function CardDevice({
 				<Image
 					style={{
 						width: '80%',
-						height: '80%'
+						height: '80%',
 					}}
 					resizeMode="contain"
 					source={{
-						uri: imgURL
+						uri: imgURL,
 					}}
 				/>
 			</ContainerImage>

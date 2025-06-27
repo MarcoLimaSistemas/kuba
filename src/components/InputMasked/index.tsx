@@ -7,7 +7,7 @@ import {
 	InputArea,
 	InputGroup,
 	InputLabel,
-	TouchableIcon
+	TouchableIcon,
 } from './styles';
 
 import { Eye, EyeOff } from '@assets/icons';
@@ -45,7 +45,7 @@ export function InputMasked({
 				control={control}
 				name={name}
 				rules={{
-					required: true
+					required: true,
 				}}
 				render={({ field: { onChange, onBlur, value } }) => (
 					<InputArea>

@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { View, FlatList, Text, StyleSheet } from 'react-native';
-import RNBluetoothClassic, { BluetoothDevice } from 'react-native-bluetooth-classic';
-import { Buffer } from 'buffer';
-
+import React, {useEffect, useState} from 'react';
+import {View, FlatList, Text, StyleSheet} from 'react-native';
+import RNBluetoothClassic from 'react-native-bluetooth-classic';
+import {Buffer} from 'buffer';
 
 import EqualizerNew from '@components/Equalizer/models-equalizer/new';
 import EqualizerTest from '@components/Equalizer/models-equalizer/test';
@@ -11,10 +10,9 @@ import EqualizerJava from '@components/Equalizer/models-equalizer/java';
 import EqualizerGaia from '@components/Equalizer/models-equalizer/gaia';
 import EqualizerSliders from './models-equalizer/equalizer-sliders';
 import MasterGainControl from './models-equalizer/MasterGainControl';
-
+import {BluetoothDevice as GaiaDevice} from '@hooks/useGaiaDevice';
 
 global.Buffer = global.Buffer || Buffer;
-
 
 interface Message {
   timestamp: Date;
@@ -23,19 +21,22 @@ interface Message {
 }
 
 interface ConnectionScreenProps {
-  device: BluetoothDevice;
+  device: any;
   handleScrollEnabled: (enabled: boolean) => void;
   onBack: () => void;
 }
 
-const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack, handleScrollEnabled }) => {
-  const [setText] = useState<string | undefined | Buffer>(undefined);
+const ConnectionScreen: React.FC<ConnectionScreenProps> = ({
+  device,
+  onBack,
+  handleScrollEnabled,
+}) => {
+  const [connection, setConnection] = useState<boolean>(true);
   const [data, setData] = useState<Message[]>([]);
-  const [polling, setPolling] = useState(false);
-  const [connection, setConnection] = useState(false);
+  const [polling, setPolling] = useState<boolean>(false);
 
   let disconnectSubscription: any;
-  let readInterval: NodeJS.Timeout;
+  let readInterval: any;
   let readSubscription: any;
 
   useEffect(() => {
@@ -51,32 +52,18 @@ const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack, han
 
   const connect = async () => {
     try {
-      let isConnected = await device.isConnected();
-      if (!isConnected) {
-        addData({
-          data: `Attempting connection to ${device.address}`,
-          timestamp: new Date(),
-          type: 'error',
-        });
+      const connected = await device.connect();
+      setConnection(connected);
 
-        console.log('connectionOptions');
-        isConnected = await device.connect();
-
+      if (connected) {
         addData({
-          data: 'Connection successful',
+          data: 'Connected',
           timestamp: new Date(),
           type: 'info',
         });
-      } else {
-        addData({
-          data: `Connected to ${device.address}`,
-          timestamp: new Date(),
-          type: 'error',
-        });
-      }
 
-      setConnection(isConnected);
-      initializeRead();
+        initializeRead();
+      }
     } catch (error: any) {
       addData({
         data: `Connection failed: ${error.message}`,
@@ -84,13 +71,6 @@ const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack, han
         type: 'error',
       });
     }
-  };
-
-  const createGaiaMessage = (command: Buffer) => {
-    console.log("command1", command)
-    sendData(command);
-
-    return command;
   };
 
   const disconnect = async (disconnected?: boolean) => {
@@ -119,12 +99,16 @@ const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack, han
   };
 
   const initializeRead = () => {
-    disconnectSubscription = RNBluetoothClassic.onDeviceDisconnected(() => disconnect(true));
+    disconnectSubscription = RNBluetoothClassic.onDeviceDisconnected(() =>
+      disconnect(true),
+    );
 
     if (polling) {
       readInterval = setInterval(() => performRead(), 5000);
     } else {
-      readSubscription = device.onDataReceived((data) => onReceivedData(data));
+      readSubscription = device.onDataReceived((data: any) =>
+        onReceivedData(data),
+      );
     }
   };
 
@@ -150,7 +134,7 @@ const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack, han
 
           console.log(`Read data ${data}`);
           console.log(data);
-          onReceivedData({ data });
+          onReceivedData({data});
         }
       }
     } catch (err) {
@@ -158,8 +142,8 @@ const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack, han
     }
   };
 
-  const onReceivedData = async (event: any & { data: Buffer }) => {
-    console.log("data onReceived", event)
+  const onReceivedData = async (event: any & {data: Buffer}) => {
+    console.log('data onReceived', event);
     //const msgHex = data.toString('hex');
     event.timestamp = new Date();
     addData({
@@ -173,66 +157,21 @@ const ConnectionScreen: React.FC<ConnectionScreenProps> = ({ device, onBack, han
     setData([message, ...data]);
   };
 
-  const sendData = async (msg?: Buffer) => {
-    try {
-      if (!msg) return;
-
-      await device.write(msg);
-      console.log("msg", msg)
-      const byteArray = Array.from(msg);
-      const msgHex = msg.toString('hex');
-
-      addData({
-        timestamp: new Date(),
-        data: `Byte array: ${msgHex}`,
-        type: 'sent',
-      });
-
-      const response = await device.read();
-      if (response) {
-        const buffer = Buffer.from(response, "hex");
-        const batteryPercentage = buffer
-        console.log("batteryPercentage", batteryPercentage)
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <View style={styles.container}>
-      {connection &&
+      {connection && (
         <>
-
-          <EqualizerGaia  createGaiaMessage={createGaiaMessage}/> 
-          {/* <EqualizerTest createGaiaMessage={createGaiaMessage} /> */}
-          {/* <EqualizerJava createGaiaMessage={createGaiaMessage}/> */}
-          {/* <EqualizerNew createGaiaMessage={createGaiaMessage}/> */}
-          {/* <EqualizerSliders createGaiaMessage={createGaiaMessage} handleScrollEnabled={handleScrollEnabled}/>   */}
-
-          {/* <MasterGainControl createGaiaMessage={createGaiaMessage} handleScrollEnabled={handleScrollEnabled} />  */}
-
-          {/* <Text style={{color:"#000"}}>DATA type: {data[0]?.type}</Text>
-      <FlatList
-        style={styles.output}
-        contentContainerStyle={{ justifyContent: 'flex-end' }}
-        inverted
-        data={data}
-        keyExtractor={(item) => item.timestamp.toISOString()}
-        renderItem={({ item }) => (
-          <View
-            id={item.timestamp.toISOString()}
-            style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-            <Text style={{color:"#000"}}>{item.timestamp.toLocaleDateString()}</Text>
-            <Text style={{color:"#000"}}>{item.type === 'sent' ? ' < ' : ' > '}</Text>
-            <Text style={{ flexShrink: 1,color:"#000" }}>{item.data.trim()}</Text>
-          </View>
-        )}
-      />    */}
+          <EqualizerGaia
+            device={device}
+            handleScrollEnabled={handleScrollEnabled}
+          />
+          {/* <EqualizerTest device={device} handleScrollEnabled={handleScrollEnabled} /> */}
+          {/* <EqualizerJava device={device} handleScrollEnabled={handleScrollEnabled} /> */}
+          {/* <EqualizerNew device={device} handleScrollEnabled={handleScrollEnabled} /> */}
+          {/* <EqualizerSliders device={device} handleScrollEnabled={handleScrollEnabled} /> */}
+          {/* <MasterGainControl device={device} handleScrollEnabled={handleScrollEnabled} /> */}
         </>
-      }
-
-
+      )}
     </View>
   );
 };

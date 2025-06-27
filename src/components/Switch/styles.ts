@@ -1,7 +1,7 @@
 
-import Animated from "react-native-reanimated";
-import {scale} from "react-native-size-matters";
-import styled from "styled-components/native";
+import Animated from 'react-native-reanimated';
+import {scale} from 'react-native-size-matters';
+import styled from 'styled-components/native';
 
 export const Container = styled.View``;
 

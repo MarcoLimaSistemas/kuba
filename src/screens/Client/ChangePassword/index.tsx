@@ -32,9 +32,9 @@ export function ChangePassword() {
 	const {
 		control,
 		handleSubmit,
-		formState: { errors }
+		formState: { errors },
 	} = useForm<FormData>({
-		resolver: yupResolver(ChangePasswordSchema)
+		resolver: yupResolver(ChangePasswordSchema),
 	});
   const {data: user, isLoading} = userDetails({});
 
@@ -43,37 +43,37 @@ export function ChangePassword() {
 	const [showConfirmedPassword, setShowConfirmedPassword] = useState(true);
 
 	//add react query
-	const onSubmit = async (data: FormData) => {	
+	const onSubmit = async (data: FormData) => {
 		try {
-			const formatted ={
+			const formatted = {
 				userId:user?.id as number,
 				data:{
-					password:data.newPassword
-				}
-			}
+					password:data.newPassword,
+				},
+			};
 
-			const  formattedSignIn={
+			const  formattedSignIn = {
 				email:user?.email as string,
-				password:data.currentPassword
-			}
-			const { data: infoUser } = await Auth.signIn(formattedSignIn)
+				password:data.currentPassword,
+			};
+			const { data: infoUser } = await Auth.signIn(formattedSignIn);
 
-			if(infoUser.token){
-				await User.editPassword(formatted)
-				Toast.show({ 
+			if (infoUser.token){
+				await User.editPassword(formatted);
+				Toast.show({
 					type: 'success', text1: 'Senha editada com sucesso!',
 				});
 				navigation.navigate('PasswordResetSuccess');
 			}
-		
-		}catch(err:any){
-			console.error(err.response.data.message)
-			Toast.show({ 
+
+		} catch (err:any){
+			console.error(err.response.data.message);
+			Toast.show({
 				type: 'error', text1: 'Erro ao redefinir senha!',
-				text2:`${err.response.data.message}`
+				text2:`${err.response.data.message}`,
 			});
 		}
-		
+
 	};
 	return (
 		<Wrapper>

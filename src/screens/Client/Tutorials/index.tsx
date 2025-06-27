@@ -3,7 +3,7 @@ import { FlatList, Image, View, Linking } from 'react-native';
 import {
 	NavigationProp,
 	useNavigation,
-	useRoute
+	useRoute,
 } from '@react-navigation/native';
 
 import { Button } from '@components/Button';
@@ -16,7 +16,7 @@ import {
 	Container,
 	ContainerImage,
 	Icon,
-	Wrapper
+	Wrapper,
 } from './styles';
 import { useQuery } from '@tanstack/react-query';
 import { getProductDetails } from '@services/product';
@@ -39,7 +39,7 @@ export function Tutorials() {
 
 	const { data, isLoading } = useQuery({
 		queryKey: ['DeviceDetails'],
-		queryFn: () => getProductDetails(user?.id, deviceId)
+		queryFn: () => getProductDetails(user?.id, deviceId),
 	});
 
 	const handlePress = async (link: string) => {
@@ -48,7 +48,7 @@ export function Tutorials() {
 		} catch (error) {
 			Toast.show({
 				type: 'error',
-				text1: 'Erro ao abrir o vídeo! :('
+				text1: 'Erro ao abrir o vídeo! :(',
 			});
 		}
 	};
@@ -62,7 +62,7 @@ export function Tutorials() {
 	return (
 		<Wrapper
 		contentContainerStyle={{
-			flexGrow: 1
+			flexGrow: 1,
 		}}
 		showsVerticalScrollIndicator={false}
 		>
@@ -74,7 +74,7 @@ export function Tutorials() {
 					color="#656565"
 					style={{
 						textAlign: 'center',
-						letterSpacing: 8
+						letterSpacing: 8,
 					}}>
 					{data?.name}
 				</Text>
@@ -96,11 +96,11 @@ export function Tutorials() {
 					<Image
 						style={{
 							width: '90%',
-							height: '90%'
+							height: '90%',
 						}}
 						resizeMode="contain"
 						source={{
-							uri: data?.img_url
+							uri: data?.img_url,
 						}}
 					/>
 				</ContainerImage>

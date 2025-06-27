@@ -1,7 +1,7 @@
-import { STORAGE_PRESET } from "@config/storage";
-import { IPresetUser } from "@models/band";
+import { STORAGE_PRESET } from '@config/storage';
+import { IPresetUser } from '@models/band';
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export async function getDataPresets() {
   try {
@@ -15,7 +15,7 @@ export async function getDataPresets() {
 
 }
 export async function updatePresetInternal(data: IPresetUser[]){
-	await AsyncStorage.setItem(STORAGE_PRESET,JSON.stringify(data))
+	await AsyncStorage.setItem(STORAGE_PRESET,JSON.stringify(data));
 }
 
 export const deletePresetInternal = async (id: number) => {

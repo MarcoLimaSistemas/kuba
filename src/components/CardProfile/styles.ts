@@ -32,8 +32,8 @@ export const Background = styled.View<Props >`
 	width: 100%;
 	height: 100%;
 	border-radius: ${scale(30)}px;
-	background-color: ${({ isSelected, theme }) => 
- isSelected 
+	background-color: ${({ isSelected, theme }) =>
+ isSelected
   ? theme.COLORS.gold_500
   :  theme.COLORS.gray_300};
 

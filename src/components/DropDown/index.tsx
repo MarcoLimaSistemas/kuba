@@ -5,7 +5,7 @@ import {
 	DropDownContainer,
 	DropDownContent,
 	DropDownContentBG,
-	DropDownTitle
+	DropDownTitle,
 } from './styles';
 
 import { ArrowDown } from '@assets/icons';

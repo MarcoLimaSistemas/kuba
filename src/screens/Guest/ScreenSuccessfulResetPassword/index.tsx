@@ -6,7 +6,7 @@ import { Container, Image, TextConfirmed } from './styles';
 import { useNavigation } from '@react-navigation/native';
 
 export function ScreenSuccessfulResetPassword() {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
   return (
     <Container>

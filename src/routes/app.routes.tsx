@@ -1,7 +1,7 @@
 import React from 'react';
 import {
 	CardStyleInterpolators,
-	createStackNavigator
+	createStackNavigator,
 } from '@react-navigation/stack';
 
 import * as Client from '../screens/Client';
@@ -14,7 +14,7 @@ const AppRoutes = () => {
 		<Stack.Navigator
 			screenOptions={{
 				headerShown: false,
-				cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+				cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
 			}}>
 			{/* <Stack.Screen
 				name="Home"

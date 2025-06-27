@@ -65,7 +65,7 @@ export const Equalizer = ({
         return undefined;
       }
       return lastPageParam + 1;
-    }
+    },
 	});
 
 	const myPresets = useMemo(() => {
@@ -78,7 +78,7 @@ export const Equalizer = ({
 					isPublic: preset.is_public,
 					genreId: preset.genre_id,
 					description: preset.description,
-					settings: preset.settings
+					settings: preset.settings,
 				})) ?? []
 		);
 	}, [data]);
@@ -121,10 +121,10 @@ export const Equalizer = ({
 	useEffect(() => {
 		handleFrequencies(frequenciesListEmpty);
 	}, [frequenciesListEmpty]);
-	
+
 	useEffect(()=>{
-		setFrequencies(frequenciesList ?? frequenciesListEmpty)
-	},[frequenciesList])
+		setFrequencies(frequenciesList ?? frequenciesListEmpty);
+	},[frequenciesList]);
 
 	useEffect(() => {
 		if (myPresets.length > 0) {
@@ -136,7 +136,7 @@ export const Equalizer = ({
 				description: item.description,
 			  genreId: String(item.genreId),
 				isPublic: item.isPublic,
-				settings: item.settings
+				settings: item.settings,
 			});
 		}
 	}, [isFetched]);
@@ -144,7 +144,7 @@ export const Equalizer = ({
 	useEffect(() => {
 		handlePreAmpGain(preAmpDB);
 	}, [preAmpDB]);
-console.log("frequenciesList",frequenciesList)
+console.log('frequenciesList',frequenciesList);
 	return (
 		<>
 			<S.Container>
@@ -155,7 +155,7 @@ console.log("frequenciesList",frequenciesList)
 
 					<View
 						style={{
-							flexDirection: 'row'
+							flexDirection: 'row',
 						}}>
 						<TouchableOpacity
 							disabled={disabled}
@@ -181,7 +181,7 @@ console.log("frequenciesList",frequenciesList)
 								} else {
 									Toast.show({
 										type: 'info',
-										text1: 'Selecione um preset!'
+										text1: 'Selecione um preset!',
 									});
 								}
 							}}>
@@ -209,39 +209,39 @@ console.log("frequenciesList",frequenciesList)
 								description: item.description,
 								genreId: item.genreId,
 								settings: item.settings,
-								isPublic: item.isPublic
+								isPublic: item.isPublic,
 							})
 						}
 						// setItems={setPresets}
 						selectedItemContainerStyle={{
-							backgroundColor: '#e4e1e1'
+							backgroundColor: '#e4e1e1',
 						}}
 						showTickIcon={false}
 						textStyle={{
 							color: '#656565',
 							fontFamily: typography['Lato-Regular'].fontFamily,
-							fontSize: scale(16)
+							fontSize: scale(16),
 						}}
 						listItemLabelStyle={{
 							fontFamily: typography['Lato-Regular'].fontFamily,
-							color: '#656565'
+							color: '#656565',
 						}}
 						labelProps={{
-							numberOfLines: 1
+							numberOfLines: 1,
 						}}
 						style={{
 							borderColor: 'transparent',
 							paddingLeft: 0,
-							width: '41%'
+							width: '41%',
 						}}
 						dropDownContainerStyle={{
 							borderColor: 'transparent',
 							width: '60%',
 							elevation: 4,
-							borderRadius: 0
+							borderRadius: 0,
 						}}
 						flatListProps={{
-							ItemSeparatorComponent: () => <S.LineSeparator />
+							ItemSeparatorComponent: () => <S.LineSeparator />,
 						}}
 					/>
 				</S.ContainerDropdown>
@@ -298,7 +298,7 @@ console.log("frequenciesList",frequenciesList)
 							height: 2,
 							width: '80%',
 							justifyContent: 'center',
-							alignItems: 'center'
+							alignItems: 'center',
 						}}
 						onTouchStart={() => handleScrollEnabled(false)}
 						onTouchEnd={() => handleScrollEnabled(true)}
@@ -315,7 +315,7 @@ console.log("frequenciesList",frequenciesList)
 							thumbTintColor={disabled ? '#d7d7d7' : '#242424'}
 							style={{
 								width: '100%',
-								height: 2
+								height: 2,
 							}}
 						/>
 						<View
@@ -326,7 +326,7 @@ console.log("frequenciesList",frequenciesList)
 								backgroundColor: disabled
 									? '#d7d7d7'
 									: '#242424',
-								zIndex: -10
+								zIndex: -10,
 							}}
 						/>
 					</View>

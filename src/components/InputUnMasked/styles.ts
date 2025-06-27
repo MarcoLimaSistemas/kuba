@@ -5,7 +5,7 @@ import { typography } from '../../styles/typography';
 import { scale } from 'react-native-size-matters';
 
 
-export const InputGroup = styled.View<{	
+export const InputGroup = styled.View<{
 	marginBottom?: number | undefined
 	 }>`
 	margin-bottom: ${({ marginBottom }) => (marginBottom ? scale(marginBottom) : scale(16))}px;
@@ -55,7 +55,7 @@ export const Error = styled.Text`
 `;
 
 export const SignUpButton = styled.TouchableOpacity.attrs({
-	activeOpacity: 0.6
+	activeOpacity: 0.6,
 })``;
 
 export const TouchableIcon = styled(SignUpButton)`

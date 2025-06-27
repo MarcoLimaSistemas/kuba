@@ -14,4 +14,4 @@ export { PasswordResetSuccess } from './PasswordResetSuccess';
 export { Support } from './Support';
 export { SupportSuccess } from './SupportSuccess';
 export { Profiles } from './Profiles';
-export {ProfileView} from './ProfileView'
+export {ProfileView} from './ProfileView';

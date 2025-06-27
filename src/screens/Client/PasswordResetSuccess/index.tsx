@@ -1,24 +1,24 @@
-import React from "react";
-import { Image } from "react-native";
-import { Container, TextSuccess } from "./styles";
+import React from 'react';
+import { Image } from 'react-native';
+import { Container, TextSuccess } from './styles';
 
-import { passwordResetSuccess } from '@assets/images'
-import { useNavigation } from "@react-navigation/native";
-import { Button } from "@components/Button";
+import { passwordResetSuccess } from '@assets/images';
+import { useNavigation } from '@react-navigation/native';
+import { Button } from '@components/Button';
 
 export function PasswordResetSuccess() {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   return (
     <Container>
-      <Image source={passwordResetSuccess} 
+      <Image source={passwordResetSuccess}
       style={{
               marginTop:36,
               width:365,
-              height:362
+              height:362,
             }}
           />
-      <TextSuccess>{`Senha Alterada \n com sucesso!`}</TextSuccess>
+      <TextSuccess>{'Senha Alterada \n com sucesso!'}</TextSuccess>
       <Button title="Finalizar" onPress={() => navigation.navigate('Home',{modalActive:false})} />
     </Container>
-  )
+  );
 }

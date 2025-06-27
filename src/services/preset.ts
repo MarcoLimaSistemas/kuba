@@ -10,10 +10,10 @@ async function createPreset(
 	return api.post(`/user/${userId}/preset`, data);
 }
 
-async function editPreset(data: IPresets, presetId:number, 
+async function editPreset(data: IPresets, presetId:number,
 	userId: number | undefined):AxiosPromise<any>  {
-		
-	return api.put(`/user/${userId}/preset/${presetId}`,data)
+
+	return api.put(`/user/${userId}/preset/${presetId}`,data);
 }
 
 async function deletePreset(
@@ -35,8 +35,8 @@ async function getPresets(
 			userId: isMyPreset ? userId : undefined,
 			search: search ?? undefined,
 			page: page ?? 1,
-			perPage: perPage ?? 10
-		}
+			perPage: perPage ?? 10,
+		},
 	});
 
 	return data;
@@ -54,8 +54,8 @@ async function getPresetsOwn(
 			userId: isMyPreset ? userId : undefined,
 			search: search ?? undefined,
 			page: page ?? 1,
-			perPage: perPage ?? 10
-		}
+			perPage: perPage ?? 10,
+		},
 	});
 
 	return data;
@@ -71,8 +71,8 @@ async function getPresetsPublics(
 		params: {
 			search: search ?? undefined,
 			page: page ?? 1,
-			perPage: perPage ?? 10
-		}
+			perPage: perPage ?? 10,
+		},
 	});
 
 	return data;

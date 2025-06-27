@@ -22,12 +22,12 @@ export interface IPresetUser{
   description: string;
   genreId: number;
   equalizerConfigs: IBandSettings[];
- 
+
 }
 
 
 export interface ISelectBand {
   id:number,
   value:string,
-  type:"gain"|"quality"
+  type:'gain'|'quality'
 }

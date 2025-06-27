@@ -41,7 +41,7 @@ export function InputUnMasked({
 				control={control}
 				name={name}
 				rules={{
-					required: true
+					required: true,
 				}}
 				render={({ field: { onChange, onBlur, value } }) => (
 					<InputArea height={height}>
@@ -54,7 +54,7 @@ export function InputUnMasked({
 							placeholderTextColor={'#A0A0A0'}
 							{...props}
 							style={{
-								textAlignVertical: height ? 'top' : 'auto'
+								textAlignVertical: height ? 'top' : 'auto',
 							}}
 						/>
 						{eye && (

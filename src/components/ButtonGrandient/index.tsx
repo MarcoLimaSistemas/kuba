@@ -1,7 +1,7 @@
-import React from "react";
-import { TouchableOpacity } from "react-native";
-import LinearGradient from "react-native-linear-gradient";
-import styled from "styled-components/native";
+import React from 'react';
+import { TouchableOpacity } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import styled from 'styled-components/native';
 
 interface ButtonGradientProps {
   type?: string;
@@ -22,7 +22,7 @@ export function ButtonGradient({ type = 'primary' }: ButtonGradientProps) {
         </BorderStyled>
       </ButtonStyled>
     </TouchableOpacity >
-  )
+  );
 }
 
 interface StyledProps {
@@ -34,7 +34,7 @@ export const ButtonStyled = styled(LinearGradient)`
   align-items: center;  
   border-radius: 14px;
   padding: 4px;
-`
+`;
 export const BorderStyled = styled.View<StyledProps>`
   width: 100%;
   flex: 1;
@@ -42,10 +42,10 @@ export const BorderStyled = styled.View<StyledProps>`
   align-items: center;  
   border-radius: 12px;
   background-color: ${({ typeButton }) => typeButton === 'secondary' ? '#fffafa' : 'transparent'};
-`
+`;
 export const TextStyled = styled.Text<StyledProps>`
   text-align: center;
   text-transform: uppercase;
   font-weight: 500;
   color: ${({ typeButton }) => typeButton === 'secondary' ? '#192f6a' : '#fffafa'};
-`
+`;

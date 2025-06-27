@@ -100,7 +100,7 @@
 //     // Garante que o valor tenha quatro dígitos
 //     return hexValue.padStart(4, '0');
 //   };
-  
+
 //   const onPreset= (filter:Filter) => {
 //     setSelectedFilter(filter)
 //     switch (filter) {
@@ -111,7 +111,7 @@
 //         setGain(0);
 //         setQuality(0);
 //         break;
-      
+
 //       case Filter.LOW_PASS_1:
 //         // LOW_PASS_1: frequency from 0.3Hz to 20 kHz, no gain, no quality
 //         setMinFrequency(0.3)
@@ -150,7 +150,7 @@
 //       <Slider
 //         style={{ width: '100%', marginVertical: 10 }}
 //         minimumValue={minFrequency}
-//         maximumValue={maxFrequency} 
+//         maximumValue={maxFrequency}
 //         value={frequency}
 //         onValueChange={(value) => setFrequency(value)}
 //         onSlidingComplete={generateCodeForFrequency}

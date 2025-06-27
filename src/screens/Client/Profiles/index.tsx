@@ -13,7 +13,7 @@ import {
 	Dimensions,
 	ScrollView,
 	Image,
-	TouchableOpacity
+	TouchableOpacity,
 } from 'react-native';
 
 import theme from '../../../styles/theme';
@@ -37,7 +37,7 @@ const getRandomSpan = () => {
 
 const getGridLayout = (data: any[]) => {
 	const navigation = useNavigation();
-	
+
 	let grid = [];
 	let currentRow: any[] = [];
 	let columnCount = 0;
@@ -53,7 +53,7 @@ const getGridLayout = (data: any[]) => {
 		const itemWidth =
 			(itemContainerWidth / numColumns) * span + margin * (span - 1);
 		const itemHeight = scale(120);
-console.log("currentRow",currentRow)
+console.log('currentRow',currentRow);
 		currentRow.push(
 			<TouchableOpacity
 				key={item?.id}
@@ -62,11 +62,11 @@ console.log("currentRow",currentRow)
 					width: itemWidth,
 					height: itemHeight,
 					marginRight: margin,
-					marginBottom: margin
+					marginBottom: margin,
 				}}
 				onPress={()=>
 				 	navigation.navigate('ProfileView',{
-				 	userId:item?.client?.id
+				 	userId:item?.client?.id,
 				 })
 			}
 				>
@@ -80,7 +80,7 @@ console.log("currentRow",currentRow)
 					style={{
 						width: '100%',
 						height: '100%',
-						borderRadius: scale(8)
+						borderRadius: scale(8),
 					}}
 				/>
 			</TouchableOpacity>
@@ -92,7 +92,7 @@ console.log("currentRow",currentRow)
 				<View
 					style={{
 						flexDirection: 'row',
-						justifyContent: 'space-between'
+						justifyContent: 'space-between',
 					}}
 					key={`row-${grid.length}`}>
 					{currentRow}
@@ -108,7 +108,7 @@ console.log("currentRow",currentRow)
 			<View
 				style={{
 					flexDirection: 'row',
-					justifyContent: 'space-between'
+					justifyContent: 'space-between',
 				}}
 				key={`row-${grid.length}`}>
 				{currentRow}
@@ -132,7 +132,7 @@ export function Profiles() {
 			queryFn: ({ pageParam }) =>
 				getPresetsPublics(user?.id, search, pageParam),
 			initialPageParam: 1,
-			getNextPageParam: lastPage => lastPage.meta.next_page_url
+			getNextPageParam: lastPage => lastPage.meta.next_page_url,
 		});
 
 	const handleNextPage = () => {
@@ -158,7 +158,7 @@ export function Profiles() {
 					variant="bold"
 					style={{
 						textAlign: 'center',
-						letterSpacing: scale(8)
+						letterSpacing: scale(8),
 					}}>
 					PÚBLICOS
 				</Text>
@@ -181,7 +181,7 @@ export function Profiles() {
 					showsVerticalScrollIndicator={false}
 					contentContainerStyle={{
 						paddingHorizontal: paddingHorizontal,
-						flexGrow: 1
+						flexGrow: 1,
 					}}>
 					{isLoading && <Loading />}
 					{getGridLayout(profiles)}

@@ -32,9 +32,9 @@ export function SignUp() {
 	const {
 		control,
 		handleSubmit,
-		formState: { errors }
+		formState: { errors },
 	} = useForm<ISignUpCredentials>({
-		resolver: yupResolver(SignUpSchema)
+		resolver: yupResolver(SignUpSchema),
 	});
 
 	const adjustBirthDate = (birthDate: string) => {
@@ -58,17 +58,17 @@ export function SignUp() {
 			await api.post('/signup', payload);
 
 
-			await navigation.navigate("ScreenSuccessful",{
+			await navigation.navigate('ScreenSuccessful',{
 				dataUser:{
 				 	email: payload.email,
-					password: payload.password
-			}})
+					password: payload.password,
+			}});
 
 		} catch (err: any) {
-			console.error("err",err.response);
-			Toast.show({ 
+			console.error('err',err.response);
+			Toast.show({
 				type: 'error', text1: 'Erro ao cadastrar!',
-				text2:`${err.response.data.message}`
+				text2:`${err.response.data.message}`,
 			});
 
 		} finally {
@@ -111,7 +111,7 @@ export function SignUp() {
 					<InputMasked
 						type="custom"
 						options={{
-							mask: '99/99/9999'
+							mask: '99/99/9999',
 						}}
 						keyboardType="numeric"
 						control={control}

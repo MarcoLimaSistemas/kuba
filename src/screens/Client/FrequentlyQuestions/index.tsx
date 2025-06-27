@@ -24,7 +24,7 @@ export function FrequentlyQuestions() {
 
 	const { data, isLoading } = useQuery({
 		queryKey: ['CommonQuestions'],
-		queryFn: () => getCommonQuestions(user?.id, deviceId)
+		queryFn: () => getCommonQuestions(user?.id, deviceId),
 	});
 
 	return (

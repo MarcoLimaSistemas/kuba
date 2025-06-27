@@ -13,7 +13,7 @@ interface Props extends TouchableOpacityProps {
 const text = {
 	primary: '#D4BD85',
 	secondary: '#242424',
-	outline: '#000'
+	outline: '#000',
 };
 
 export function Button({

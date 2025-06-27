@@ -33,15 +33,15 @@ class User {
 	static editInfo({ userId, data }: IEditInfoProps) {
 		return api.put('/user/' + userId, data, {
 			headers: {
-				'Content-Type': 'multipart/form-data'
-			}
+				'Content-Type': 'multipart/form-data',
+			},
 		});
 	}
 	static editPassword({userId,data}: IEditInfoPasswordProps) {
 		return api.put('/user/' + userId, data, {
 			headers: {
-				'Content-Type': 'application/json'
-			}
+				'Content-Type': 'application/json',
+			},
 		});
 	}
 }

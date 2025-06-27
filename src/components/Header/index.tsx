@@ -33,7 +33,7 @@ export const Header = ({ title, typeLogo = 'black' }: IHeaderProps) => {
 
 	return (
 		<S.Container style={{ marginTop: insets.top }}>
-			{Boolean(title) ? (
+			{title ? (
 				<S.ContainerWithoutAvatar>
 					<TouchableOpacity onPress={goBack}>
 						<Icons.ArrowLeft />

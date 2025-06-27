@@ -37,7 +37,7 @@ export const ModalCompletedProfile = forwardRef(
 	 		navigation.navigate('EditProfile');
 			onClose();
 	};
-	
+
 		return (
 			<>
 				<Modalize
@@ -45,10 +45,10 @@ export const ModalCompletedProfile = forwardRef(
 					adjustToContentHeight
 					withHandle={false}
 					scrollViewProps={{
-						showsVerticalScrollIndicator: false
+						showsVerticalScrollIndicator: false,
 					}}
 					modalStyle={{
-						paddingHorizontal: scale(16)
+						paddingHorizontal: scale(16),
 					}}>
 					<Spacer h={16} />
 					<Header>
@@ -67,19 +67,19 @@ export const ModalCompletedProfile = forwardRef(
 					<Content>
 						<Image source={FigureCompleted} alt={''} />
 					</Content>
-						<Text 
+						<Text
 						variant="bold"
 						fontSize={24}
 						style={{
 							textAlign: 'center',
 							marginTop:40,
-							textTransform:"uppercase"
+							textTransform:'uppercase',
 						}}
 						>
-						{"COMPLETAR PERFIL"}
+						{'COMPLETAR PERFIL'}
 						</Text>
 
-						<Text 
+						<Text
 						variant="regular"
 						fontSize={16}
 						style={{
@@ -87,10 +87,10 @@ export const ModalCompletedProfile = forwardRef(
 							marginTop:16,
 						}}
 						>
-						{"Complete seu perfil para ter uma  \n experiência Kuba completa!"}
+						{'Complete seu perfil para ter uma  \n experiência Kuba completa!'}
 						</Text>
 
-			
+
 					<Spacer h={36} />
 
 					<Footer>
@@ -103,7 +103,7 @@ export const ModalCompletedProfile = forwardRef(
 							variant="secondary"
 							onPress={onClose}
 						/>
-					
+
 					</Footer>
 				</Modalize>
 

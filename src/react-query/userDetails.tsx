@@ -8,6 +8,6 @@ export const userDetails = ({ isEnabled = true }: { isEnabled?: boolean }) => {
 	return useQuery({
 		queryKey: ['userDetails'],
 		queryFn: () => User.getInfo(user?.id),
-		enabled: isEnabled
+		enabled: isEnabled,
 	});
 };

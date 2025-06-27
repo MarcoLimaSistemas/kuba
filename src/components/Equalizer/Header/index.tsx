@@ -1,38 +1,38 @@
 import Text from '@components/Text';
 import * as S from './styles';
-import { TouchableOpacity, View } from 'react-native';
-import { Icons } from '@assets/icons';
-import { scale } from 'react-native-size-matters';
-import { Spacer } from '@components/Spacer';
+import {TouchableOpacity, View} from 'react-native';
+import {Icons} from '@assets/icons';
+import {scale} from 'react-native-size-matters';
+import {Spacer} from '@components/Spacer';
 import Toast from 'react-native-toast-message';
-import DropDownPicker, { ValueType } from 'react-native-dropdown-picker';
+import DropDownPicker, {ValueType} from 'react-native-dropdown-picker';
 
-import { typography } from '../../../styles/typography';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { getPresetsOwn } from '@services/preset';
-import { useAuth } from '@hooks/auth';
-import { IFrequenciesListProps } from '..';
+import {typography} from '../../../styles/typography';
+import {useCallback, useEffect, useMemo, useState} from 'react';
+import {useInfiniteQuery, useQuery} from '@tanstack/react-query';
+import {getPresetsOwn} from '@services/preset';
+import {useAuth} from '@hooks/auth';
+import {IFrequenciesListProps} from '..';
 
-import { IEqualizerConfig, IPreset } from '@models/preset';
-import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
+import {IEqualizerConfig, IPreset} from '@models/preset';
+import {useValuesEqualizer} from '@hooks/useValuesEqualizer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { STORAGE_PRESET_ID } from '@config/storage';
-import { useFocusEffect } from '@react-navigation/native';
-import { getDataPresets } from '@services/internal-storage';
+import {STORAGE_PRESET_ID} from '@config/storage';
+import {useFocusEffect} from '@react-navigation/native';
+import {getDataPresets} from '@services/internal-storage';
 import Switch from '@components/Switch';
-import { useSharedValue } from 'react-native-reanimated';
-import { useBluetooth } from '../../../context/BluetoothContext';
-import { BluetoothDevice } from 'react-native-bluetooth-classic';
+import {useSharedValue} from 'react-native-reanimated';
+import {useBluetooth} from '../../../context/BluetoothContext';
+import {BluetoothDevice} from 'react-native-bluetooth-classic';
 import React from 'react';
 
 export interface IMyPresets {
   label: string;
   value: number;
-  isPublic: boolean,
-  genreId: number,
-  description: string,
-  equalizerConfigs: IEqualizerConfig[]
+  isPublic: boolean;
+  genreId: number;
+  description: string;
+  equalizerConfigs: IEqualizerConfig[];
 }
 
 interface EqualizerProps {
@@ -46,7 +46,6 @@ interface EqualizerProps {
   connectToDevice: (device: BluetoothDevice) => void;
 }
 
-
 export function HeaderEqualizer({
   handleModalEdit,
   handlePreset,
@@ -55,12 +54,12 @@ export function HeaderEqualizer({
   disabled = false,
   presetCustom,
   equalizerConfigs,
-  connectToDevice
+  connectToDevice,
 }: EqualizerProps) {
   const [openDropdown, setOpenDropdown] = useState(false);
 
-  const { state, setState } = useBluetooth();
-  const connectedDevice = state.device ? state.device : null
+  const {state, setState} = useBluetooth();
+  const connectedDevice = state.device ? state.device : null;
 
   const {
     setSelectedOptionBand,
@@ -68,89 +67,81 @@ export function HeaderEqualizer({
     setGain,
     setQuality,
     setCurrentPresetId,
-    currentPresetId
+    currentPresetId,
   } = useValuesEqualizer();
 
-  const { data, isLoading, isFetched } = useQuery({
+  const {data, isLoading, isFetched} = useQuery({
     queryKey: ['MyPresets'],
     queryFn: async () => await getDataPresets(),
     //enabled: isFetched
   });
 
-
-
   const myPresets = useMemo(() => {
     return (
-      data?.map((preset) => ({
+      data?.map(preset => ({
         label: preset.name,
         value: preset.id,
         id: preset.id,
         is_public: preset.isPublic,
         genre_id: preset.genreId,
         description: preset.description,
-        equalizerConfigs: preset.equalizerConfigs
+        equalizerConfigs: preset.equalizerConfigs,
       })) ?? []
     );
-
   }, [data]);
 
-
   async function handleSelectPreset(preset: IMyPresets) {
-
     await AsyncStorage.setItem(STORAGE_PRESET_ID, JSON.stringify(preset));
-    handlePreset(preset)
-    setFrequency(String(preset.equalizerConfigs[0].frequency))
-    setGain(String(preset.equalizerConfigs[0].decibel_quantity))
-    setQuality(String(preset.equalizerConfigs[0].quality))
-    setSelectedOptionBand(String(preset.equalizerConfigs[0].band) ?? null)
-
+    handlePreset(preset);
+    setFrequency(String(preset.equalizerConfigs[0].frequency));
+    setGain(String(preset.equalizerConfigs[0].decibel_quantity));
+    setQuality(String(preset.equalizerConfigs[0].quality));
+    setSelectedOptionBand(String(preset.equalizerConfigs[0].band) ?? null);
   }
-  const [deviceConnection, setDeviceConnection] = useState(false)
-  const statusConnection = useSharedValue(connectedDevice!==null?1:0);
+  const [deviceConnection, setDeviceConnection] = useState(false);
+  const statusConnection = useSharedValue(connectedDevice !== null ? 1 : 0);
 
-  const handleSwitchConnection =async () => {
+  const handleSwitchConnection = async () => {
     statusConnection.value = statusConnection.value === 0 ? 1 : 0;
 
     if (statusConnection.value === 0) {
-      if(connectedDevice !== null)
-      connectToDevice(connectedDevice)
+      if (connectedDevice !== null) {
+        connectToDevice(connectedDevice);
+      }
       setDeviceConnection(true);
-      return
+      return;
     }
-    await state.device?.disconnect()
+    await state.device?.disconnect();
     setState({
       device: undefined,
       bluetoothEnabled: true,
-    })
+    });
     setDeviceConnection(false);
-    return 
+    return;
   };
 
   useFocusEffect(
     useCallback(() => {
       (async () => {
         if (presetCustom && presetCustom?.length > 0 && equalizerConfigs) {
-
-          setFrequency(String(equalizerConfigs[0].frequency))
-          setGain(String(equalizerConfigs[0].decibel_quantity))
-          setQuality(String(equalizerConfigs[0].quality))
-          setSelectedOptionBand(String(equalizerConfigs[0].band) ?? null)
-          return
+          setFrequency(String(equalizerConfigs[0].frequency));
+          setGain(String(equalizerConfigs[0].decibel_quantity));
+          setQuality(String(equalizerConfigs[0].quality));
+          setSelectedOptionBand(String(equalizerConfigs[0].band) ?? null);
+          return;
         }
         const preset = await AsyncStorage.getItem(STORAGE_PRESET_ID);
 
         if (preset !== null) {
           const presetData = JSON.parse(preset);
 
-          setCurrentPresetId(presetData.id)
-          handleSelectPreset(presetData)
-
+          setCurrentPresetId(presetData.id);
+          handleSelectPreset(presetData);
         }
-        return
+        return;
       })();
-    }, [])
-  )
-
+    }, []),
+  );
 
   return (
     <>
@@ -161,16 +152,11 @@ export function HeaderEqualizer({
 
         <View
           style={{
-            flexDirection: 'row'
+            flexDirection: 'row',
           }}>
-
-          <Switch
-            value={statusConnection}
-            onPress={handleSwitchConnection}
-          />
-
+          <Switch value={statusConnection} onPress={handleSwitchConnection} />
         </View>
       </S.Header>
     </>
-  )
+  );
 }

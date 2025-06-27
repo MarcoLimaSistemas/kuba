@@ -35,10 +35,10 @@ export const ModalDelete = forwardRef(
 				queryClient.invalidateQueries({ queryKey: ['MyPresets'] });
 				Toast.show({
 					type: 'success',
-					text1: 'Preset deletado!'
+					text1: 'Preset deletado!',
 				});
 				onClose();
-			}
+			},
 		});
 
 		const handleDelete = () => {
@@ -68,7 +68,7 @@ export const ModalDelete = forwardRef(
 						<View
 							style={{
 								justifyContent: 'center',
-								alignItems: 'center'
+								alignItems: 'center',
 							}}>
 							<Text
 								variant="bold"

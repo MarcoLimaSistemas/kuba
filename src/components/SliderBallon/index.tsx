@@ -12,7 +12,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { AnimatedText } from './AnimatedText';
 
-const { width } = Dimensions.get('window'); 
+const { width } = Dimensions.get('window');
 
 export default function  SliderBalloon(){
   const [sliderValue, setSliderValue] = useState(0); // Valor inicial do slider
@@ -55,39 +55,39 @@ export default function  SliderBalloon(){
 
   // Callback ao mover o slider
   const handleValueChange = (value: number) => {
-    const sliderWidth = width - 40; 
-    ballPosition.value = (value / 100) * sliderWidth; 
-    console.log("sliderWidth",sliderWidth,"value",value, " ball",(value / 100) * sliderWidth)
-    runOnJS(setSliderValue)(value); 
+    const sliderWidth = width - 40;
+    ballPosition.value = (value / 100) * sliderWidth;
+    console.log('sliderWidth',sliderWidth,'value',value, ' ball',(value / 100) * sliderWidth);
+    runOnJS(setSliderValue)(value);
   };
 
   // Callback ao soltar o slider
   const handleSlidingComplete = () => {
-    knobScale.value = withTiming(0); 
+    knobScale.value = withTiming(0);
   };
 
   return (
     <View style={styles.container}>
       {/* Bolinha animada */}
       <Animated.View style={[styles.balloon, ballonStyle]}>
-     
+
         <View style={styles.textContainer}>
             <AnimatedText
               text={sliderValue}
-              style={{ color: "white", fontWeight: "600" }}
-            /> 
- 
+              style={{ color: 'white', fontWeight: '600' }}
+            />
+
           </View>
-    
+
       </Animated.View>
 
       {/* Slider */}
       <Slider
-  
-        style={{ 
-          width: '100%', 
-          marginVertical: 12,	
-          height: 50 
+
+        style={{
+          width: '100%',
+          marginVertical: 12,
+          height: 50,
         }}
         minimumValue={0}
         maximumValue={100}
@@ -96,19 +96,19 @@ export default function  SliderBalloon(){
         onValueChange={handleValueChange}
         onSlidingStart={handleSlidingStart}
         onSlidingComplete={handleSlidingComplete}
-        minimumTrackTintColor="#242424" 
+        minimumTrackTintColor="#242424"
         maximumTrackTintColor="#656565"
         thumbTintColor="#1EB1FC"
       />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
-  width:"100%",
+  width:'100%',
   borderWidth:1,
-  borderColor:"red"
+  borderColor:'red',
   },
   textContainer: {
     width: 40,
@@ -117,21 +117,21 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     borderBottomLeftRadius: 40,
     borderBottomRightRadius: 40,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor:'red',
-    position: "absolute",
+    position: 'absolute',
     top: -10,
   },
   balloon: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     width: 4,
     height: 48,
     bottom: 0,
     borderRadius: 2,
    // backgroundColor: '#1EB1FC',
-    position: "absolute",
+    position: 'absolute',
   },
   balloonText: {
     color: '#fff',

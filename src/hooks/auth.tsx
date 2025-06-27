@@ -5,7 +5,7 @@ import React, {
 	ReactNode,
 	useContext,
 	useEffect,
-	useState
+	useState,
 } from 'react';
 import Toast from 'react-native-toast-message';
 import {
@@ -13,7 +13,7 @@ import {
 	ISendEmail,
 	ISendToken,
 	ISignInCredentials,
-	IUserAuth
+	IUserAuth,
 } from '../models/auth';
 import api from '../services/api';
 import Auth from '../services/auth';
@@ -34,7 +34,7 @@ interface AuthContextData {
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export function AuthProvider({
-	children
+	children,
 }: {
 	children: ReactNode;
 }): ReactElement {
@@ -47,7 +47,7 @@ export function AuthProvider({
 		Toast.show({
 			type: 'success',
 			text1: 'Sucesso',
-			text2: 'Login realizado'
+			text2: 'Login realizado',
 		});
 	};
 
@@ -56,7 +56,7 @@ export function AuthProvider({
 
 		await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 
-		api.defaults.headers.common['Authorization'] =
+		api.defaults.headers.common.Authorization =
 			`Bearer ${data.token.token}`;
 
 		setUser(data);
@@ -68,13 +68,13 @@ export function AuthProvider({
 			setEmailForgetPassword(response?.data?.user?.email);
 			Toast.show({
 				type: 'success',
-				text1: response.data.message
+				text1: response.data.message,
 			});
 		} catch (error: any) {
 			console.log(error?.response.data);
 			Toast.show({
 				type: 'error',
-				text1: error.response.data.message
+				text1: error.response.data.message,
 			});
 			throw new Error(error?.response.data);
 		}
@@ -85,13 +85,13 @@ export function AuthProvider({
 			const response = await Auth.validateToken(data);
 			Toast.show({
 				type: 'success',
-				text1: response.data.message
+				text1: response.data.message,
 			});
 		} catch (error: any) {
 			console.log(error?.response.data);
 			Toast.show({
 				type: 'error',
-				text1: error.response.data.message
+				text1: error.response.data.message,
 			});
 			throw new Error(error?.response.data);
 		}
@@ -102,13 +102,13 @@ export function AuthProvider({
 			const response = await Auth.resetPassword(data);
 			Toast.show({
 				type: 'success',
-				text1: response.data.message
+				text1: response.data.message,
 			});
 		} catch (error: any) {
 			console.log(error?.response.data);
 			Toast.show({
 				type: 'error',
-				text1: error.response.data.message
+				text1: error.response.data.message,
 			});
 			throw new Error(error?.response.data);
 		}
@@ -135,7 +135,7 @@ export function AuthProvider({
 				Toast.show({
 					type: 'error',
 					text1: 'Error',
-					text2: 'Logout realizado!'
+					text2: 'Logout realizado!',
 				});
 
 				logout();
@@ -155,7 +155,7 @@ export function AuthProvider({
 				sendEmailResetPassword,
 				validateToken,
 				updatePassword,
-				logout
+				logout,
 			}}>
 			{children}
 		</AuthContext.Provider>

@@ -5,8 +5,8 @@ import {
   useSharedValue,
   withTiming,
   SharedValue,
-} from "react-native-reanimated";
-import * as S from "./styles";
+} from 'react-native-reanimated';
+import * as S from './styles';
 
 
 interface ISwitchProps {
@@ -24,7 +24,7 @@ const Switch = ({
   duration = 400,
   trackColors = {
     on: '#ffff',
-    off: "#fff",
+    off: '#fff',
   },
 }: ISwitchProps) => {
   const height = useSharedValue(0);
@@ -39,7 +39,7 @@ const Switch = ({
     const colorBackground = interpolateColor(
       value.value,
       [0, 1],
-      ["#777777","#6edc5f"],
+      ['#777777','#6edc5f'],
     );
     const colorValue = withTiming(color, {duration});
 
@@ -81,7 +81,7 @@ const Switch = ({
           width.value = e.nativeEvent.layout.width;
         }}
         style={trackAnimatedStyle}>
-        <S.Thumb style={thumbAnimatedStyle}></S.Thumb>
+        <S.Thumb style={thumbAnimatedStyle} />
       </S.Track>
     </S.WrapperSwitch>
   );

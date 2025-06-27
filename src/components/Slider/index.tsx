@@ -25,7 +25,7 @@ const VerticalSlider: React.FC<VerticalSliderProps> = ({
 	onSlidingComplete,
 	onValueChange,
 	onTouchStart,
-	onTouchEnd
+	onTouchEnd,
 }) => {
 	return (
 		<View style={styles.container}>
@@ -45,7 +45,7 @@ const VerticalSlider: React.FC<VerticalSliderProps> = ({
 					onTouchStart={onTouchStart}
 					onTouchEnd={onTouchEnd}
 				/>
-			
+
 			</View>
 		</View>
 	);
@@ -56,19 +56,19 @@ const styles = StyleSheet.create({
 		height: 200,
 		width: 50,
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
 	},
 	sliderContainer: {
 		height: 8,
 		width: 200,
 		transform: [{ rotate: '-90deg' }],
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
 	},
 	slider: {
 		position: 'absolute',
 		width: 200, // height of slider
-		height: 8 // width of slider
+		height: 8, // width of slider
 	},
 });
 

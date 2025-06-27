@@ -3,14 +3,10 @@
 // import Slider from "@react-native-community/slider";
 // import { Buffer } from "buffer";
 
-
-
-
 interface FilterEqualizerScreenProps {
-  createGaiaMessage: (command: Buffer) => void;
-
+  device: BluetoothDevice;
+  handleScrollEnabled: (enabled: boolean) => void;
 }
-
 
 // const EqualizerTest = ({createGaiaMessage}:FilterEqualizerScreenProps) => {
 //   // ✅ Definição das Bandas (Graves, Médios, Agudos)
@@ -28,7 +24,6 @@ interface FilterEqualizerScreenProps {
 //       quality: 1.0,
 //     }))
 //   );
-
 
 // // ✅ Enviar Comando GAIA (0x021A) para uma banda específica
 // const sendEQParameter = (bandId: number, parameter: "frequency" | "gain" | "quality", value: number) => {
@@ -143,129 +138,118 @@ interface FilterEqualizerScreenProps {
 // });
 
 // export default EqualizerTest;
-import React, { useState } from "react";
-import { View, Text, StyleSheet, Platform, ScrollView } from "react-native";
-import Slider from "@react-native-community/slider";
-import { Picker } from "@react-native-picker/picker";
-import { Buffer } from "buffer";
-import { Button } from "@components/Button";
+import React, {useState} from 'react';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import Slider from '@react-native-community/slider';
+import {Button} from '@components/Button';
+import {useGaiaDevice, BluetoothDevice} from '@hooks/useGaiaDevice';
 
-
-
-
-const EqualizerTest = ({ createGaiaMessage }: FilterEqualizerScreenProps) => {
+const EqualizerTest = ({
+  device,
+  handleScrollEnabled,
+}: FilterEqualizerScreenProps) => {
   const bands = [
-    { frequency: 125, id: 1 },
-    { frequency: 1000, id: 2 },
-    { frequency: 8000, id: 3 },
+    {frequency: 125, id: 1},
+    {frequency: 1000, id: 2},
+    {frequency: 8000, id: 3},
   ];
 
-  // Função para enviar comandos GAIA
-  const sendEQParameter = (
-    bandId: number,
-    parameter: "gain" | "quality",
-    value: number
-  ) => {
-    let parameterType: number;
-    let scaledValue: number;
-
-    if (parameter === "gain") {
-      parameterType = 0x02;
-      scaledValue = Math.round(value * 300);
-      if (value < 0) scaledValue = 0x1000 + scaledValue;
-    } else if (parameter === "quality") {
-      parameterType = 0x03;
-      scaledValue = Math.round(value * 4096);
-    } else {
-      throw new Error("Parâmetro inválido!");
-    }
-
-    // ID do parâmetro: (Banda << 4) | Tipo de Parâmetro
-    const parameterId = (bandId << 4) | parameterType;
-
-    // Comando GAIA no formato correto
-    const command = Buffer.from([
-      0xFF, 0x01, 0x00, 0x05, // Cabeçalho
-      0x00, 0x0A, // Vendor ID
-      0x02, 0x1A, // Command ID (Set EQ Parameter)
-      0x01, // Bank ID
-      parameterId, // Banda + Parâmetro
-      (scaledValue >> 8) & 0xff,
-      scaledValue & 0xff,
-      0x01, // Ativar Equalização
-    ]);
-
-    console.warn(
-      `🎛 Banda ${bandId} - ${parameter.toUpperCase()}: ${value} → ${command.toString(
-        "hex"
-      )}`
-    );
-    createGaiaMessage(command);
-    //  createBuffer(command);
-  };
+  const {sendEQParameter, sendGaiaCommand} = useGaiaDevice({device});
 
   // Estados para cada banda
   const [settings, setSettings] = useState(
-    bands.map(() => ({ gain: 0, quality: 1.0 }))
+    bands.map(() => ({gain: 0, quality: 1.0})),
   );
 
-  const handleSliderChange = (index: number, type: "gain" | "quality", value: number) => {
+  const handleSliderChange = async (
+    index: number,
+    type: 'gain' | 'quality',
+    value: number,
+  ) => {
     const updatedSettings = [...settings];
     updatedSettings[index][type] = value;
     setSettings(updatedSettings);
 
     // Enviar comando GAIA apenas para a banda alterada
     const bandId = bands[index].id;
-    sendEQParameter(bandId, type, value);
+
+    try {
+      const success = await sendEQParameter(bandId, type, value);
+
+      if (success) {
+        console.warn(`🎛 Banda ${bandId} - ${type.toUpperCase()}: ${value}`);
+      }
+    } catch (error) {
+      console.error('Error sending EQ parameter:', error);
+    }
   };
 
-  const getBandFrequencies = () => {
+  const getBandFrequencies = async () => {
     for (let bandId = 1; bandId <= 5; bandId++) {
       const parameterType = 0x01; // 0x01 = Frequência
-
       const parameterId = (bandId << 4) | parameterType;
 
       const command = Buffer.from([
-        0xFF, 0x01, 0x00, 0x02, // Header
-        0x00, 0x0A, // Vendor ID
-        0x02, 0x1A, // Command ID (Get EQ Parameter)
+        0xff,
+        0x01,
+        0x00,
+        0x02, // Header
+        0x00,
+        0x0a, // Vendor ID
+        0x02,
+        0x1a, // Command ID (Get EQ Parameter)
         0x01, // Bank ID
         parameterId, // Banda + Tipo de Parâmetro (Frequência)
       ]);
 
-      console.log(`📡 Pedindo a frequência da Banda ${bandId} → ${command.toString("hex")}`);
-      createGaiaMessage(command);
+      console.log(
+        `📡 Pedindo a frequência da Banda ${bandId} → ${command.toString('hex')}`,
+      );
+
+      try {
+        await sendGaiaCommand(command);
+      } catch (error) {
+        console.error('Error sending get frequency command:', error);
+      }
     }
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      onTouchStart={() => handleScrollEnabled(false)}
+      onTouchEnd={() => handleScrollEnabled(true)}>
       <Text style={styles.title}>Equalizador Multibanda</Text>
       <Button title="Testar" onPress={() => getBandFrequencies()} />
+
       {bands.map((band, index) => (
         <View key={band.id} style={styles.bandContainer}>
           <Text style={styles.bandTitle}>{band.frequency} Hz</Text>
 
           {/* Ganho */}
-          <Text style={styles.pt}>Ganho: {settings[index].gain.toFixed(1)} dB</Text>
+          <Text style={styles.pt}>
+            Ganho: {settings[index].gain.toFixed(1)} dB
+          </Text>
           <Slider
             style={styles.slider}
             minimumValue={-12}
             maximumValue={12}
             step={0.1}
             value={settings[index].gain}
-            onValueChange={(value) => handleSliderChange(index, "gain", value)}
+            onValueChange={value => handleSliderChange(index, 'gain', value)}
           />
 
           {/* Qualidade */}
-          <Text style={styles.pt}>Qualidade (Q): {settings[index].quality.toFixed(2)}</Text>
+          <Text style={styles.pt}>
+            Qualidade (Q): {settings[index].quality.toFixed(2)}
+          </Text>
           <Slider
             style={styles.slider}
             minimumValue={0.25}
             maximumValue={8}
             step={0.01}
             value={settings[index].quality}
-            onValueChange={(value) => handleSliderChange(index, "quality", value)}
+            onValueChange={value => handleSliderChange(index, 'quality', value)}
           />
         </View>
       ))}
@@ -275,14 +259,38 @@ const EqualizerTest = ({ createGaiaMessage }: FilterEqualizerScreenProps) => {
 
 // Estilos
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, alignItems: "center", padding: 20 },
-  title: { fontSize: 20, fontWeight: "bold", marginBottom: 20, color: "#000" },
-  pt: { fontSize: 10, fontWeight: "bold", color: "#000" },
-  bandContainer: { marginBottom: 30, alignItems: "center", color: "#000" },
-  bandTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10, color: "#000" },
-  slider: { width: 300, height: 40, marginVertical: 10 },
+  container: {
+    flexGrow: 1,
+    alignItems: 'center',
+    padding: 20,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#000',
+  },
+  pt: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  bandContainer: {
+    marginBottom: 30,
+    alignItems: 'center',
+    color: '#000',
+  },
+  bandTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#000',
+  },
+  slider: {
+    width: 300,
+    height: 40,
+    marginVertical: 10,
+  },
 });
-
-
 
 export default EqualizerTest;

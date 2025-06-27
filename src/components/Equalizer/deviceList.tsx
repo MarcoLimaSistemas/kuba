@@ -187,11 +187,11 @@ interface DeviceListProps {
 }
 
 const filterDevicesPerName = ( devices: BluetoothDevice[])=> {
- return devices.filter((item)=> item.name === 'Kuba Disco' || item.name === 'Kuba Disco Bluetooth')
-}
+ return devices.filter((item)=> item.name === 'Kuba Disco' || item.name === 'Kuba Disco Bluetooth');
+};
 
 const DeviceList: React.FC<DeviceListProps> = ({ devices, onPress }) => {
- const devicesFilter = filterDevicesPerName(devices)
+ const devicesFilter = filterDevicesPerName(devices);
   const renderItem = ({ item }: { item: BluetoothDevice }) => {
     return <DeviceListItem device={item} onPress={onPress} />;
   };
@@ -210,27 +210,27 @@ const DeviceListItem: React.FC<DeviceListItemProps> = ({ device, onPress }) => {
 
   return (
     <>
-        <ElementConnectedDevice 
+        <ElementConnectedDevice
 					connectToDevice={() => onPress(device)}
           deviceName={device.name}
 					connectedDevice={null}
 					 />
-  
+
     {/* <TouchableOpacity onPress={() => onPress(device)} style={styles.deviceListItem}>
       <View style={styles.deviceListItemIcon}>
         <Text style={{color:"#000"}}>{icon}</Text>
       </View>
       <View>
-  
+
       <Text
 				fontSize={10}
 				variant="bold"
 				color="#777777">
 				{`${device.name}`}
 				  </Text>
-         <Text style={{color:"#000"}}>{device.name}</Text> 
-         <Text style={{color:"#000"}}>{device.address}</Text> 
- 
+         <Text style={{color:"#000"}}>{device.name}</Text>
+         <Text style={{color:"#000"}}>{device.address}</Text>
+
       </View>
     </TouchableOpacity> */}
     </>

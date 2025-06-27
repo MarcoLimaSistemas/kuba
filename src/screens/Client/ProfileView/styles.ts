@@ -38,7 +38,7 @@ export const Footer = styled.View`
 export const LogoSocial = styled(Image)``;
 
 export const ButtonExternalLink = styled.TouchableOpacity``;
- 
+
 export const ContainerPreset = styled.TouchableOpacity`
 margin-top: ${scale(16)}px;
 `;

@@ -13,7 +13,7 @@ import {
 	Container,
 	ContainerButtons,
 	ScrollAwareView,
-	TextError
+	TextError,
 } from './styles';
 
 import { ForgotPasswordProps } from '@models/ForgotPassword';
@@ -30,14 +30,14 @@ export function ForgotPassword() {
 	const {
 		control,
 		handleSubmit,
-		formState: { errors }
+		formState: { errors },
 	} = useForm<ForgotPasswordProps>({
-		resolver: yupResolver(ForgotPasswordSchema)
+		resolver: yupResolver(ForgotPasswordSchema),
 	});
 
 	async function onSubmitForgotPassword(data: ForgotPasswordProps) {
 		const payload = {
-			email: data.email
+			email: data.email,
 		};
 
 		try {

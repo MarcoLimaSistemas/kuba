@@ -49,7 +49,7 @@ export const Button = styled.TouchableOpacity<{ isReset: boolean }>`
 	align-items: center;
 	justify-content: center;
 	margin-right: ${scale(12)}px ;
-	background-color: ${({theme,isReset})=> isReset?theme.COLORS.white_200:theme.COLORS.gold_500} ;
+	background-color: ${({theme,isReset})=> isReset ? theme.COLORS.white_200 : theme.COLORS.gold_500} ;
 	border-radius: ${scale(62)}px;
 `;
 

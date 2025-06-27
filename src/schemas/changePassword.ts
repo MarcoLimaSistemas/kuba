@@ -25,7 +25,7 @@ export const ChangePasswordSchema = Yup.object().shape({
 		.required('Senha é um campo obrigatório'),
 	confirmationPassword: Yup.string()
 		.required('Senha é um campo obrigatório')
-		.oneOf([Yup.ref('newPassword')], 'As senhas devem corresponder')
+		.oneOf([Yup.ref('newPassword')], 'As senhas devem corresponder'),
 });
 
 export const ChangePasswordAndToken = Yup.object().shape({
@@ -53,5 +53,5 @@ export const ChangePasswordAndToken = Yup.object().shape({
 		.required('Senha é um campo obrigatório'),
 	passwordConfirmation: Yup.string()
 		.required('Senha é um campo obrigatório')
-		.oneOf([Yup.ref('password')], 'As senhas devem corresponder')
+		.oneOf([Yup.ref('password')], 'As senhas devem corresponder'),
 });

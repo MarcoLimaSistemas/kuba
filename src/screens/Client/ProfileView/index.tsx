@@ -39,27 +39,27 @@ interface PresetsProps{
   onPress:()=>void;
 }
 function Preset({title, type, onPress}:PresetsProps){
-  return(
+  return (
    <ContainerPreset onPress={onPress}>
-      <Text 
-      fontSize={18} 
+      <Text
+      fontSize={18}
       variant="bold"
       >{title}</Text>
 
-      <Text 
-      fontSize={16} 
-      variant="regular" 
+      <Text
+      fontSize={16}
+      variant="regular"
       >{type}</Text>
 
-   </ContainerPreset> 
-  )
+   </ContainerPreset>
+  );
 }
 export function ProfileView() {
   const navigation = useNavigation<any>();
 
   const route = useRoute();
 
-	const { userId } = route.params as any ;
+	const { userId } = route.params as any;
 
 
   const { data: user, isLoading } = useQuery({
@@ -75,7 +75,7 @@ export function ProfileView() {
         return undefined;
       }
       return lastPageParam + 1;
-    }
+    },
 	});
   const presets = useMemo(() => {
 		return data?.pages.flatMap(page => page.data) ?? [];
@@ -83,7 +83,7 @@ export function ProfileView() {
 
 
   const socialNetworks = user?.client?.socialNetworks ?? [];
-  
+
   function handleOpenBrowser(url:string) {
     Linking.openURL(`${url}`);
   }
@@ -92,7 +92,7 @@ export function ProfileView() {
     return <Loading />;
   }
 
-  
+
   return (
     <Wrapper>
       <Header title="Perfil" />
@@ -119,9 +119,9 @@ export function ProfileView() {
 
           <Text>{user?.client?.description ?? 'Sem descrição.'}</Text>
 
-  
+
           <Spacer h={32} />
-     
+
           <ContainerSocial>
             {socialNetworks.map(e => {
               const name = e.name;
@@ -130,8 +130,8 @@ export function ProfileView() {
                   return (
                   <ButtonExternalLink onPress={()=> handleOpenBrowser(e.link)}>
                     <LogoSocial source={FacebookLogo} />
-                  </ButtonExternalLink> 
-                  )
+                  </ButtonExternalLink>
+                  );
                 case 'Instagram':
                   return (
                     <ButtonExternalLink onPress={()=> handleOpenBrowser(e.link)}>
@@ -165,29 +165,29 @@ export function ProfileView() {
 
 
         <Footer>
-    
-        {presets.length > 0 &&(
+
+        {presets.length > 0 && (
        <>
-          <Text variant='bold' fontSize={18}>Presets Públicos</Text>
+          <Text variant="bold" fontSize={18}>Presets Públicos</Text>
           {
              presets.map((item)=>(
-              <Preset title={item.name} 
-                type={item.description} 
+              <Preset title={item.name}
+                type={item.description}
                 onPress={()=> navigation.navigate('Preset',{
                  preset: {
                    id:item.id,
                    name:item.name,
-                   imgURL:item.img_url
-                 }
+                   imgURL:item.img_url,
+                 },
                 })}
-  
+
               />
             ))
           }
       </>
-         
+
         )}
-  
+
         </Footer>
       </ScrollView>
     </Wrapper>

@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import * as S from './styles';
 
 // import Slider from '@react-native-community/slider';
 // import RadioButton from '@components/RadioButton';
-import { Button } from '@components/Button';
+import {Button} from '@components/Button';
 // import { Text } from '@components/Text/styles';
-import { Buffer } from 'buffer';
-import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
+import {Buffer} from 'buffer';
+import {useValuesEqualizer} from '@hooks/useValuesEqualizer';
 import EqualizerVisual from '@components/Equalizer/ui/equalizer';
-
-
+import {useGaiaDevice, BluetoothDevice} from '@hooks/useGaiaDevice';
 
 global.Buffer = global.Buffer || Buffer;
 
@@ -20,12 +19,14 @@ enum Filter {
 }
 
 interface FilterEqualizerScreenProps {
-  createGaiaMessage: (command: Buffer) => void;
+  device: BluetoothDevice;
   handleScrollEnabled: (enabled: boolean) => void;
 }
 
-const MasterGainControl: React.FC<FilterEqualizerScreenProps> = ({ createGaiaMessage, handleScrollEnabled }) => {
-
+const MasterGainControl: React.FC<FilterEqualizerScreenProps> = ({
+  device,
+  handleScrollEnabled,
+}) => {
   const {
     frequency,
     setFrequency,
@@ -35,7 +36,10 @@ const MasterGainControl: React.FC<FilterEqualizerScreenProps> = ({ createGaiaMes
     setQuality,
     selectedOptionBand,
     setSelectedOptionBand,
-  } = useValuesEqualizer()
+  } = useValuesEqualizer();
+
+  const {sendEQParameter} = useGaiaDevice({device});
+
   const [minFrequency, setMinFrequency] = useState<number>(20);
   const [maxFrequency, setMaxFrequency] = useState<number>(20000);
 
@@ -47,102 +51,64 @@ const MasterGainControl: React.FC<FilterEqualizerScreenProps> = ({ createGaiaMes
 
   // Converts the linear value (0 to 1) to logarithmic in the real range
   const convertLogScaleFrequency = (linearValue: number) => {
-    const result = Math.pow(10, linearValue * (logMaxFrequency - logMinFrequency) + logMinFrequency);
+    const result = Math.pow(
+      10,
+      linearValue * (logMaxFrequency - logMinFrequency) + logMinFrequency,
+    );
     return parseFloat(result.toFixed(1));
-  }
+  };
 
   const convertLogScaleQuality = (linearValue: number) =>
-    Math.pow(10, linearValue * (logMaxQuality - logMinQuality) + logMinQuality).toFixed(2);
-
-
-
-  const [] = useState<string | null>('');
-
+    Math.pow(
+      10,
+      linearValue * (logMaxQuality - logMinQuality) + logMinQuality,
+    ).toFixed(2);
 
   const [selectedFilter, setSelectedFilter] = useState<Filter>(Filter.BYPASS);
 
-  const disabledFrequency = frequency === "0"
-  const disabledGain = gain === "0"
-  const disabledQuality = quality === "0"
-
-
-
+  const disabledFrequency = frequency === '0';
+  const disabledGain = gain === '0';
+  const disabledQuality = quality === '0';
 
   const handleSelect = (option: string) => {
     setSelectedOptionBand(option);
   };
 
-
-
-
-  const generateCodeAndSendToGaia = (filterId: number, value: string) => {
-    const code = `FF010005000A021A01${filterId}${value}01`;
-
-    console.log("code", code)
-    createGaiaMessage(Buffer.from(code, 'hex'));
-  };
-
-  const generateCodeForFrequency = (frequency: number) => {
-    const filterId = 1;
-
-    const multiply = frequency < 1 ? 100 : 1000;
-
-    frequency *= multiply * 3;
-
-    const valueFrequencyToHex = convertValueToHex(frequency);
-
-    generateCodeAndSendToGaia(filterId, valueFrequencyToHex);
-  };
-
-  const convertQualityToHex = (quality: number): string => {
-    quality *= 4096;
-    return convertValueToHex(quality);
-  };
-
-  const generateCodeForGain = (gain: number) => {
-    const filterId = 2; // Use o ID correto para ganho
-    // Limitando o ganho dentro do intervalo permitido
-    let clampedGain = Number((Math.max(-12, Math.min(12, gain)) * 60).toFixed());
-
-    if (gain < 0) {
-      clampedGain = 4096 + clampedGain;
+  const generateCodeForFrequency = async (frequency: number) => {
+    try {
+      const success = await sendEQParameter(1, 'frequency', frequency);
+      if (success) {
+        console.log('Frequency sent:', frequency);
+      }
+    } catch (error) {
+      console.error('Error sending frequency:', error);
     }
-    // Calculando o valor em hexadecimal com base na relação de 60 dB por unidade
-    const hexValue = clampedGain.toString(16).toUpperCase();
-    console.log('clampedGain', clampedGain);
-    // Adicionando o prefixo "0" para valores positivos, "F" para valores negativos
-    const prefix = gain >= 0 ? '0' : 'F';
-
-    // Concatenando o prefixo com o valor calculado em hexadecimal
-    const valueGainHex = prefix + hexValue;
-
-    generateCodeAndSendToGaia(filterId, valueGainHex);
   };
 
-  const generateCodeForQuality = (quality: number) => {
-    const filterId = 3; // Use o ID correto para qualidade
-
-    const hexValue = convertQualityToHex(quality);
-    generateCodeAndSendToGaia(filterId, hexValue);
+  const generateCodeForGain = async (gain: number) => {
+    try {
+      const success = await sendEQParameter(1, 'gain', gain);
+      if (success) {
+        console.log('Gain sent:', gain);
+      }
+    } catch (error) {
+      console.error('Error sending gain:', error);
+    }
   };
 
-  const convertValueToHex = (decimalValue: number): string => {
-    decimalValue = Number(decimalValue.toFixed());
-    // Converte o valor decimal para hexadecimal
-    const hexValue = decimalValue.toString(16).toUpperCase();
-    // Garante que o valor tenha quatro dígitos
-    return hexValue.padStart(4, '0');
+  const generateCodeForQuality = async (quality: number) => {
+    try {
+      const success = await sendEQParameter(1, 'quality', quality);
+      if (success) {
+        console.log('Quality sent:', quality);
+      }
+    } catch (error) {
+      console.error('Error sending quality:', error);
+    }
   };
-
-
-
-
 
   return (
     <S.Container>
-
-
-
       <EqualizerVisual
         frequency={parseFloat(frequency)}
         quality={parseFloat(quality)}
@@ -157,14 +123,16 @@ const MasterGainControl: React.FC<FilterEqualizerScreenProps> = ({ createGaiaMes
         generateCodeForFrequency={generateCodeForFrequency}
         generateCodeForQuality={generateCodeForQuality}
         generateCodeForGain={generateCodeForGain}
-        onValueChangeFrequency={(value) => setFrequency(String(convertLogScaleFrequency(value)))}
-        onValueChangeQuality={(value) => setQuality(String(convertLogScaleQuality(value)))}
-        onValueChangeGain={(value) => setGain(String((value.toFixed(1))))}
+        onValueChangeFrequency={(value: number) =>
+          setFrequency(String(convertLogScaleFrequency(value)))
+        }
+        onValueChangeQuality={(value: number) =>
+          setQuality(String(convertLogScaleQuality(value)))
+        }
+        onValueChangeGain={(value: number) => setGain(String(value.toFixed(1)))}
         onTouchStart={() => handleScrollEnabled(false)}
         onTouchEnd={() => handleScrollEnabled(true)}
       />
-
-
     </S.Container>
   );
 };

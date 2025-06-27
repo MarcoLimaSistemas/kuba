@@ -22,7 +22,7 @@ import {
 	Content,
 	Error,
 	ForgotPasswordText,
-	ForgotPasswordContainer
+	ForgotPasswordContainer,
 } from './styles';
 
 import { SignInSchema } from '../../../schemas/auth';
@@ -42,9 +42,9 @@ export function SignIn() {
 	const {
 		control,
 		handleSubmit,
-		formState: { errors }
+		formState: { errors },
 	} = useForm<ISignInCredentials>({
-		resolver: yupResolver(SignInSchema)
+		resolver: yupResolver(SignInSchema),
 	});
 
 	async function handleLogin(data: ISignInCredentials) {
@@ -56,14 +56,14 @@ export function SignIn() {
 				if (err.response?.status < 500) {
 					Toast.show({
 						type: 'error',
-						text1: 'Email ou senha inválidos!'
+						text1: 'Email ou senha inválidos!',
 					});
 				}
 				return;
 			}
 			Toast.show({
 				type: 'error',
-				text1: 'Erro no servidor interno!'
+				text1: 'Erro no servidor interno!',
 			});
 		} finally {
 			setLoading(false);

@@ -1,7 +1,7 @@
-import { RFValue } from "react-native-responsive-fontsize";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { scale } from "react-native-size-matters";
-import styled from "styled-components/native";
+import { RFValue } from 'react-native-responsive-fontsize';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { scale } from 'react-native-size-matters';
+import styled from 'styled-components/native';
 
 
 export const Wrapper = styled(SafeAreaView)`
@@ -12,11 +12,11 @@ padding-top: ${scale(16)}px;
 export const Container = styled.View`
 padding-top: ${scale(24)}px;
 
-`
+`;
 
 export const ContainerBody = styled.View`
 padding: 0 16px;
-`
+`;
 
 export const Title = styled.Text`
 font-size: ${RFValue(16)}px;

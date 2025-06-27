@@ -28,4 +28,4 @@ export const SignUpSchema = Yup.object().shape({
   passwordConfirmation: Yup.string()
     .required('Senha é um campo obrigatório')
     .oneOf([Yup.ref('password')], 'As senhas devem corresponder'),
-})
+});

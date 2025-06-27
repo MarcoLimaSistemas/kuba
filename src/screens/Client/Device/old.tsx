@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
-import { KubaFone } from '@assets/images'
-import { Button } from '@components/Button'
-import { CarouselProfile } from '@components/CarouselProfile'
-import { Navbar } from '@components/Navbar'
-import { useNavigation } from '@react-navigation/native'
+import { KubaFone } from '@assets/images';
+import { Button } from '@components/Button';
+import { CarouselProfile } from '@components/CarouselProfile';
+import { Navbar } from '@components/Navbar';
+import { useNavigation } from '@react-navigation/native';
 
 import { Close, Headset, Info, Lighting, Settings } from '@assets/icons';
 
@@ -26,37 +26,37 @@ import {
   Percentage,
   TextStatus,
   TitleModal,
-} from './styles'
+} from './styles';
 
-import { Image, Modal, Pressable, TouchableOpacity } from 'react-native'
-import { ButtonSquare } from '@components/ButtonSquare'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { Image, Modal, Pressable, TouchableOpacity } from 'react-native';
+import { ButtonSquare } from '@components/ButtonSquare';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-import useBLE from '@hooks/useBLE'
+import useBLE from '@hooks/useBLE';
 
-export function Device({ route, }: any) {
-  console.log('DeviceID: ', route.params.deviceID)
+export function Device({ route }: any) {
+  console.log('DeviceID: ', route.params.deviceID);
 
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
   const dataExample = [
     {
       id: 1,
-      name: 'Cliolo'
+      name: 'Cliolo',
     },
     {
       id: 2,
-      name: 'Cliolo'
+      name: 'Cliolo',
     },
     {
       id: 3,
-      name: 'Cliolo'
+      name: 'Cliolo',
     },
     {
       id: 4,
-      name: 'Cliolo'
+      name: 'Cliolo',
     },
-  ]
+  ];
 
   const { requestPermissions,
     onStopSearch,
@@ -66,28 +66,28 @@ export function Device({ route, }: any) {
     allDevices,
     onScanDevices,
     onStopScan,
-    connectToDevice
-  } = useBLE()
+    connectToDevice,
+  } = useBLE();
 
-  const [status, setStatus] = useState(false)
+  const [status, setStatus] = useState(false);
 
   async function handlePermissions() {
     requestPermissions(async (isGranted: boolean) => {
       if (isGranted) {
-        setStopSearch(false)
-        onScanDevices()
+        setStopSearch(false);
+        onScanDevices();
       }
-    })
+    });
   }
 
   async function handleCancelSearchDevices() {
-    onStopScan()
-    setStopSearch(true)
+    onStopScan();
+    setStopSearch(true);
   }
 
   async function handleCloseModal() {
-    onStopScan()
-    setModalVisible(false)
+    onStopScan();
+    setModalVisible(false);
   }
 
   return (
@@ -131,26 +131,26 @@ export function Device({ route, }: any) {
 
       <BoxButtons
       style={{
-        paddingHorizontal:16
+        paddingHorizontal:16,
       }}
       >
-        <ButtonSquare label='Suporte' onPress={() => navigation.navigate('Support')}>
-          <Image source={Headset} 
+        <ButtonSquare label="Suporte" onPress={() => navigation.navigate('Support')}>
+          <Image source={Headset}
           style={{
             width:32,
-            height:32
+            height:32,
           }}
-          resizeMode='contain'
+          resizeMode="contain"
           />
         </ButtonSquare>
 
-        <ButtonSquare label='Tutorias de uso' onPress={() => navigation.navigate('Tutorials')}>
+        <ButtonSquare label="Tutorias de uso" onPress={() => navigation.navigate('Tutorials')}>
           <Image source={Info}
           style={{
             width:32,
-            height:32
+            height:32,
           }}
-          resizeMode='contain'
+          resizeMode="contain"
           />
         </ButtonSquare>
       </BoxButtons >
@@ -192,5 +192,5 @@ export function Device({ route, }: any) {
         </ContainerModal>
       </Modal>
     </Container >
-  )
+  );
 }

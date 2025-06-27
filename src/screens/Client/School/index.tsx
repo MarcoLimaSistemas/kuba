@@ -29,7 +29,7 @@ import { Icons } from '@assets/icons';
 
 export function School() {
   const [search, setSearch] = useState<string>();
-  const [order, setOrder] = useState<"asc" | "desc">('asc');
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const {user} = useAuth();
   const navigation = useNavigation();
 
@@ -41,7 +41,7 @@ export function School() {
         page: pageParam,
         perPage: undefined,
         search,
-        orderType:order
+        orderType:order,
       }),
     initialPageParam: 1,
     getNextPageParam: (lastPage, pages) => lastPage.data.last_page,
@@ -53,8 +53,8 @@ export function School() {
     return classes;
   }, [data]);
    const handleFilter = () =>{
-        setOrder((prev)=> prev === 'asc'?'desc':'asc')
-  }
+        setOrder((prev)=> prev === 'asc' ? 'desc' : 'asc');
+  };
   return (
       <Container
         contentContainerStyle={{
@@ -73,8 +73,8 @@ export function School() {
         }>
             <StatusBar barStyle="light-content" />
             <ContainerBody>
-              
-       
+
+
               <FlatList
                 data={classes}
                 ItemSeparatorComponent={() => <Spacer h={16} />}
@@ -96,24 +96,24 @@ export function School() {
                   onChangeText={text => setSearch(text)}
                 />
                 <ContainerFilter onPress={handleFilter}>
-        
+
                   <Text
-                   variant='regular' 
-                  fontSize={13} 
-                  color='#fff'
+                   variant="regular"
+                  fontSize={13}
+                  color="#fff"
                   style={{
-                    marginRight:10
+                    marginRight:10,
                   }}
                   >Mais Recentes</Text>
 
-                  {order === 'asc' &&(
+                  {order === 'asc' && (
                     <Icons.ArrowDown width={10} height={10} style={{marginTop:1}} />
                   )}
 
-                  {order === 'desc' &&(
+                  {order === 'desc' && (
                     <Icons.ArrowUp width={10} height={10} style={{marginTop:1}} />
                   )}
-                   
+
                 </ContainerFilter>
                 </Wrapper>
                 }
@@ -133,8 +133,8 @@ export function School() {
               </Wrapper>
               </>}
               />
-  
-     
+
+
         </ContainerBody>
 
         <View style={{flex: 1}} />
@@ -147,6 +147,6 @@ export function School() {
           />
         </ContainerButton>
       </Container>
-  
+
   );
 }

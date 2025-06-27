@@ -17,7 +17,7 @@ import {
 	Header,
 	IconClose,
 	Input,
-	InputContainer
+	InputContainer,
 } from './styles';
 
 import { Icons } from '@assets/icons';
@@ -67,15 +67,15 @@ export const ModalPreset = forwardRef(
 
 
 		const {
-			settings
-		} = useValuesEqualizer()
+			settings,
+		} = useValuesEqualizer();
 
 
 		const {
 			setValue: setValueForm,
 			handleSubmit,
 			control,
-			formState: { errors }
+			formState: { errors },
 		} = useForm<IPresetUser>();
 
 
@@ -110,17 +110,17 @@ export const ModalPreset = forwardRef(
 			mutationFn: (data: IPresetUser[]) => updatePresetInternal(data),
 			onSuccess: async res => {
 				await queryClient.invalidateQueries({
-					queryKey: ['MyPresets']
+					queryKey: ['MyPresets'],
 				});
 				Toast.show({
 					type: 'success',
-					text1: 'Preset editado com sucesso!'
+					text1: 'Preset editado com sucesso!',
 				});
 				onClose();
 			},
 			onError(error) {
 				console.error(error);
-			}
+			},
 		});
 
 		const toggleSwitch = () => {
@@ -162,12 +162,12 @@ export const ModalPreset = forwardRef(
 
 		const editPresetUser = async (data: IPresetUser) => {
 			try {
-			
-				const formSettings = {
-					equalizerConfigs: settings
-				}
 
-				const form = { ...data, ...formSettings } as unknown as IPresetUser
+				const formSettings = {
+					equalizerConfigs: settings,
+				};
+
+				const form = { ...data, ...formSettings } as unknown as IPresetUser;
 
 				const existingData = await AsyncStorage.getItem(STORAGE_PRESET);
 				const parsedData = existingData ? JSON.parse(existingData) : [];
@@ -176,9 +176,9 @@ export const ModalPreset = forwardRef(
 					item.id === currentPreset?.id ? { ...item, ...form } : item
 				);
 
-				mutateAsyncEdit(updatedData)
+				mutateAsyncEdit(updatedData);
 			} catch (err) {
-				console.error("Error", err)
+				console.error('Error', err);
 			}
 
 
@@ -186,21 +186,21 @@ export const ModalPreset = forwardRef(
 
 
 		const genres = [
-			{ value: 1, label: "Rock" },
-			{ value: 2, label: "Reggae" },
+			{ value: 1, label: 'Rock' },
+			{ value: 2, label: 'Reggae' },
 			{ value: 3, label: 'Hip Hop' },
 			{ value: 4, label: 'Eletrônica' },
 			{ value: 5, label: 'Clássica' },
 			{ value: 6, label: 'Pop' },
-		]
+		];
 
 		useEffect(() => {
 			if (isEdit) {
 				setValueForm('name', currentPreset?.name ?? '');
 				setValueForm('description', currentPreset?.description ?? '');
-				setValueForm("genreId", currentPreset?.genreId ?? 0)
+				setValueForm('genreId', currentPreset?.genreId ?? 0);
 
-				setValueForm("equalizerConfigs", currentPreset?.equalizerConfigs ?? [])
+				setValueForm('equalizerConfigs', currentPreset?.equalizerConfigs ?? []);
 				//setValueForm("label", currentPreset?.label ?? "")
 				// setValueForm('equalizerConfigs', currentPreset?.equalizerConfigs ?? []);
 				// setValue(currentPreset?.genre_id ?? 0);
@@ -230,10 +230,10 @@ export const ModalPreset = forwardRef(
 					adjustToContentHeight
 					withHandle={false}
 					scrollViewProps={{
-						showsVerticalScrollIndicator: false
+						showsVerticalScrollIndicator: false,
 					}}
 					modalStyle={{
-						paddingHorizontal: scale(16)
+						paddingHorizontal: scale(16),
 					}}>
 					<Spacer h={16} />
 					<Header>
@@ -300,13 +300,13 @@ export const ModalPreset = forwardRef(
 							style={{
 								borderWidth: 2,
 								borderColor: theme.COLORS.black,
-								height: scale(48)
+								height: scale(48),
 							}}
 							textStyle={{
 								fontFamily:
 									typography['Lato-Regular'].fontFamily,
 								color: theme.COLORS.gray_200,
-								fontSize: scale(14)
+								fontSize: scale(14),
 							}}
 						/>
 					</InputContainer>
@@ -355,7 +355,7 @@ export const ModalPreset = forwardRef(
 										variant="bold"
 										fontSize={12}
 										style={{
-											textDecorationLine: 'underline'
+											textDecorationLine: 'underline',
 										}}>
 										Excluir preset
 									</Text>

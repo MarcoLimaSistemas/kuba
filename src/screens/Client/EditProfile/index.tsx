@@ -83,16 +83,16 @@ export function EditProfile() {
   const onOpen = () => {
     modalizeRef.current?.open();
   };
-console.log("toggle",toggle)
+console.log('toggle',toggle);
   const toggleSwitch = () => {
-    if (!userDetailsData) return;
-    setToggle((prev)=>!prev)
+    if (!userDetailsData) {return;}
+    setToggle((prev)=>!prev);
     // const formData = new FormData();
 
   };
 
   const onSubmit = async (data: UserInfoFormData) => {
-    if (!userDetailsData) return;
+    if (!userDetailsData) {return;}
 
     const formData = new FormData();
 

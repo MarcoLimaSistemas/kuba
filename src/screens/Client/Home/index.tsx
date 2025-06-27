@@ -32,13 +32,13 @@ export function Home() {
 
 	const route = useRoute();
 	const modal = route.params as any;
-  const hasModalActive = modal !== undefined && modal.modalActive === true
-  const [modaVisible, setModalVisible] = useState(false)
+  const hasModalActive = modal !== undefined && modal.modalActive === true;
+  const [modaVisible, setModalVisible] = useState(false);
 
   const onOpen = () => modalizeRef.current?.open();
   const closeModal = () => {
     setModalVisible(false);
-    modalizeRef.current?.close()
+    modalizeRef.current?.close();
   };
 
   const {data: devices, isLoading} = useQuery({

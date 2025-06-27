@@ -12,12 +12,12 @@ export const useEditUser = () => {
 		mutationFn: ({ userId, data }: IEditInfoProps) =>
 			User.editInfo({
 				userId,
-				data
+				data,
 			}),
 		onSuccess: async () => {
 			Toast.show({
 				type: 'success',
-				text1: 'Perfil atualizado com sucesso!'
+				text1: 'Perfil atualizado com sucesso!',
 			});
 			await queryClient.invalidateQueries({ queryKey: ['userDetails'] });
 			navigation.goBack();
@@ -26,9 +26,9 @@ export const useEditUser = () => {
 			console.error('error :', error.response.data.message);
 			Toast.show({
 				type: 'error',
-				text1: 'Erro ao atualizar perfil!'
+				text1: 'Erro ao atualizar perfil!',
 			});
-		}
+		},
 	});
 
 	return { mutateEditUser: mutate, isPendingEditUser: isPending };

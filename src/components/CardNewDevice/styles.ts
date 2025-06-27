@@ -22,4 +22,4 @@ export const TitleCard = styled.Text`
 font-size: ${RFValue(14)}px;
 text-align: center;
 color:${({ theme }) => theme.COLORS.gray_100};
-`
+`;

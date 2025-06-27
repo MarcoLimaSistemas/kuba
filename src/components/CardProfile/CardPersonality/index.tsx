@@ -14,7 +14,7 @@ export function CardPersonality({ imgURL, name,onPress }: ICardPersonality) {
 		<Container onPress={onPress}>
 			<ImageCover
 				source={{
-					uri: imgURL
+					uri: imgURL,
 				}}
 				resizeMode="cover"
 			/>

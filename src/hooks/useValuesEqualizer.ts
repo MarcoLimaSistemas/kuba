@@ -35,10 +35,10 @@ interface IValuesEqualizer {
 
 
 export const useValuesEqualizer = create<IValuesEqualizer>((set) => ({
-  frequency: "570",
-  gain: "0",
-  quality: "0.25",
-  selectedOptionBand: "1",
+  frequency: '570',
+  gain: '0',
+  quality: '0.25',
+  selectedOptionBand: '1',
   currentPresetId: null,
   isModalSelectValueVisible: false,
   selectedBand: null,

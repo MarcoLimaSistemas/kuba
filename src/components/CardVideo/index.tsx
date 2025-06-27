@@ -30,7 +30,7 @@ export function CardVideo({ title, link }: CardVideoProps) {
 		} catch (error) {
 			Toast.show({
 				type: 'error',
-				text1: 'Erro ao abrir o vídeo! :('
+				text1: 'Erro ao abrir o vídeo! :(',
 			});
 		}
 	};
@@ -42,7 +42,7 @@ export function CardVideo({ title, link }: CardVideoProps) {
 					imageBroken
 						? ImageBrokenPng
 						: {
-								uri: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+								uri: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
 							}
 				}
 				onError={() => setImageBroken(true)}

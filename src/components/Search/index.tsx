@@ -25,11 +25,11 @@ export function Search({
 						? rest.placeholderTextColor
 						: '#FFF'
 				}
-				returnKeyType='search'
+				returnKeyType="search"
 				onSubmitEditing={searchCallback}
 				keyboardType="default"
 				{...rest}
-				
+
 			/>
 			<ButtonSearch
 				disabled={loading}
@@ -38,7 +38,7 @@ export function Search({
 					backgroundColor:
 						typeButton === 'black'
 							? theme.COLORS.black
-							: theme.COLORS.white_100
+							: theme.COLORS.white_100,
 				}}>
 				<Icons.Search
 					color={

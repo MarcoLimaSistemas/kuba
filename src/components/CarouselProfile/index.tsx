@@ -17,7 +17,7 @@ interface CarouselProfileProps {
 export function CarouselProfile({
 	data,
 	titleProfile,
-	isPersonalities = true
+	isPersonalities = true,
 }: CarouselProfileProps) {
 
 	const navigation = useNavigation();
@@ -31,7 +31,7 @@ export function CarouselProfile({
 				data={data}
 				keyExtractor={item => String(item.id)}
 				contentContainerStyle={{
-					paddingVertical: scale(8)
+					paddingVertical: scale(8),
 				}}
 				showsHorizontalScrollIndicator={false}
 				horizontal

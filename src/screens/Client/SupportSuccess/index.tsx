@@ -1,22 +1,22 @@
-import React from "react";
-import { Image, ScrollView } from "react-native";
-import { Container, TextSuccess } from "./styles";
+import React from 'react';
+import { Image, ScrollView } from 'react-native';
+import { Container, TextSuccess } from './styles';
 
-import { useNavigation } from "@react-navigation/native";
-import { Button } from "@components/Button";
-import Text from "@components/Text";
-import { supportSuccess } from "@assets/images";
+import { useNavigation } from '@react-navigation/native';
+import { Button } from '@components/Button';
+import Text from '@components/Text';
+import { supportSuccess } from '@assets/images';
 
 export function SupportSuccess() {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   return (
     <Container>
       <ScrollView>
-      <Image source={supportSuccess} 
+      <Image source={supportSuccess}
       style={{
               marginTop:46,
               width:365,
-              height:341
+              height:341,
             }}
           />
 
@@ -34,14 +34,14 @@ export function SupportSuccess() {
       >
       {`Suporte enviado \n com sucesso!`}
       </Text> */}
-      <TextSuccess>{`Suporte enviado \n com sucesso!`}</TextSuccess>
+      <TextSuccess>{'Suporte enviado \n com sucesso!'}</TextSuccess>
       <Text
       variant="regular"
       style={{
         textAlign:'center',
       }}
       >
-        {"Em breve retornaremos com uma possível"}
+        {'Em breve retornaremos com uma possível'}
       </Text>
       <Text
       variant="regular"
@@ -49,26 +49,26 @@ export function SupportSuccess() {
         textAlign:'center',
       }}
       >
-        {"solução. Agradecemos pelo contato!"}
+        {'solução. Agradecemos pelo contato!'}
       </Text>
-      <Button 
+      <Button
       title="Finalizar"
       style={{
-        marginTop:57
+        marginTop:57,
       }}
       onPress={() => navigation.navigate('Home',{modalActive:false})} />
-      <Text 
+      <Text
       variant="light"
       fontSize={14}
       color="#656565"
       style={{
         textAlign:'center',
-        marginTop:30
+        marginTop:30,
       }}
       >
-        {"*Cheque com frequência a sua caixa de spam!"}
+        {'*Cheque com frequência a sua caixa de spam!'}
       </Text>
       </ScrollView>
     </Container>
-  )
+  );
 }

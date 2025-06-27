@@ -23,7 +23,7 @@ export const Button = styled.TouchableOpacity`
 	align-items: center;
 	justify-content: center;
 	margin-right: ${scale(12)}px ;
-	background-color: ${({theme,})=> theme.COLORS.white_200} ;
+	background-color: ${({theme})=> theme.COLORS.white_200} ;
 	border-radius: ${scale(62)}px;
   shadow-color: '#000';
   elevation: 5px;

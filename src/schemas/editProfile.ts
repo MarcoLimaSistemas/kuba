@@ -9,5 +9,5 @@ export const EditProfileSchema = Yup.object().shape({
 	facebook: Yup.string(),
 	instagram: Yup.string(),
 	spotify: Yup.string(),
-	qobuzz: Yup.string()
+	qobuzz: Yup.string(),
 });

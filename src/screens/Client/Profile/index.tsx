@@ -110,7 +110,7 @@ export function Profile() {
 
           <Text>{user?.client?.description ?? 'Sem descrição.'}</Text>
 
-  
+
           <Spacer h={48} />
 
           <ContainerSocial>
@@ -121,8 +121,8 @@ export function Profile() {
                   return (
                   <ButtonExternalLink onPress={()=> handleOpenBrowser(e.link)}>
                     <LogoSocial source={FacebookLogo} />
-                  </ButtonExternalLink> 
-                  )
+                  </ButtonExternalLink>
+                  );
                 case 'Instagram':
                   return (
                     <ButtonExternalLink onPress={()=> handleOpenBrowser(e.link)}>
@@ -171,7 +171,7 @@ export function Profile() {
         <View style={{flex: 1}} />
 
         <Container>
-        
+
           <Button
             title="Editar Perfil"
             onPress={() => navigation.navigate('EditProfile')}

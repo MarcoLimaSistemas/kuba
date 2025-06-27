@@ -12,7 +12,7 @@ export const Container = styled(SafeAreaView)`
 
 export const Content = styled(KeyboardAwareScrollView)`
   flex: 1;
-`
+`;
 
 export const ContainerLogo = styled.View`
   display: flex;
@@ -44,7 +44,7 @@ export const ForgotPasswordText = styled.Text`
   color: ${({ theme }) => theme.COLORS.black};
   font-size: ${RFValue(12)}px;
   text-decoration: underline;
-`
+`;
 
 export const ContainerButton = styled.View` 
   padding: 0 16px 16px; 

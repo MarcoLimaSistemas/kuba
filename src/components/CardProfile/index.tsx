@@ -20,7 +20,7 @@ export function CardProfile(
 		{ data: IPresetUser, isSelected: boolean, handlePreset: () => void; }) {
 
 	const {
-		setSettings
+		setSettings,
 	} = useValuesEqualizer();
 
 
@@ -28,7 +28,7 @@ export function CardProfile(
 	const handleSetPreset = async () => {
 
 		await AsyncStorage.setItem(STORAGE_PRESET_ID, JSON.stringify(data));
-		handlePreset()
+		handlePreset();
 
 		const newArray = data?.equalizerConfigs.map((item) => ({
 
@@ -36,12 +36,12 @@ export function CardProfile(
 			frequency: Number(item.frequency),
 			quality: Number(item.quality),
 			gain: Number(item.gain),
-		}) as unknown as IBandSettings) ?? []
+		}) as unknown as IBandSettings) ?? [];
 
-	await	setSettings(newArray)
-	sendEQParametersSequentially(newArray)
+	await	setSettings(newArray);
+	sendEQParametersSequentially(newArray);
 
-	}
+	};
 
 	return (
 		<Container

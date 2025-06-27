@@ -22,7 +22,7 @@ export function ElementConnectedDevice({
 	connectedDevice,
 	connectToDevice,
 	isNavigateHome,
-	deviceName
+	deviceName,
 }: ElementConnectedDeviceProps) {
 	const { navigate } = useNavigation<any>();
 
@@ -42,7 +42,7 @@ export function ElementConnectedDevice({
 					<View
 						style={{
 							flexDirection: 'row',
-							alignItems: 'center'
+							alignItems: 'center',
 						}}>
 						{/* <Image source={Lighting} />
 										<Spacer w={8} />
@@ -51,13 +51,13 @@ export function ElementConnectedDevice({
 						<Spacer w={16} />
 						<TouchableOpacity
 							onPress={async () => {
-								await state.device?.disconnect()
+								await state.device?.disconnect();
 								setState({
 									device: undefined,
 									bluetoothEnabled: true,
-								})
+								});
 								if (isNavigateHome) {
-									return navigate("Home")
+									return navigate('Home');
 								}
 
 							}}>
@@ -79,7 +79,7 @@ export function ElementConnectedDevice({
 					</Text>
 
 					<TouchableOpacity onPress={() => {
-						connectToDevice(connectedDevice)
+						connectToDevice(connectedDevice);
 					}}>
 						<Text color="#2E9CCB" variant="bold">
 							Conectar

@@ -30,8 +30,8 @@ export function Support() {
 		resolver: yupResolver(SupportSchema),
 		defaultValues: {
 			component: '',
-			description: ''
-		}
+			description: '',
+		},
 	});
 
 	const { mutateAsync, isPending } = useMutation({
@@ -40,16 +40,16 @@ export function Support() {
 		onSuccess: () => {
 			Toast.show({
 				type: 'success',
-				text1: 'Suporte enviado!'
+				text1: 'Suporte enviado!',
 			});
-			navigation.navigate("SupportSuccess");
+			navigation.navigate('SupportSuccess');
 		},
 		onError: () => {
 			Toast.show({
 				type: 'error',
-				text1: 'Erro ao enviar suporte!'
+				text1: 'Erro ao enviar suporte!',
 			});
-		}
+		},
 	});
 
 	const descriptionLength = watch('description').length;
@@ -60,10 +60,10 @@ export function Support() {
 
 	return (
 		<S.Wrapper>
-			<ScrollView 
+			<ScrollView
 			contentContainerStyle={{ flexGrow: 1 }}
 			showsVerticalScrollIndicator={false}>
-				
+
 			<Header />
 			<S.Container>
 				<S.ContainerBody>
@@ -72,7 +72,7 @@ export function Support() {
 						variant="bold"
 						style={{
 							textAlign: 'center',
-							letterSpacing: scale(8)
+							letterSpacing: scale(8),
 						}}>
 						SUPORTE
 					</Text>
@@ -83,7 +83,7 @@ export function Support() {
 						fontSize={12}
 						variant="lightItalic"
 						style={{
-							textAlign: 'center'
+							textAlign: 'center',
 						}}>
 						Descreva seu problema com o máximo possível de detalhes
 						para que nossa equipe possa ajudar.
@@ -132,7 +132,7 @@ export function Support() {
 						title="DÚVIDAS FREQUENTES"
 						onPress={() => {
 							navigation.navigate('FrequentlyQuestions', {
-								deviceId
+								deviceId,
 							});
 						}}
 						variant="secondary"

@@ -4,7 +4,7 @@ import {
 	ISendEmail,
 	ISendToken,
 	ISignInCredentials,
-	IUserAuth
+	IUserAuth,
 } from '../models/auth';
 
 import api from './api';

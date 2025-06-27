@@ -12,7 +12,7 @@ export const Routes = () => {
 	return (
 		<>
 			<NavigationContainer ref={navigationRef}>
-				<AppRoutes /> 
+				<AppRoutes />
 			</NavigationContainer>
 			<Toast />
 		</>

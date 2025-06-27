@@ -1,5 +1,5 @@
-import {RFValue} from 'react-native-responsive-fontsize'
-import styled, {css} from 'styled-components/native'
+import {RFValue} from 'react-native-responsive-fontsize';
+import styled, {css} from 'styled-components/native';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'outline'
 
@@ -10,8 +10,8 @@ interface ButtonContainerProps {
 const background = {
     primary: '#242424',
     secondary: '#D4BD85',
-    outline: '#ffffff'
-}
+    outline: '#ffffff',
+};
 
 export const StyledButton = styled.TouchableOpacity<ButtonContainerProps>`
     width: 100%;
@@ -28,6 +28,6 @@ export const StyledButton = styled.TouchableOpacity<ButtonContainerProps>`
       border: 1px solid $
       {props.variant === 'primary' ? background[props.variant] : props.variant === 'secondary' ?
             '#D4BD85' : '#242424'};
-  `
+  `;
     }}
-`
+`;

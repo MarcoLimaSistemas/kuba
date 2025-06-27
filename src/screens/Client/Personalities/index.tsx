@@ -33,7 +33,7 @@ export function Personalities() {
         return undefined;
       }
       return lastPageParam + 1;
-    }
+    },
 	});
 
 	const handleSearch = () => {
@@ -49,10 +49,10 @@ export function Personalities() {
 			preset: {
 				id,
 				name,
-				imgURL
-			}
-		})
-	}
+				imgURL,
+			},
+		});
+	};
 
 	return (
 		<>
@@ -69,7 +69,7 @@ export function Personalities() {
 					style={{
 						textTransform: 'uppercase',
 						textAlign: 'center',
-						letterSpacing: scale(8)
+						letterSpacing: scale(8),
 					}}>
 					Personalidades
 				</Text>
@@ -111,7 +111,7 @@ export function Personalities() {
 						/>
 					)}
 					ListFooterComponentStyle={{
-						marginTop: scale(32)
+						marginTop: scale(32),
 					}}
 				/>
 			</Container>

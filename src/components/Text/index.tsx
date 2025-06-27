@@ -8,7 +8,7 @@ const Text = ({
 	fontSize,
 	children,
 	style,
-	numberOfLines
+	numberOfLines,
 }: ITextProps) => {
 	return (
 		<S.Text

@@ -18,7 +18,7 @@ import {
 	ContainerImg,
 	ContainerPresets,
 	Footer,
-	Wrapper
+	Wrapper,
 } from './styles';
 
 import { DeviceEventEmitter, Image, TouchableOpacity, View } from 'react-native';
@@ -70,26 +70,26 @@ interface AppState {
 }
 
 const presetDefault =  [
-	{ id: 1, label: "32", frequency: 32, gain: 0 , quality: 0.25},
-  { id: 2, label: "62", frequency: 62, gain: 0 ,quality: 0.25},
-  { id: 3, label: "125", frequency: 125, gain: 0 ,quality: 0.25},
-  { id: 4, label: "250", frequency: 250, gain: 0 ,quality: 0.25},
-  { id: 5, label: "500", frequency: 500, gain: 0 ,quality: 0.25},
-  { id: 6, label: "1K", frequency: 1000, gain: 0 ,quality: 0.25},
-  { id: 7, label: "2K", frequency: 2000, gain: 0 ,quality: 0.25},
-  { id: 8, label: "4K", frequency: 4000, gain: 0 ,quality: 0.25},
-  { id: 9, label: "8K", frequency: 800, gain: 0 ,quality: 0.25},
-  { id: 10, label: "16K", frequency: 16000, gain: 0,quality: 0.25 }
-]
+	{ id: 1, label: '32', frequency: 32, gain: 0 , quality: 0.25},
+  { id: 2, label: '62', frequency: 62, gain: 0 ,quality: 0.25},
+  { id: 3, label: '125', frequency: 125, gain: 0 ,quality: 0.25},
+  { id: 4, label: '250', frequency: 250, gain: 0 ,quality: 0.25},
+  { id: 5, label: '500', frequency: 500, gain: 0 ,quality: 0.25},
+  { id: 6, label: '1K', frequency: 1000, gain: 0 ,quality: 0.25},
+  { id: 7, label: '2K', frequency: 2000, gain: 0 ,quality: 0.25},
+  { id: 8, label: '4K', frequency: 4000, gain: 0 ,quality: 0.25},
+  { id: 9, label: '8K', frequency: 800, gain: 0 ,quality: 0.25},
+  { id: 10, label: '16K', frequency: 16000, gain: 0,quality: 0.25 },
+];
 
 export function Device() {
 
 	const device = {
 		id: 1,
-		imgURL: "https://kuba-staging-api-files.s3.sa-east-1.amazonaws.com/product/941-1",
+		imgURL: 'https://kuba-staging-api-files.s3.sa-east-1.amazonaws.com/product/941-1',
 		isBluetooth: true,
-		name: "Disco Bluetooth"
-	}
+		name: 'Disco Bluetooth',
+	};
 
 
 
@@ -101,7 +101,7 @@ export function Device() {
 		settings,
 		setSettings,
 		setBands,
-		modalValue
+		modalValue,
 	} = useValuesEqualizer();
 
 	const [scrollEnabled, setScrollEnabled] = useState(true);
@@ -114,7 +114,7 @@ export function Device() {
 
 	const { connectedDevice, connectToDevice, state, setState } = useBluetooth();
 
-	const [presetID, setPresetId] = useState<string | null>("")
+	const [presetID, setPresetId] = useState<string | null>('');
 
 	const { data: profilesData } = useQuery({
 		queryKey: ['MyPresets'],
@@ -124,10 +124,10 @@ export function Device() {
 
 
 	const profiles = useMemo(() => {
-		return profilesData ?? []
+		return profilesData ?? [];
 	}, [profilesData]);
 
-	const groupedProfiles = []
+	const groupedProfiles = [];
 
 	for (let i = 0; i < profiles.length; i += 4) {
 		groupedProfiles.push(profiles.slice(i, i + 4));
@@ -163,9 +163,9 @@ export function Device() {
 
 	const resetValues = () => {
 
-		setSettings(presetDefault)
-		sendEQParametersSequentially(presetDefault)
-	}
+		setSettings(presetDefault);
+		sendEQParametersSequentially(presetDefault);
+	};
 	// const [state, setState] = useState<AppState>({
 	//   device: undefined,
 	//   bluetoothEnabled: true,
@@ -222,11 +222,11 @@ export function Device() {
 
 				const bandId = selectedBand.id + 1;
 				const type = selectedBand.type;
-				const value = newValue
+				const value = newValue;
 
 
-				DeviceEventEmitter.emit("onEventEqualizer", { bandId, type, value });
-				return
+				DeviceEventEmitter.emit('onEventEqualizer', { bandId, type, value });
+				return;
 			}
 			if (selectedBand.type === 'gain') {
 
@@ -237,11 +237,11 @@ export function Device() {
 				setSettings(updatedSettings);
 				const bandId = selectedBand.id + 1;
 				const type = selectedBand.type;
-				const value = newValue
+				const value = newValue;
 
 
-				DeviceEventEmitter.emit("onEventEqualizer", { bandId, type, value });
-				return
+				DeviceEventEmitter.emit('onEventEqualizer', { bandId, type, value });
+				return;
 			}
 
 		}
@@ -263,15 +263,15 @@ export function Device() {
 						frequency: Number(item.frequency),
 						quality: Number(item.quality),
 						gain: Number(item.gain),
-					}) as unknown as IBandSettings) ?? []
-					setSettings(newEqualizerConfig)
+					}) as unknown as IBandSettings) ?? [];
+					setSettings(newEqualizerConfig);
 
 
 				}
-				return
+				return;
 			})();
 		}, [])
-	)
+	);
 
 	useEffect(() => {
 		console.log('App::componentDidMount adding listeners: onBluetoothEnabled and onBluetoothDistabled');
@@ -323,7 +323,7 @@ export function Device() {
 					<Image
 						style={{
 							width: '80%',
-							height: '80%'
+							height: '80%',
 						}}
 						resizeMode="contain"
 						source={KubaFoneDiscoImg}
@@ -338,7 +338,7 @@ export function Device() {
 						color: '#656565',
 						textAlign: 'center',
 						textTransform: 'uppercase',
-						letterSpacing: scale(6)
+						letterSpacing: scale(6),
 					}}>
 					{device?.name}
 				</Text>

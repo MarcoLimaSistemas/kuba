@@ -10,34 +10,34 @@ import { ISignInCredentials } from '@models/auth';
 export function ScreenSuccessful() {
   const route = useRoute();
   const {dataUser} = route.params as any;
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
   const { signIn } = useAuth();
-  const [loading, setLoading] = useState(false)
-  
+  const [loading, setLoading] = useState(false);
+
   //task add react query
  async function finish(){
-    try{
+    try {
       setLoading(true);
 
-      const formData ={
+      const formData = {
         email:dataUser.email,
-        password:dataUser.password
-      } as  ISignInCredentials
-      await signIn(formData)
-    await  navigation.navigate('Home',{modalActive:true})
-    }catch(err:any){
-      console.log("error",err.response.data.message)
+        password:dataUser.password,
+      } as  ISignInCredentials;
+      await signIn(formData);
+    await  navigation.navigate('Home',{modalActive:true});
+    } catch (err:any){
+      console.log('error',err.response.data.message);
      // navigation.navigate('SignIn')
-    }finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
     <Container>
       <Image source={Puppet} />
-      <TextConfirmed>{"CADASTRO REALIZADO\n COM SUCESSO!"}</TextConfirmed>
+      <TextConfirmed>{'CADASTRO REALIZADO\n COM SUCESSO!'}</TextConfirmed>
       <Button title="Finalizar" onPress={()=> finish()} activeLoad={loading}/>
     </Container>
   );

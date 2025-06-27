@@ -36,7 +36,7 @@ export function Preset() {
 
 	const { preset } = route.params as any;
 
-	const listFrequencies = preset.data as IPreset
+	const listFrequencies = preset.data as IPreset;
 
 	const modalizeRef = useRef<Modalize>(null);
 
@@ -46,7 +46,7 @@ export function Preset() {
 		setSelectedOptionBand,
 		setFrequency,
 		setGain,
-		setQuality
+		setQuality,
 	} = useValuesEqualizer();
 
 	const { state } = useBluetooth();
@@ -65,14 +65,14 @@ export function Preset() {
 	async function setConfigPreset() {
 		await AsyncStorage.setItem(STORAGE_PRESET_ID, JSON.stringify(listFrequencies));
 
-		setFrequency(String(listFrequencies.equalizerConfigs[0].frequency))
-		setGain(String(listFrequencies.equalizerConfigs[0].decibel_quantity))
-		setQuality(String(listFrequencies.equalizerConfigs[0].quality))
-		setSelectedOptionBand(String(listFrequencies.equalizerConfigs[0].band) ?? null)
+		setFrequency(String(listFrequencies.equalizerConfigs[0].frequency));
+		setGain(String(listFrequencies.equalizerConfigs[0].decibel_quantity));
+		setQuality(String(listFrequencies.equalizerConfigs[0].quality));
+		setSelectedOptionBand(String(listFrequencies.equalizerConfigs[0].band) ?? null);
 	}
 
 	useEffect(() => {
-		setConfigPreset()
+		setConfigPreset();
 	}, [listFrequencies]);
 
 	return (
@@ -103,7 +103,7 @@ export function Preset() {
 					source={{
 						uri: "https://kuba-staging-api-files.s3.sa-east-1.amazonaws.com/preset/808-1"
 					}}
-				/> 
+				/>
 
 
 				<Text
@@ -127,7 +127,7 @@ export function Preset() {
 					zIndex: 1111,
 					textAlign: 'center',
 					textTransform: 'uppercase',
-					letterSpacing: scale(8)
+					letterSpacing: scale(8),
 				}}>
 				{listFrequencies?.name}
 			</Text>
@@ -149,7 +149,7 @@ export function Preset() {
 						handleModalEdit={(isEdit: boolean) => { }}
 						handleScrollEnabled={handleScrollEnabled}
 						handlePreset={handlePreset}
-						presetCustom={listFrequencies.name ?? ""}
+						presetCustom={listFrequencies.name ?? ''}
 						equalizerConfigs={listFrequencies.equalizerConfigs}
 					/>
 					{

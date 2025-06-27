@@ -1,12 +1,12 @@
 
 
-import { Modalize } from "react-native-modalize";
-import * as S from "./styles"
-import { useEffect, useRef, useState } from "react";
-import Text from "@components/Text";
-import { Keyboard, TouchableWithoutFeedback } from "react-native";
-import { scale } from "react-native-size-matters";
-import { useValuesEqualizer } from "@hooks/useValuesEqualizer";
+import { Modalize } from 'react-native-modalize';
+import * as S from './styles';
+import { useEffect, useRef, useState } from 'react';
+import Text from '@components/Text';
+import { Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { scale } from 'react-native-size-matters';
+import { useValuesEqualizer } from '@hooks/useValuesEqualizer';
 
 
 interface ModalSelectValueProps {
@@ -22,10 +22,10 @@ export function ModalSelectValue({ isVisible, onCancel, onSave }: ModalSelectVal
   const modalRef = useRef<Modalize>(null);
   const { selectedBand } = useValuesEqualizer();
 
-  const initialValue = Number(selectedBand?.value) ?? 0
+  const initialValue = Number(selectedBand?.value) ?? 0;
 
-  const maxValue = selectedBand?.type === 'gain' ? 10 : 8
-  const minValue = selectedBand?.type === 'quality' ? 0.25 : -10
+  const maxValue = selectedBand?.type === 'gain' ? 10 : 8;
+  const minValue = selectedBand?.type === 'quality' ? 0.25 : -10;
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -45,13 +45,13 @@ export function ModalSelectValue({ isVisible, onCancel, onSave }: ModalSelectVal
 
   const handleSave = () => {
     onSave(value);
-    setValue(initialValue)
+    setValue(initialValue);
     modalRef.current?.close();
   };
 
   const handleCancel = () => {
     onCancel();
-    setValue(initialValue)
+    setValue(initialValue);
     modalRef.current?.close();
   };
 
@@ -64,7 +64,7 @@ export function ModalSelectValue({ isVisible, onCancel, onSave }: ModalSelectVal
   };
 
   const handleInputChange = (text: string) => {
-    const formattedText = text.replace(/[^0-9.-]/g, "");
+    const formattedText = text.replace(/[^0-9.-]/g, '');
     setInputValue(formattedText);
   };
 
@@ -78,8 +78,8 @@ export function ModalSelectValue({ isVisible, onCancel, onSave }: ModalSelectVal
 
   useEffect(() => {
     if (initialValue) {
-      setValue(initialValue)
-      setInputValue(String(initialValue))
+      setValue(initialValue);
+      setInputValue(String(initialValue));
     }
   }, [initialValue]);
 
@@ -89,10 +89,10 @@ export function ModalSelectValue({ isVisible, onCancel, onSave }: ModalSelectVal
       adjustToContentHeight
       withHandle={false}
       scrollViewProps={{
-        showsVerticalScrollIndicator: false
+        showsVerticalScrollIndicator: false,
       }}
       modalStyle={{
-        paddingHorizontal: scale(16)
+        paddingHorizontal: scale(16),
       }}
 
       onClosed={onCancel}
@@ -101,10 +101,10 @@ export function ModalSelectValue({ isVisible, onCancel, onSave }: ModalSelectVal
 
 
         <S.Container>
-          <Text variant='bold' fontSize={16} color='#242424' >Setar Valor</Text>
+          <Text variant="bold" fontSize={16} color="#242424" >Setar Valor</Text>
           <S.ValueContainer>
             <S.Button onPress={handleDecrement}>
-              <Text variant='bold' fontSize={24} color='#D4BD85' >-</Text>
+              <Text variant="bold" fontSize={24} color="#D4BD85" >-</Text>
             </S.Button>
             {isEditing ? (
               <S.Input
@@ -122,17 +122,17 @@ export function ModalSelectValue({ isVisible, onCancel, onSave }: ModalSelectVal
               </S.ValueText>
             )}
             <S.Button onPress={handleIncrement}>
-              <Text variant='bold' fontSize={24} color='#D4BD85'>+</Text>
+              <Text variant="bold" fontSize={24} color="#D4BD85">+</Text>
             </S.Button>
           </S.ValueContainer>
           <S.ActionsContainer>
 
             <S.ActionButton onPress={handleCancel}>
-              <Text variant='bold' fontSize={14} color='#777777' >Cancelar</Text>
+              <Text variant="bold" fontSize={14} color="#777777" >Cancelar</Text>
 
             </S.ActionButton>
             <S.ActionButton onPress={handleSave} isPrimary>
-              <Text variant='bold' fontSize={14} color='#242424' >Salvar</Text>
+              <Text variant="bold" fontSize={14} color="#242424" >Salvar</Text>
             </S.ActionButton>
           </S.ActionsContainer>
         </S.Container>

@@ -7,7 +7,7 @@ export const Spacer = ({ w, h }: { w?: number; h?: number }) => {
 		<View
 			style={{
 				width: scale(w ?? 0),
-				height: scale(h ?? 0)
+				height: scale(h ?? 0),
 			}}
 		/>
 	);

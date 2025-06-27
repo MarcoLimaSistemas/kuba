@@ -31,7 +31,7 @@ export const ModalDevices = forwardRef(
 						<View
 							style={{
 								width: scale(16),
-								height: scale(16)
+								height: scale(16),
 							}}
 						/>
 						<Text variant="bold">Dispositivos encontrados</Text>
@@ -43,7 +43,7 @@ export const ModalDevices = forwardRef(
 				flatListProps={{
 					contentContainerStyle: {
 						flexGrow: 1,
-						paddingHorizontal: scale(16)
+						paddingHorizontal: scale(16),
 					},
 					data: devices,
 					renderItem: ({ item }) => (
@@ -62,7 +62,7 @@ export const ModalDevices = forwardRef(
 								style={{
 									flex: 1,
 									justifyContent: 'center',
-									alignItems: 'center'
+									alignItems: 'center',
 								}}>
 								<ActivityIndicator
 									color={theme.COLORS.gold_100}
@@ -88,8 +88,8 @@ export const ModalDevices = forwardRef(
 						bottom: 0,
 						left: 0,
 						right: 0,
-						paddingHorizontal: scale(16)
-					}
+						paddingHorizontal: scale(16),
+					},
 				}}
 			/>
 		);

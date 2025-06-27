@@ -16,7 +16,7 @@ export const ContainerButtons = styled.View`
 export const ScrollAwareView = styled(KeyboardAwareScrollView)`
   flex: 1;
   padding: ${RFValue(16)}px; 
-`
+`;
 
 export const TextError = styled.Text`
 color: ${(props) => props.theme.COLORS.red_900};

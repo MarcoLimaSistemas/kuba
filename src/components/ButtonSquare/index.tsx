@@ -19,7 +19,7 @@ export function ButtonSquare({ children, label, ...rest }: ButtonSquareProps) {
 				fontSize={12}
 				variant="bold"
 				style={{
-					textAlign: 'center'
+					textAlign: 'center',
 				}}>
 				{label}
 			</Text>

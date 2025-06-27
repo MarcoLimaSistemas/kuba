@@ -16,20 +16,20 @@ export const Option = ({ option, zIndex }: IOptionProps) => {
 	const [items] = useState([
 		{
 			label: 'Voltar uma música',
-			value: 0
+			value: 0,
 		},
 		{
 			label: 'Diminuir volume',
-			value: 1
+			value: 1,
 		},
 		{
 			label: 'Aumentar volume',
-			value: 2
+			value: 2,
 		},
 		{
 			label: 'Passar uma música',
-			value: 3
-		}
+			value: 3,
+		},
 	]);
 	const [value, setValue] = useState<ValueType | null>(items[0].value);
 
@@ -46,38 +46,38 @@ export const Option = ({ option, zIndex }: IOptionProps) => {
 					setValue={setValue}
 					containerStyle={{
 						width: '100%',
-						zIndex: zIndex
+						zIndex: zIndex,
 					}}
 					selectedItemContainerStyle={{
-						backgroundColor: '#e4e1e1'
+						backgroundColor: '#e4e1e1',
 					}}
 					showTickIcon={false}
 					textStyle={{
 						color: '#656565',
 						fontFamily: typography['Lato-Bold'].fontFamily,
-						fontSize: scale(14)
+						fontSize: scale(14),
 					}}
 					listItemLabelStyle={{
 						fontFamily: typography['Lato-Regular'].fontFamily,
-						color: '#656565'
+						color: '#656565',
 					}}
 					labelProps={{
-						numberOfLines: 1
+						numberOfLines: 1,
 					}}
 					style={{
 						borderColor: 'transparent',
 						paddingLeft: 0,
 						paddingRight: 0,
-						backgroundColor: 'transparent'
+						backgroundColor: 'transparent',
 					}}
 					dropDownContainerStyle={{
 						borderColor: 'transparent',
 						width: '100%',
 						elevation: 4,
-						borderRadius: 0
+						borderRadius: 0,
 					}}
 					flatListProps={{
-						ItemSeparatorComponent: () => <S.LineSeparator />
+						ItemSeparatorComponent: () => <S.LineSeparator />,
 					}}
 				/>
 			</S.ContainerDropdown>

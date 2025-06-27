@@ -26,7 +26,7 @@ export function timestampToDate(timestamp: string) {
 		day: '2-digit',
 		month: '2-digit',
 		year: 'numeric',
-		timeZone: 'UTC'
+		timeZone: 'UTC',
 	}).format(utcDate);
 	return formattedDate;
 }

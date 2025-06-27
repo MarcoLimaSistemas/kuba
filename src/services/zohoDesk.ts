@@ -7,8 +7,8 @@ export async function getCommonQuestions(
 	const { data } = await api.get(`/user/${userId}/zohoDesk`, {
 		params: {
 			productId,
-			perPage: 15
-		}
+			perPage: 15,
+		},
 	});
 
 	return data;
