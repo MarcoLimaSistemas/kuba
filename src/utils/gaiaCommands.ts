@@ -99,10 +99,11 @@ export const createGaiaPacket = (
   payload: number[] = [],
 ): GaiaPacket => {
   const vendorId = GAIA.VENDOR_QUALCOMM;
-  const packetLength = 4 + payload.length; // Header + payload
+  // Packet length = vendor ID (2) + command (2) + payload
+  const packetLength = 2 + 2 + payload.length;
 
   const raw = [
-    0x00, // Start byte
+    0xff, // Start byte
     packetLength & 0xff, // Length LSB
     (packetLength >> 8) & 0xff, // Length MSB
     vendorId & 0xff, // Vendor ID LSB
