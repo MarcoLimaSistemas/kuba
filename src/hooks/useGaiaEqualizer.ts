@@ -4,12 +4,18 @@ import {
   GAIA,
   Controls,
   ParameterTypes,
+  FilterTypes,
   setPreset,
   setControlActivation,
-  setUserEQParameter,
+  setEQParameter,
   setMasterGain,
+  setBandFilter,
+  setBandFrequency,
+  setBandGain,
+  setBandQuality,
   frequencyToGaia,
   gainToGaia,
+  qualityToGaia,
   createGaiaPacket,
   GaiaPacket,
 } from '@utils/gaiaCommands';
@@ -25,6 +31,7 @@ export interface GaiaEqualizerState {
     frequency: number;
     quality: number;
     gain: number;
+    filter: number;
   }>;
 }
 
@@ -33,17 +40,43 @@ export interface UseGaiaEqualizerProps {
   onStateChange?: (state: GaiaEqualizerState) => void;
 }
 
+// Default bands configuration based on GAIA protocol
 const DEFAULT_BANDS = [
-  {id: 0, frequency: 60, quality: 1.0, gain: 0},
-  {id: 1, frequency: 170, quality: 1.0, gain: 0},
-  {id: 2, frequency: 310, quality: 1.0, gain: 0},
-  {id: 3, frequency: 600, quality: 1.0, gain: 0},
-  {id: 4, frequency: 1000, quality: 1.0, gain: 0},
-  {id: 5, frequency: 3000, quality: 1.0, gain: 0},
-  {id: 6, frequency: 6000, quality: 1.0, gain: 0},
-  {id: 7, frequency: 12000, quality: 1.0, gain: 0},
-  {id: 8, frequency: 14000, quality: 1.0, gain: 0},
-  {id: 9, frequency: 16000, quality: 1.0, gain: 0},
+  {
+    id: 1,
+    frequency: 60,
+    quality: 1.0,
+    gain: 0,
+    filter: FilterTypes.PARAMETRIC_EQUALIZER,
+  },
+  {
+    id: 2,
+    frequency: 170,
+    quality: 1.0,
+    gain: 0,
+    filter: FilterTypes.PARAMETRIC_EQUALIZER,
+  },
+  {
+    id: 3,
+    frequency: 310,
+    quality: 1.0,
+    gain: 0,
+    filter: FilterTypes.PARAMETRIC_EQUALIZER,
+  },
+  {
+    id: 4,
+    frequency: 600,
+    quality: 1.0,
+    gain: 0,
+    filter: FilterTypes.PARAMETRIC_EQUALIZER,
+  },
+  {
+    id: 5,
+    frequency: 1000,
+    quality: 1.0,
+    gain: 0,
+    filter: FilterTypes.PARAMETRIC_EQUALIZER,
+  },
 ];
 
 export const useGaiaEqualizer = ({
@@ -78,7 +111,7 @@ export const useGaiaEqualizer = ({
     [createGaiaMessage],
   );
 
-  // Set equalizer preset
+  // Set equalizer preset using COMMAND_SET_EQ_CONTROL
   const setEqualizerPreset = useCallback(
     (preset: number) => {
       try {
@@ -118,7 +151,7 @@ export const useGaiaEqualizer = ({
     [sendGaiaPacket],
   );
 
-  // Set band parameter (frequency, quality, gain)
+  // Set band parameter using COMMAND_SET_EQ_PARAMETER
   const setBandParameter = useCallback(
     (
       bandId: number,
@@ -133,9 +166,11 @@ export const useGaiaEqualizer = ({
           gaiaValue = frequencyToGaia(value);
         } else if (parameter === ParameterTypes.GAIN) {
           gaiaValue = gainToGaia(value);
+        } else if (parameter === ParameterTypes.QUALITY) {
+          gaiaValue = qualityToGaia(value);
         }
 
-        const packet = setUserEQParameter(bandId, parameter, gaiaValue);
+        const packet = setEQParameter(bandId, parameter, gaiaValue, true);
         sendGaiaPacket(packet);
 
         setState(prev => ({
@@ -149,6 +184,7 @@ export const useGaiaEqualizer = ({
                   }),
                   ...(parameter === ParameterTypes.QUALITY && {quality: value}),
                   ...(parameter === ParameterTypes.GAIN && {gain: value}),
+                  ...(parameter === ParameterTypes.FILTER && {filter: value}),
                 }
               : band,
           ),
@@ -160,7 +196,7 @@ export const useGaiaEqualizer = ({
     [sendGaiaPacket],
   );
 
-  // Set master gain
+  // Set master gain using COMMAND_SET_EQ_PARAMETER with GENERAL_BAND
   const setMasterGainValue = useCallback(
     (gain: number) => {
       try {
@@ -181,25 +217,48 @@ export const useGaiaEqualizer = ({
   // Set band gain (compatibility with existing equalizer)
   const setBandGain = useCallback(
     (bandIndex: number, gain: number) => {
-      setBandParameter(bandIndex, ParameterTypes.GAIN, gain);
+      const band = state.bands[bandIndex];
+      if (band) {
+        setBandParameter(band.id, ParameterTypes.GAIN, gain);
+      }
     },
-    [setBandParameter],
+    [setBandParameter, state.bands],
   );
 
   // Set band frequency
   const setBandFrequency = useCallback(
     (bandIndex: number, frequency: number) => {
-      setBandParameter(bandIndex, ParameterTypes.FREQUENCY, frequency);
+      const band = state.bands[bandIndex];
+      if (band) {
+        setBandParameter(band.id, ParameterTypes.FREQUENCY, frequency);
+      }
     },
-    [setBandParameter],
+    [setBandParameter, state.bands],
   );
 
   // Set band quality
   const setBandQuality = useCallback(
     (bandIndex: number, quality: number) => {
-      setBandParameter(bandIndex, ParameterTypes.QUALITY, quality);
+      const band = state.bands[bandIndex];
+      if (band) {
+        setBandParameter(band.id, ParameterTypes.QUALITY, quality);
+      }
     },
-    [setBandParameter],
+    [setBandParameter, state.bands],
+  );
+
+  // Set band filter type
+  const setBandFilterType = useCallback(
+    (
+      bandIndex: number,
+      filterType: (typeof FilterTypes)[keyof typeof FilterTypes],
+    ) => {
+      const band = state.bands[bandIndex];
+      if (band) {
+        setBandParameter(band.id, ParameterTypes.FILTER, filterType);
+      }
+    },
+    [setBandParameter, state.bands],
   );
 
   // Reset equalizer to default values
@@ -221,6 +280,7 @@ export const useGaiaEqualizer = ({
 
     // Reset all bands
     DEFAULT_BANDS.forEach(band => {
+      setBandParameter(band.id, ParameterTypes.FILTER, band.filter);
       setBandParameter(band.id, ParameterTypes.FREQUENCY, band.frequency);
       setBandParameter(band.id, ParameterTypes.QUALITY, band.quality);
       setBandParameter(band.id, ParameterTypes.GAIN, band.gain);
@@ -230,7 +290,12 @@ export const useGaiaEqualizer = ({
   // Load preset configuration
   const loadPreset = useCallback(
     (presetConfig: {
-      bands: Array<{frequency: number; quality: number; gain: number}>;
+      bands: Array<{
+        frequency: number;
+        quality: number;
+        gain: number;
+        filter?: number;
+      }>;
       masterGain: number;
       bassBoost?: boolean;
       enhancement3D?: boolean;
@@ -243,6 +308,7 @@ export const useGaiaEqualizer = ({
         bands: prev.bands.map((band, index) => ({
           ...band,
           ...presetConfig.bands[index],
+          filter: presetConfig.bands[index].filter ?? band.filter,
         })),
       }));
 
@@ -256,13 +322,40 @@ export const useGaiaEqualizer = ({
       }
 
       presetConfig.bands.forEach((bandConfig, index) => {
-        setBandParameter(index, ParameterTypes.FREQUENCY, bandConfig.frequency);
-        setBandParameter(index, ParameterTypes.QUALITY, bandConfig.quality);
-        setBandParameter(index, ParameterTypes.GAIN, bandConfig.gain);
+        const band = state.bands[index];
+        if (band) {
+          if (bandConfig.filter !== undefined) {
+            setBandParameter(band.id, ParameterTypes.FILTER, bandConfig.filter);
+          }
+          setBandParameter(
+            band.id,
+            ParameterTypes.FREQUENCY,
+            bandConfig.frequency,
+          );
+          setBandParameter(band.id, ParameterTypes.QUALITY, bandConfig.quality);
+          setBandParameter(band.id, ParameterTypes.GAIN, bandConfig.gain);
+        }
       });
     },
-    [setMasterGainValue, toggleControl, setBandParameter],
+    [setMasterGainValue, toggleControl, setBandParameter, state.bands],
   );
+
+  // Initialize equalizer with default settings
+  const initializeEqualizer = useCallback(() => {
+    // Set all bands to parametric equalizer filter
+    DEFAULT_BANDS.forEach(band => {
+      setBandParameter(
+        band.id,
+        ParameterTypes.FILTER,
+        FilterTypes.PARAMETRIC_EQUALIZER,
+      );
+    });
+  }, [setBandParameter]);
+
+  // Initialize on mount
+  useEffect(() => {
+    initializeEqualizer();
+  }, [initializeEqualizer]);
 
   return {
     state,
@@ -273,7 +366,9 @@ export const useGaiaEqualizer = ({
     setBandGain,
     setBandFrequency,
     setBandQuality,
+    setBandFilterType,
     resetEqualizer,
     loadPreset,
+    initializeEqualizer,
   };
 };

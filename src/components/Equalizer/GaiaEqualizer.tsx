@@ -6,7 +6,7 @@ import {Icons} from '@assets/icons';
 import {Spacer} from '@components/Spacer';
 import Text from '@components/Text';
 import {useGaiaEqualizer, GaiaEqualizerState} from '@hooks/useGaiaEqualizer';
-import {Controls} from '@utils/gaiaCommands';
+import {Controls, FilterTypes} from '@utils/gaiaCommands';
 import * as S from './styles';
 
 interface GaiaEqualizerProps {
@@ -26,7 +26,8 @@ const PRESETS = [
   {id: 6, name: 'Classical', icon: 'music-note'},
 ];
 
-const FREQUENCIES = [60, 170, 310, 600, 1000, 3000, 6000, 12000, 14000, 16000];
+// GAIA Equalizer uses 5 bands with specific frequencies
+const GAIA_FREQUENCIES = [60, 170, 310, 600, 1000];
 
 export const GaiaEqualizer: React.FC<GaiaEqualizerProps> = ({
   createGaiaMessage,
@@ -44,6 +45,7 @@ export const GaiaEqualizer: React.FC<GaiaEqualizerProps> = ({
     setBandGain,
     setBandFrequency,
     setBandQuality,
+    setBandFilterType,
     setMasterGainValue,
     resetEqualizer,
   } = useGaiaEqualizer({
@@ -101,13 +103,13 @@ export const GaiaEqualizer: React.FC<GaiaEqualizerProps> = ({
     <TouchableOpacity
       key={preset.id}
       style={[
-        S.presetButton,
-        state.currentPreset === preset.id && S.presetButtonSelected,
-        disabled && S.presetButtonDisabled,
+        S.PresetButton,
+        state.currentPreset === preset.id && S.PresetButtonSelected,
+        disabled && S.PresetButtonDisabled,
       ]}
       onPress={() => handlePresetSelect(preset.id)}
       disabled={disabled}>
-      <Icons.Music
+      <Icons.Logo
         width={scale(24)}
         height={scale(24)}
         color={state.currentPreset === preset.id ? '#FFFFFF' : '#656565'}
@@ -127,8 +129,8 @@ export const GaiaEqualizer: React.FC<GaiaEqualizerProps> = ({
     onValueChange: (value: boolean) => void,
     control: (typeof Controls)[keyof typeof Controls],
   ) => (
-    <View style={S.controlSwitchContainer}>
-      <View style={S.controlSwitchContent}>
+    <View style={S.ControlSwitchContainer}>
+      <View style={S.ControlSwitchContent}>
         <Text fontSize={14} color={disabled ? '#d7d7d7' : '#656565'}>
           {title}
         </Text>
@@ -148,10 +150,10 @@ export const GaiaEqualizer: React.FC<GaiaEqualizerProps> = ({
     frequency: number,
     gain: number,
   ) => (
-    <View key={bandIndex} style={S.bandContainer}>
-      <View style={S.bandSlider}>
+    <View key={bandIndex} style={S.BandContainer}>
+      <View style={S.BandSlider}>
         <Slider
-          style={S.verticalSlider}
+          style={S.VerticalSlider}
           minimumValue={-12}
           maximumValue={12}
           value={gain}
@@ -181,7 +183,7 @@ export const GaiaEqualizer: React.FC<GaiaEqualizerProps> = ({
   );
 
   return (
-    <ScrollView style={S.container} showsVerticalScrollIndicator={false}>
+    <ScrollView style={S.Container} showsVerticalScrollIndicator={false}>
       {/* Header */}
       <S.Header>
         <Text variant="bold" color="#656565">
@@ -217,7 +219,7 @@ export const GaiaEqualizer: React.FC<GaiaEqualizerProps> = ({
           style={{marginBottom: 16}}>
           Presets
         </Text>
-        <View style={S.presetsGrid}>{PRESETS.map(renderPresetButton)}</View>
+        <View style={S.PresetsGrid}>{PRESETS.map(renderPresetButton)}</View>
       </S.Section>
 
       {/* Controls */}
@@ -251,16 +253,16 @@ export const GaiaEqualizer: React.FC<GaiaEqualizerProps> = ({
         </S.Section>
       )}
 
-      {/* Frequency Bands */}
+      {/* Frequency Bands - GAIA uses 5 bands */}
       <S.Section>
         <Text
           variant="bold"
           fontSize={16}
           color="#656565"
           style={{marginBottom: 16}}>
-          Bandas de Frequência
+          Bandas de Frequência (GAIA)
         </Text>
-        <View style={S.bandsContainer}>
+        <View style={S.BandsContainer}>
           {state.bands.map((band, index) =>
             renderBandSlider(index, band.frequency, band.gain),
           )}
@@ -276,13 +278,13 @@ export const GaiaEqualizer: React.FC<GaiaEqualizerProps> = ({
           style={{marginBottom: 16}}>
           Master Gain
         </Text>
-        <View style={S.masterGainContainer}>
+        <View style={S.MasterGainContainer}>
           <Text fontSize={12} color={disabled ? '#d7d7d7' : '#656565'}>
             -12dB
           </Text>
-          <View style={S.masterGainSlider}>
+          <View style={S.MasterGainSlider}>
             <Slider
-              style={S.horizontalSlider}
+              style={S.HorizontalSlider}
               minimumValue={-12}
               maximumValue={12}
               value={state.masterGain}
