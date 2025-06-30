@@ -18,6 +18,9 @@ import {
   qualityToGaia,
   createGaiaPacket,
   GaiaPacket,
+  setBandFrequencyRealDevice,
+  setBandGainRealDevice,
+  setBandQualityRealDevice,
 } from '@utils/gaiaCommands';
 
 export interface GaiaEqualizerState {
@@ -151,7 +154,7 @@ export const useGaiaEqualizer = ({
     [sendGaiaPacket],
   );
 
-  // Set band parameter using COMMAND_SET_EQ_PARAMETER
+  // Set band parameter usando protocolo real do dispositivo
   const setBandParameter = useCallback(
     (
       bandId: number,
@@ -159,20 +162,17 @@ export const useGaiaEqualizer = ({
       value: number,
     ) => {
       try {
-        let gaiaValue = value;
-
-        // Convert values to GAIA format
+        let packet: GaiaPacket | undefined;
         if (parameter === ParameterTypes.FREQUENCY) {
-          gaiaValue = frequencyToGaia(value);
+          packet = setBandFrequencyRealDevice(bandId, value);
         } else if (parameter === ParameterTypes.GAIN) {
-          gaiaValue = gainToGaia(value);
+          packet = setBandGainRealDevice(bandId, value);
         } else if (parameter === ParameterTypes.QUALITY) {
-          gaiaValue = qualityToGaia(value);
+          packet = setBandQualityRealDevice(bandId, value);
         }
-
-        const packet = setEQParameter(bandId, parameter, gaiaValue, true);
-        sendGaiaPacket(packet);
-
+        if (packet) {
+          sendGaiaPacket(packet);
+        }
         setState(prev => ({
           ...prev,
           bands: prev.bands.map(band =>
